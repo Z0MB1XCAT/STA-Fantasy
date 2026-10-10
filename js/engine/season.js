@@ -52,16 +52,18 @@ export function buildSeason(data) {
       for (const t of teams) log(t.id, cal.id, scored.constructors[t.id].total, scored.constructors[t.id].raced);
 
       const dGroup = [], cGroup = [];
+      // a no-show counts like a race with 0 points (unless prices.absentCountsAsRace is false)
+      const absentCounts = cfg.prices.absentCountsAsRace !== false;
       for (const d of drivers) {
         if (d.role !== 'regular' || d.retired) continue;
         const s = scored.drivers[d.code];
-        if (!s.raced) continue;
-        (recent[d.code] ||= []).push(s.total);
+        if (!s.raced && !absentCounts) continue;
+        (recent[d.code] ||= []).push(s.raced ? s.total : 0);
         dGroup.push({ id: d.code, price: prices[d.code], recent: recent[d.code], tierSplit: cfg.prices.tierSplit });
       }
       for (const t of teams) {
         const s = scored.constructors[t.id];
-        if (!s.raced) continue;
+        if (!s.raced && !absentCounts) continue;
         (recent[t.id] ||= []).push(s.total);
         cGroup.push({ id: t.id, price: prices[t.id], recent: recent[t.id], tierSplit: cfg.prices.tierSplitConstructor });
       }

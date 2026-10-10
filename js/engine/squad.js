@@ -8,16 +8,9 @@ export const assetsOf = sq => [...sq.drivers, ...sq.constructors];
 export const squadValue = (sq, p) => round1(assetsOf(sq).reduce((a, id) => a + (p[id] ?? 0), 0));
 const value = squadValue;
 
-/** Which drivers count as "out" for free swaps in a round: announced out, or retired. */
-function outDrivers(S, R) {
-  const set = new Set(Object.keys(R.file?.out || {}));
-  for (const d of S.drivers) if (d.retired) set.add(d.code);
-  return set;
-}
-
-/** Reserves a player may pick in a round: the stand-ins named in out/subs. */
-export function standInsFor(R) {
-  return new Set(Object.values(R.file?.seatMap || {}));
+/** Drivers who have left the league (retired): owners can swap them out for free. */
+function outDrivers(S) {
+  return new Set(S.drivers.filter(d => d.retired).map(d => d.code));
 }
 
 /** Transfers a candidate squad uses against the previous squad, and what they cost. Also used live by the team builder. */
@@ -30,7 +23,7 @@ export function transferInfo(S, state, R, cand, chip) {
   const before = new Set(assetsOf(prev));
   const after = new Set(assetsOf(cand));
   out.used = [...after].filter(id => !before.has(id)).length;
-  const outs = outDrivers(S, R);
+  const outs = outDrivers(S);
   out.freeSwaps = prev.drivers.filter(d => outs.has(d) && !after.has(d)).length;
   out.effective = Math.max(0, out.used - out.freeSwaps);
   out.penalty = unlimited ? 0 : Math.max(0, out.effective - out.free) * tc.penaltyPerExtra;
@@ -46,7 +39,6 @@ export function evaluate(S, state, R, sub) {
   const issues = [];
   const prices = R.prices;
   const prev = state.base;
-  const stand = standInsFor(R);
 
   let cand = sub ? { drivers: [...(sub.drivers || [])], constructors: [...(sub.constructors || [])], drs: sub.drs || null }
                  : (prev ? { drivers: [...prev.drivers], constructors: [...prev.constructors], drs: prev.drs } : null);
@@ -62,7 +54,7 @@ export function evaluate(S, state, R, sub) {
     for (const d of c.drivers) {
       const dd = S.driverMap.get(d);
       if (!dd) errs.push(`Unknown driver ${d}`);
-      else if (dd.role === 'reserve' && !stand.has(d)) errs.push(`${dd.name} is a reserve and is not driving this round`);
+      else if (dd.role !== 'regular') errs.push(`${dd.name} is a reserve and can't be picked`);
     }
     for (const t of c.constructors) if (!S.teamMap.has(t)) errs.push(`Unknown constructor ${t}`);
     return errs;
@@ -117,11 +109,11 @@ export function squadPoints(S, R, squad, chip) {
   if (chip === 'nonegative') for (const k of Object.keys(pts)) pts[k] = Math.max(0, pts[k]);
 
   const best = list => [...list].sort((a, b) => pts[b] - pts[a])[0] || null;
-  const noShow = d => { const e = R.scores.effective[d]; return !!e && e.absent && !e.via; }; // nobody drove the seat
+  const noShow = d => !!R.scores.effective[d]?.absent;
   let drs = squad.drs;
   let drsMoved = false;
   if (chip === 'autopilot') drs = best(squad.drivers);
-  else if (drs && noShow(drs) && S.cfg.drs.fallbackWhenAbsent !== false) {
+  else if (drs && noShow(drs) && S.cfg.drs.fallbackWhenAbsent === true) {
     // don't waste the boost on a driver who never turned up: it moves to your best-scoring driver who raced
     const moved = best(squad.drivers.filter(d => d !== drs && !noShow(d)));
     if (moved) { drs = moved; drsMoved = true; }

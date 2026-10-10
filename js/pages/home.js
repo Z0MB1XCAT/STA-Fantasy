@@ -3,7 +3,7 @@ import { carry } from '../env.js';
 import { esc, $, fmtDate, fmtLock, statusBadge, countdownParts, pad2, money, delta, nameOf, flag, fmtNum } from '../ui.js';
 import { standings } from '../league.js';
 import { resolvePlayer } from '../engine/squad.js';
-import { leaderboardRows, squadRows, lineup, rivalSheet } from './common.js';
+import { leaderboardRows, squadRows, lineup, rivalSheet, absentIn } from './common.js';
 import { icon, bust, tchip, teamOf, teamWithFlag, trackImg, shead, avatar, ordinal } from '../components.js';
 
 const ctx = await boot('home');
@@ -142,7 +142,7 @@ function myTeamSection() {
     const last = mine.rows.filter(r => r.points).at(-1);
     body = `<div class="panel__head"><div><b>${esc(me.team || 'Your team')}</b><div class="muted small">${fmtNum(mine.total)} points${mine.provisional ? ', provisional' : ''}</div></div>
         <a class="link-more" href="team.html${q}">${phase.state === 'open' ? 'Manage' : 'View'}${icon('chevron')}</a></div>
-      <div class="panel__body--pad" style="padding-top:2px">${lineup(S, myRow.squad, R.prices, last && last.round === R.id ? last.points.assets : null)}</div>
+      <div class="panel__body--pad" style="padding-top:2px">${lineup(S, myRow.squad, R.prices, last && last.round === R.id ? last.points.assets : null, absentIn(R, myRow.squad))}</div>
       <div class="panel__body">${squadRows(S, myRow.squad, R.prices, null, true)}</div>`;
   }
   return `<section>${shead('Your team')}<div class="panel">${body}</div></section>`;
@@ -170,13 +170,6 @@ function moversSection() {
       <div class="stat">${fmt(x)}</div></div>`).join('') : '<div class="row"><span class="muted small">No moves yet</span></div>'}</div></div>`;
   return `<section>${shead('Market', `<a class="link-more" href="drivers.html${q}">All prices${icon('chevron')}</a>`)}
     <div class="panel"><div class="panel__body" style="display:grid;gap:6px;padding-top:6px">${list(titleA, a)}${list(titleB, b)}</div></div></section>`;
-}
-
-function outNotice() {
-  const out = R.file?.out;
-  if (!out || !Object.keys(out).length) return '';
-  return `<div class="notice notice--flag"><span class="glyph">!</span><div><b>Driver changes for ${esc(R.name)}</b>
-    <span class="muted">${Object.entries(out).map(([x, y]) => `${esc(nameOf(S, x))} is out and ${esc(nameOf(S, y))} drives their seat. You can swap ${esc(nameOf(S, x))} without using a transfer.`).join('<br>')}</span></div></div>`;
 }
 
 function calendarSection() {
@@ -207,7 +200,6 @@ app.innerHTML = `
   <div class="stack" style="--gap:22px">
     ${problemsNotice(problems)}
     ${heroHtml()}
-    ${outNotice()}
     ${phase.state === 'provisional' ? '<div class="notice notice--flag"><span class="glyph">P</span><div><b>These points are provisional</b><span class="muted">The stewards can still change results until Sunday. Everything recalculates when the round is marked final.</span></div></div>' : ''}
     <div class="cols cols--2-1">
       <div class="stack" style="--gap:28px">

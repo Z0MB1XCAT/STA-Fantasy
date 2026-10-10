@@ -37,10 +37,9 @@ function grid() {
   if (tab === 'drivers') {
     return `<div class="dgrid">${list.map(id => {
       const s = S.assetSummary(id);
-      const out = R.file?.out?.[id];
       return driverCard(S, id, {
         price: prices[id],
-        top: `${out ? '<span class="mark mark--dnf">Out</span>' : ''}${movePill(id)}`,
+        top: movePill(id),
         meta: s.rounds ? `${fmtNum(s.avg)} avg<br>${fmtNum(s.total)} pts` : 'No races yet',
         attrs: `data-open="${id}" aria-label="${esc(nameOf(S, id))}, ${money(prices[id])}. Show details"`,
       });

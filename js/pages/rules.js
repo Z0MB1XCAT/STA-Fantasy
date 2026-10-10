@@ -103,10 +103,10 @@ $('#app').innerHTML = `<div class="stack" style="--gap:22px">
 
       ${section('absences', `
         <ul class="ticks">
-          <li><b>Known before the deadline:</b> the driver is marked Out and you can swap them without using a transfer.</li>
-          <li><b>A reserve takes the seat:</b> you score the reserve's points for that round.</li>
-          <li><b>Nobody takes the seat:</b> the driver scores 0, with no penalty.${c.drs.fallbackWhenAbsent !== false ? ' If they were your DRS Boost, it moves to your best driver who did race.' : ''}</li>
-          <li>Missing a race never changes a driver's price.</li>
+          <li>A driver who doesn't turn up scores <b>0 points</b> for that round. It works like a DNF, but without the penalty points.</li>
+          <li>They show greyed out in your team for that round. If they were your DRS Boost, the boost scores 0 too.</li>
+          <li>${c.prices.absentCountsAsRace !== false ? 'For prices, the missed round counts as a 0-point race, so a no-show can drop in price.' : 'Missing a race does not change their price.'}</li>
+          <li>Reserve drivers aren't part of the game. They can't be picked and don't score for anyone, including constructors.</li>
         </ul>`)}
 
       ${section('help', `

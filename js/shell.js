@@ -51,13 +51,11 @@ const footer = (store, S) => `
     <span class="row-flex" style="gap:16px">${S.cfg.discord ? `<a href="${S.cfg.discord}" target="_blank" rel="noopener">League Discord</a>` : ''}${store.user?.isAdmin ? '<a href="admin.html">Enter results</a>' : ''}${store.kind === 'local' ? '<span class="badge badge--provisional"><i></i>Demo mode: saved in this browser only</span>' : ''}${store.kind === 'offline' ? '<span class="badge badge--locked"><i></i>Login is unavailable right now</span>' : ''}</span>
   </div></footer>`;
 
-/** "message Z0MB1XCAT on Discord", linked when we have the invite. */
+/** "Contact us on Discord" (deliberately no name), linked to season.json contactUrl or the league server. */
 export function contactLink(S, capital = false) {
-  const who = esc(S.cfg.contact || 'the league admin');
-  const verb = capital ? 'Message' : 'message';
-  return S.cfg.discord
-    ? `${verb} <a href="${esc(S.cfg.discord)}" target="_blank" rel="noopener">${who} on Discord</a>`
-    : `${verb} ${who}`;
+  const url = S.cfg.contactUrl || S.cfg.discord;
+  const text = `${capital ? 'Contact' : 'contact'} us on Discord`;
+  return url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${text}</a>` : text;
 }
 
 const authDialog = S => `

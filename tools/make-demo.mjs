@@ -20,12 +20,11 @@ function shuffleBy(list, score, r, noise) {
 function makeRound(id, status, seed, opts = {}) {
   const r = rng(seed);
   const absent = new Set();
-  const subs = {};
   const reserves = ['XMK', 'KIE'];
   const pool = regulars.map(d => d.code);
   for (let i = 0; i < (opts.absent ?? 3); i++) { const c = pool[Math.floor(r() * pool.length)]; absent.add(c); }
-  [...absent].slice(0, 2).forEach((c, i) => { subs[c] = reserves[i]; });
-  const racing = [...regulars.filter(d => !absent.has(d.code)).map(d => d.code), ...Object.values(subs)];
+  // reserves still race (they fill the grid) but are not part of the fantasy game
+  const racing = [...regulars.filter(d => !absent.has(d.code)).map(d => d.code), ...reserves.slice(0, Math.min(2, absent.size))];
   const strength = c => (drivers.find(d => d.code === c)?.quality ?? 0.5) * 10;
   const quali = shuffleBy(racing, strength, r, 6);
   const reverseGrid = [...quali].reverse();
@@ -33,8 +32,6 @@ function makeRound(id, status, seed, opts = {}) {
   const feature = shuffleBy(racing, c => strength(c) + (quali.length - quali.indexOf(c)) * 0.12, r, 5);
   const mark = (list, nDnf) => list.map((c, i) => (i >= list.length - nDnf && i > 5 ? c + ':dnf' : c));
   const lines = [`round: ${id}`, `status: ${status}`];
-  if (opts.out) lines.push(`out: ${opts.out}`);
-  if (Object.keys(subs).length && !opts.out) lines.push(`subs: ${Object.entries(subs).map(([a, b]) => `${a}>${b}`).join(' ')}`);
   if (status !== 'upcoming') {
     lines.push(`quali: ${quali.join(' ')}`);
     lines.push(`reverse: ${mark(reverse, 2).join(' ')}`);
@@ -52,12 +49,12 @@ function write(dir, plan) {
   fs.mkdirSync(abs, { recursive: true });
   for (let id = 1; id <= 12; id++) {
     const p = plan[id] || ['upcoming', 100 + id, { absent: 0 }];
-    fs.writeFileSync(path.join(abs, String(id).padStart(2, '0') + '.txt'), p[0] === 'upcoming' && !p[2].out ? `round: ${id}\nstatus: upcoming\n` : makeRound(id, p[0], p[1], p[2]));
+    fs.writeFileSync(path.join(abs, String(id).padStart(2, '0') + '.txt'), p[0] === 'upcoming' ? `round: ${id}\nstatus: upcoming\n` : makeRound(id, p[0], p[1], p[2]));
   }
 }
 
-// R1-R3 final, R4 announced (ZMB out) -> picks open for round 4
-write('rounds', { 1: ['final', 11, {}], 2: ['final', 22, { absent: 4 }], 3: ['final', 33, {}], 4: ['upcoming', 44, { absent: 0, out: 'ZMB>XMK' }] });
+// R1-R3 final -> picks open for round 4
+write('rounds', { 1: ['final', 11, {}], 2: ['final', 22, { absent: 4 }], 3: ['final', 33, {}] });
 // R1-R2 final, R3 provisional -> window closed, waiting on the stewards
 write('rounds-prov', { 1: ['final', 11, {}], 2: ['final', 22, { absent: 4 }], 3: ['provisional', 33, {}] });
 console.log('Wrote tests/fixtures/rounds and tests/fixtures/rounds-prov');

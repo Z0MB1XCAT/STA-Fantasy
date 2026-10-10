@@ -10,8 +10,6 @@
 round: 12
 status: upcoming
 
-# out:  ZMB>XMK          announced absent BEFORE the deadline (ZMB is out, XMK drives the seat; owners may swap for free)
-# subs: ZMB>XMK          stand-in turned up AFTER the deadline (owners of ZMB get XMK's points)
 # quali:   KAM JEN NFS
 # reverse: NFS KAM JEN
 # feature: JEN KAM NFS:dnf

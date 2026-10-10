@@ -1,4 +1,5 @@
 // Drives admin.html: paste a mixed-alias finishing order, mark a DNF, pick fastest lap, read the generated file.
+//   node tools/dev/e2e-admin.mjs   (with node serve.mjs running)
 
 import puppeteer from 'puppeteer';
 
@@ -27,12 +28,9 @@ await click('[data-act=mark][data-i="2"][data-m=dnf]');
 await page.select('#fl', 'JEN');
 console.log('feature + fastest  ->', JSON.stringify((await fileText()).split('\n').filter(l => /^(feature|fastest)/.test(l))));
 
-// stand-in: ZMB out before the deadline, replaced by XMK
-await page.evaluate(() => document.querySelector('details.dd summary').click());
-await page.select('[data-sel=out-from]', 'ZMB');
-await page.select('[data-sel=out-to]', 'XMK');
-await click('[data-act=seat-add][data-kind=out]');
-console.log('with out line      ->', JSON.stringify((await fileText()).split('\n').filter(l => /^(round|status|out)/.test(l))));
+// a reserve can be placed so the order is right; drivers in no session show as absent (greyed, 0 pts)
+console.log('reserve in pool    ->', !!(await page.$('[data-act=place][data-code=XMK]')));
+console.log('absent preview rows->', await page.$$eval('.row--absent', r => r.length));
 
 // full text + validity badge
 console.log('--- generated file ---\n' + await fileText());

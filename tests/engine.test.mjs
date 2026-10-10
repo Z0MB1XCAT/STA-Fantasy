@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { parseRound, serializeRound } from '../js/engine/parseRound.js';
 import { scoreRound, deriveGrids } from '../js/engine/scoring.js';
 import { priceMoves } from '../js/engine/prices.js';
-import { resolvePlayer, evaluate, emptyState, standInsFor } from '../js/engine/squad.js';
+import { resolvePlayer, evaluate, emptyState } from '../js/engine/squad.js';
 import { baseData, seasonWith, codesOf, ROUND1 } from './helpers.mjs';
 
 const ctxOf = () => { const d = baseData(); return { scoring: d.season.scoring, drivers: d.drivers.drivers, teams: d.teams.teams }; };
@@ -12,8 +12,6 @@ test('parseRound reads sessions, marks, fastest lap and seat maps', () => {
   const r = parseRound(`
     round: 5   # comment
     status: provisional
-    out: ZMB>XMK
-    subs: DON>KIE
     quali: KAM JEN NFS
     feature: JEN KAM
       NFS:dnf
@@ -22,7 +20,6 @@ test('parseRound reads sessions, marks, fastest lap and seat maps', () => {
   assert.deepEqual(r.errors, []);
   assert.equal(r.round, 5);
   assert.equal(r.status, 'provisional');
-  assert.deepEqual(r.seatMap, { ZMB: 'XMK', DON: 'KIE' });
   assert.equal(r.sessions.feature[2].mark, 'dnf');   // continuation line joined
   assert.equal(r.fastest.feature, 'JEN');
 });
@@ -82,20 +79,15 @@ test('place gains are capped (reverse grid back-marker)', () => {
   assert.equal(win.pts, 12 + 5);                                // 12 base + cap of +5
 });
 
-test('stand-in scores for owners of the absent driver, price of the absentee is frozen', () => {
-  const S = seasonWith({
-    1: `round: 1\nstatus: final\nsubs: ZMB>XMK\nquali: KAM XMK JEN\nfeature: KAM XMK JEN\nreverse: JEN XMK KAM`,
-  });
+test('a no-show scores 0 with no penalty, reserves score for nobody, and the miss counts as a 0-point race for price', () => {
+  const S = seasonWith({ 1: 'round: 1\nstatus: final\nquali: KAM XMK JEN\nfeature: KAM XMK JEN\nreverse: JEN XMK KAM' });
   const R = S.round(1);
-  assert.equal(R.scores.effective.ZMB.via, 'XMK');
-  assert.equal(R.scores.effective.ZMB.points, R.scores.drivers.XMK.total);
-  assert.ok(R.scores.effective.ZMB.points > 0);
-  assert.equal(R.scores.drivers.ZMB.raced, false);
-  assert.equal(S.round(2).prices.ZMB, S.round(1).prices.ZMB);   // frozen
-  assert.equal(S.round(2).prices.XMK, S.round(1).prices.XMK);   // reserves never move
-  // alpine's seat is driven by XMK so the constructor scores
-  assert.equal(R.scores.constructors.alpine.seats.includes('XMK'), true);
-  assert.ok(R.scores.constructors.alpine.total > 0);
+  assert.equal(R.scores.effective.ZMB.points, 0);
+  assert.equal(R.scores.effective.ZMB.absent, true);
+  assert.equal(R.scores.constructors.alpine.seats.includes('XMK'), false);   // reserve's points don't go to Alpine
+  assert.equal(R.scores.constructors.alpine.total, 0);
+  assert.ok(S.round(2).prices.ZMB < S.round(1).prices.ZMB, 'no-show counts as a 0-point race');
+  assert.equal(S.round(2).prices.XMK, S.round(1).prices.XMK);               // reserves never move
 });
 
 test('price bands: percentile ranked, clamped and rounded', () => {
@@ -120,8 +112,8 @@ test('after a final round, raced assets move and absent ones stay put', () => {
   const S = seasonWith({ 1: ROUND1 });
   const r1 = S.round(1), r2 = S.round(2);
   assert.equal(r2.priceStatus, 'final');
-  assert.ok(r2.prices.ICE < r1.prices.ICE, 'worst PPM falls');
-  assert.equal(r2.prices.PAB, r1.prices.PAB);
+  assert.ok(r2.prices.PAB < r1.prices.PAB, 'a no-show counts as a 0-point race, so their price falls');
+  assert.ok(r2.prices.PAB <= r1.prices.PAB, 'absent driver counted as 0 points');
   assert.ok(['KAM', 'JEN', 'NFS'].some(c => r2.prices[c] > r1.prices[c]) || true);
   const prov = seasonWith({ 1: ROUND1.replace('final', 'provisional') });
   assert.equal(prov.round(2).priceStatus, 'projected');
@@ -200,26 +192,13 @@ test('points: DRS doubles, chips apply, penalty is deducted', () => {
   assert.equal(extra.rows[0].chip, 'limitless');
 });
 
-test('more absentees than reserves: no-shows score 0, DRS on a no-show moves to the best driver who raced', () => {
-  // 5 regulars missing, only 2 reserves: ZMB and DON get stand-ins, PAB/SWU/RIC seats stay empty
-  const S = seasonWith({
-    1: `round: 1\nstatus: final\nsubs: ZMB>XMK DON>KIE\nquali: KAM JEN NFS XMK KIE ICE\nfeature: KAM JEN NFS XMK KIE ICE\nreverse: ICE KIE XMK NFS JEN KAM`,
-  });
-  const R = S.round(1);
-  assert.equal(R.scores.effective.PAB.points, 0);            // no-show, no stand-in, no penalty
-  assert.equal(R.scores.effective.PAB.via, null);
-  assert.ok(R.scores.effective.ZMB.points > 0);               // seat filled by a reserve
+test('DRS on a no-show is simply wasted (0 x 2), like a DNF without the penalty', () => {
+  const S = seasonWith({ 1: 'round: 1\nstatus: final\nquali: KAM\nfeature: KAM\nreverse: KAM' });
   const sq = { drivers: ['PAB', 'ZMB', 'SWU', 'KAM', 'RIC'], constructors: ['redbull', 'alpine'], drs: 'PAB', chip: 'limitless' };
   const row = resolvePlayer(S, { 1: sq }, { upTo: 1 }).rows[0];
-  assert.equal(row.points.drsMoved, true);
-  assert.equal(row.points.drs, 'KAM');                        // KAM is the best-scoring driver who raced
-  assert.equal(row.points.bonus, R.scores.effective.KAM.points);
-  // switched off -> the boost is simply lost
-  const off = seasonWith({ 1: `round: 1\nstatus: final\nquali: KAM\nfeature: KAM\nreverse: KAM` });
-  off.cfg.drs.fallbackWhenAbsent = false;
-  const r2 = resolvePlayer(off, { 1: sq }, { upTo: 1 }).rows[0];
-  assert.equal(r2.points.drs, 'PAB');
-  assert.equal(r2.points.bonus, 0);
+  assert.equal(row.points.drs, 'PAB');
+  assert.equal(row.points.bonus, 0);
+  assert.equal(row.points.assets.PAB, 0);
 });
 
 test('No Negative floors losses at 0 and Autopilot picks the best driver', () => {
@@ -232,21 +211,11 @@ test('No Negative floors losses at 0 and Autopilot picks the best driver', () =>
   if (nn.valid) for (const v of Object.values(nn.points.assets)) assert.ok(v >= 0);
 });
 
-test('announced-out drivers can be swapped for free and the stand-in becomes pickable', () => {
-  const S = seasonWith({ 2: `round: 2\nstatus: upcoming\nout: ZMB>XMK` });
-  const R2 = S.round(2);
-  assert.ok(standInsFor(R2).has('XMK'));
-  const R1 = S.round(1);
-  const sq1 = cheapSquad(S, R1);
-  if (!sq1.drivers.includes('ZMB')) sq1.drivers[4] = 'ZMB';
-  sq1.drs = sq1.drivers[0];
-  const base = emptyState(S);
-  const e1 = evaluate(S, base, R1, sq1);
-  assert.ok(e1.valid, e1.issues.join());
-  const sq2 = { ...sq1, drivers: sq1.drivers.map(d => d === 'ZMB' ? 'XMK' : d), drs: sq1.drivers[0] === 'ZMB' ? 'XMK' : sq1.drivers[0] };
-  const e2 = evaluate(S, e1.next, R2, sq2);
-  assert.ok(e2.valid, e2.issues.join());
-  assert.equal(e2.transfers.used, 1);
-  assert.equal(e2.transfers.freeSwaps, 1);
-  assert.equal(e2.transfers.effective, 0);
+test('reserves cannot be picked', () => {
+  const S = seasonWith({});
+  const R = S.round(1);
+  const cheap = S.drivers.filter(d => d.role === 'regular').sort((a, b) => R.prices[a.code] - R.prices[b.code]).slice(0, 4).map(d => d.code);
+  const ev = evaluate(S, emptyState(S), R, { drivers: [...cheap, 'XMK'], constructors: ['haas', 'aston'], drs: cheap[0] });
+  assert.equal(ev.valid, false);
+  assert.match(ev.issues.join(' '), /reserve and can't be picked/);
 });

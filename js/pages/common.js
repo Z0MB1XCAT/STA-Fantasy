@@ -20,6 +20,12 @@ export function leaderboardRows(rows, meId, limit = 10) {
 }
 const ordinalRank = n => ordinal(n);
 
+/** Drivers in a squad who didn't turn up in a scored round (shown greyed out). */
+export function absentIn(R, squad) {
+  if (!R?.scores || !squad) return null;
+  return new Set(squad.drivers.filter(d => R.scores.effective[d]?.absent));
+}
+
 /**
  * Sheet showing another player's team for the latest round whose deadline has passed
  * (picks before that are hidden by the database, so there is nothing to leak).
@@ -41,7 +47,7 @@ export function rivalSheet(S, standing, subsOfPlayer, now) {
           <span class="muted small">Round ${revealed.id}, ${esc(revealed.name)}${row.chip ? `. ${esc(S.cfg.chips[row.chip].name)} played` : ''}</span>
           ${row.roundTotal != null ? `<span class="num" style="font-size:1.1rem">${fmtNum(row.roundTotal)} pts</span>` : '<span class="muted small">Not scored yet</span>'}
         </div>
-        ${lineup(S, row.squad, revealed.prices, pts)}
+        ${lineup(S, row.squad, revealed.prices, pts, absentIn(revealed, row.squad))}
         <div style="margin-top:10px">${squadRows(S, row.squad, revealed.prices, pts, true)}</div>`;
     }
   }
@@ -53,17 +59,18 @@ export function rivalSheet(S, standing, subsOfPlayer, now) {
 }
 
 /** Five small figure tiles, F1-Fantasy style. */
-export function lineup(S, squad, prices, pointsByAsset = null) {
+export function lineup(S, squad, prices, pointsByAsset = null, absent = null) {
   return `<div class="lineup">${squad.drivers.map(code => {
     const src = photoOf(S, code);
-    return `<div class="lineup__cell">
+    const away = absent?.has(code);
+    return `<div class="lineup__cell${away ? ' is-absent' : ''}">
       <div class="lineup__tile" style="${teamVar(S, code)}">
         ${teamOf(S, code)?.logo ? `<img class="lineup__logo" src="${teamOf(S, code).logo}" alt="">` : ''}
         ${src ? `<img class="lineup__fig" src="${src}" alt="" loading="lazy">` : ''}
         ${squad.drs === code ? '<span class="mark mark--drs lineup__drs">DRS</span>' : ''}
       </div>
       <div class="lineup__name">${esc(nameOf(S, code))}</div>
-      <div class="lineup__meta">${pointsByAsset ? `${fmtNum(pointsByAsset[code] ?? 0)} pts` : money(prices[code] ?? 0)}</div>
+      <div class="lineup__meta">${away ? 'Absent' : pointsByAsset ? `${fmtNum(pointsByAsset[code] ?? 0)} pts` : money(prices[code] ?? 0)}</div>
     </div>`;
   }).join('')}</div>`;
 }

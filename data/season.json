@@ -7,7 +7,7 @@
   },
   "drs": {
     "multiplier": 2,
-    "fallbackWhenAbsent": true
+    "fallbackWhenAbsent": false
   },
   "transfers": {
     "freePerRound": 2,
@@ -134,8 +134,9 @@
       }
     },
     "constructorFactor": 0.55,
-    "targetDriverMean": 14
+    "targetDriverMean": 14,
+    "absentCountsAsRace": true
   },
   "discord": "https://discord.gg/fEjHrAX6aF",
-  "contact": "Z0MB1XCAT"
+  "contactUrl": "https://discord.gg/fEjHrAX6aF"
 }

@@ -77,9 +77,9 @@ test('demo fixtures (if generated) are valid too', () => {
   }
 });
 
-test('parseRound warns when a replaced driver also appears in the results', () => {
-  const codes = new Set(d.drivers.drivers.map(x => x.code));
-  const p = parseRound('round: 1\nstatus: provisional\nsubs: ZMB>XMK\nquali: KAM ZMB XMK', { codes });
+test('old out/subs lines are ignored with a warning, not an error', () => {
+  const codes = new Set(baseData().drivers.drivers.map(x => x.code));
+  const p = parseRound('round: 1\nstatus: provisional\nsubs: ZMB>XMK\nquali: KAM ZMB', { codes });
   assert.equal(p.ok, true);
-  assert.match(p.warnings.join(' '), /ZMB is marked as replaced/);
+  assert.match(p.warnings.join(' '), /no longer used/);
 });

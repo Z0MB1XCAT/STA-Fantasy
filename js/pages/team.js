@@ -1,7 +1,8 @@
 import { boot, problemsNotice } from '../shell.js';
 import { carry } from '../env.js';
+import { absentIn } from './common.js';
 import { esc, $, money, delta, fmtNum, nameOf, teamLine, statusBadge, fmtDate, fmtLock, toast, flag } from '../ui.js';
-import { resolvePlayer, transferInfo, squadValue, assetsOf, standInsFor } from '../engine/squad.js';
+import { resolvePlayer, transferInfo, squadValue, assetsOf } from '../engine/squad.js';
 import { icon, ident, carImg, driverCard, constructorCard, emptyDriverCard, emptyConstructorCard, teamWithFlag, shead, avatar, bust, tchip } from '../components.js';
 
 const ctx = await boot('team');
@@ -71,8 +72,6 @@ const before = resolvePlayer(S, mine, { upTo: R.id - 1 });
 const state = before.state;
 const prices = R.prices;
 const editable = phase.state === 'open';
-const stand = standInsFor(R);
-const outs = R.file?.out || {};
 const saved = mine[R.id] || null;
 
 let draft = saved
@@ -119,7 +118,6 @@ function costbarView() {
       </div>
     </div>
     <div class="costbar__track" role="meter" aria-label="Budget used" aria-valuemin="0" aria-valuemax="${w}" aria-valuenow="${cost()}"><div class="costbar__fill${over ? ' over' : ''}" style="transform:scaleX(${unlimited() ? 1 : used})"></div></div>
-    ${ti.freeSwaps ? `<p class="small muted">${ti.freeSwaps} free swap${ti.freeSwaps > 1 ? 's' : ''} for drivers who are out this round.</p>` : ''}
   </div>`;
 }
 
@@ -130,8 +128,10 @@ function squadView() {
     if (!id) return editable ? emptyDriverCard('Add driver', 'data-act="tab" data-id="drivers"') : '<div class="dcard dcard--empty dcard--static"><span>Empty</span></div>';
     const s = S.assetSummary(id);
     const top = `${draft.chip !== 'autopilot' ? `<button class="cardbtn" type="button" data-act="drs" data-id="${id}" aria-pressed="${draft.drs === id}" ${editable ? '' : 'disabled'} title="DRS Boost: ${draft.chip === 'extradrs' ? 3 : cfg.drs.multiplier}x points">DRS</button>` : ''}${editable ? `<button class="cardbtn" type="button" data-act="remove" data-id="${id}" aria-label="Remove ${esc(nameOf(S, id))}">${icon('close')}</button>` : ''}`;
-    const meta = outs[id] ? `<span class="mark mark--dnf">Out</span><br>${esc(nameOf(S, outs[id]))} drives` : (s.rounds ? `${fmtNum(s.avg)} avg<br>${fmtNum(s.total)} pts` : 'No races yet');
-    return driverCard(S, id, { tag: 'div', cls: `dcard--static${draft.drs === id ? ' is-in' : ''}`, price: prices[id], top, meta });
+    // once this round has results, show the round's points and grey out anyone who didn't turn up
+    const eff = R.scores?.effective[id];
+    const meta = eff ? (eff.absent ? 'Absent<br>0 pts' : `${fmtNum(eff.points)} pts<br>this round`) : (s.rounds ? `${fmtNum(s.avg)} avg<br>${fmtNum(s.total)} pts` : 'No races yet');
+    return driverCard(S, id, { tag: 'div', cls: `dcard--static${draft.drs === id ? ' is-in' : ''}${eff?.absent ? ' dcard--absent' : ''}`, price: prices[id], top, meta });
   });
   const cCards = Array.from({ length: nC }, (_, i) => {
     const id = draft.constructors[i];
@@ -155,7 +155,7 @@ function chipsView() {
 function marketRows() {
   const isD = tab === 'drivers';
   let list = isD
-    ? S.drivers.filter(d => (d.role === 'regular' && !d.retired) || stand.has(d.code)).map(d => d.code)
+    ? S.drivers.filter(d => d.role === 'regular' && !d.retired).map(d => d.code)
     : S.teams.map(t => t.id);
   const q = query.trim().toLowerCase();
   if (q) list = list.filter(id => nameOf(S, id).toLowerCase().includes(q) || teamLine(S, id).toLowerCase().includes(q));
@@ -172,13 +172,11 @@ function marketRows() {
     const blocked = !inSquad && (full || tooPricey);
     const why = inSquad ? `Remove ${nameOf(S, id)}` : full ? `Squad is full, remove a ${isD ? 'driver' : 'constructor'} first` : tooPricey ? 'Not enough budget' : `Add ${nameOf(S, id)}`;
     const s = sum(id);
-    const out = outs[id];
-    const isStand = S.driverMap.get(id)?.role === 'reserve';
     const d = S.priceDelta(id);
     return `<div class="row mrow${inSquad ? ' mrow--in' : ''}${blocked ? ' mrow--off' : ''}">
       ${ident(S, id)}
-      <div class="who"><b>${esc(nameOf(S, id))}${out ? ' <span class="mark mark--dnf">Out</span>' : ''}${isStand ? ' <span class="mark mark--fl">Stand-in</span>' : ''}</b>
-        <small>${isD ? teamWithFlag(S, id) : esc(teamLine(S, id))}${out ? `, ${esc(nameOf(S, out))} drives` : ''}</small></div>
+      <div class="who"><b>${esc(nameOf(S, id))}</b>
+        <small>${isD ? teamWithFlag(S, id) : esc(teamLine(S, id))}</small></div>
       ${isD ? '' : carImg(S, id)}
       <div class="stats">
         <div class="stat stat--hide-sm"><span class="num">${s.rounds ? fmtNum(s.avg) : '–'}</span><small>Avg</small></div>
@@ -240,7 +238,7 @@ function seasonView() {
       const rr = S.round(r.round);
       return `<a class="row row--link" href="results.html${carry}#r${rr.id}"><span class="pos">${r.round}</span>${flag(rr, 'md')}
         <div class="who"><b>${esc(rr.name)}</b>
-          <small>${r.points?.drsMoved ? `DRS moved to ${esc(nameOf(S, r.points.drs))}, your boost driver missed the race. ` : ''}${r.chip ? esc(cfg.chips[r.chip].name) + ' played. ' : ''}${r.transfers.penalty ? `${r.transfers.effective} transfers, -${r.transfers.penalty} pts. ` : ''}${esc(r.issues.join('. ')) || (rr.status === 'provisional' ? 'Provisional' : 'Final')}</small></div>
+          <small>${absentIn(rr, r.squad)?.size ? `${[...absentIn(rr, r.squad)].map(d => esc(nameOf(S, d))).join(' and ')} didn't race. ` : ''}${r.chip ? esc(cfg.chips[r.chip].name) + ' played. ' : ''}${r.transfers.penalty ? `${r.transfers.effective} transfers, -${r.transfers.penalty} pts. ` : ''}${esc(r.issues.join('. ')) || (rr.status === 'provisional' ? 'Provisional' : 'Final')}</small></div>
         <div class="stat stat--lead"><span class="num">${r.roundTotal == null ? '–' : fmtNum(r.roundTotal)}</span><small>Points</small></div></a>`;
     }).join('')}</div></div></div></div></section>`;
 }
@@ -248,8 +246,6 @@ function seasonView() {
 function banner() {
   if (phase.state === 'provisional') return `<div class="notice notice--flag"><span class="glyph">P</span><div><b>Waiting on the stewards</b><span class="muted">Round ${R.id} results are provisional. Transfers and new prices open for round ${R.id + 1} once it is marked final.</span></div></div>`;
   if (phase.state === 'locked') return `<div class="notice notice--signal"><span class="glyph">!</span><div><b>Round ${R.id} is locked</b><span class="muted">This is the team you are racing with. Points appear once the results are entered.</span></div></div>`;
-  const out = Object.entries(outs);
-  if (out.length) return `<div class="notice notice--flag"><span class="glyph">!</span><div><b>Driver changes this round</b><span class="muted">${out.map(([a, b]) => `${esc(nameOf(S, a))} is out and ${esc(nameOf(S, b))} drives their seat. Swapping ${esc(nameOf(S, a))} is free.`).join('<br>')}</span></div></div>`;
   return '';
 }
 

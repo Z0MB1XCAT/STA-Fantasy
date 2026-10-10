@@ -85,23 +85,17 @@ export function scoreRound(round, ctx) {
     drivers[d.code] = { code: d.code, sessions: per, total, raced };
   }
 
-  // who is in each seat this round, and what owners of a driver receive
-  const seat = round.seatMap || {};
+  // what owners of a driver receive: their own points, or 0 if they didn't turn up (no stand-ins)
   const effective = {};
   for (const d of ctx.drivers) {
-    const standIn = seat[d.code] || null;
     const base = drivers[d.code];
-    if (standIn && drivers[standIn]) {
-      effective[d.code] = { points: drivers[standIn].total, via: standIn, absent: !base.raced };
-    } else {
-      effective[d.code] = { points: base.total, via: null, absent: !base.raced };
-    }
+    effective[d.code] = { points: base.raced ? base.total : 0, absent: !base.raced };
   }
 
   // constructors: both seats
   const constructors = {};
   for (const t of ctx.teams) {
-    const seats = ctx.drivers.filter(d => d.team === t.id && d.role === 'regular').map(d => seat[d.code] || d.code);
+    const seats = ctx.drivers.filter(d => d.team === t.id && d.role === 'regular').map(d => d.code);
     const per = { quali: 0, reverse: 0, feature: 0 };
     for (const code of seats) for (const s of ['quali', 'reverse', 'feature']) per[s] += drivers[code]?.sessions[s]?.pts || 0;
     let bonus = 0;

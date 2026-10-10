@@ -18,9 +18,9 @@ project that stores players' teams and enforces the pick deadline.
 2. Set the status to **Final**, copy, and paste it over `data/rounds/NN.txt` again.
 3. That's it. Prices update, transfers open for the next round, and the league table stops saying provisional.
 
-**Before the deadline, if you know a driver is missing:** open `admin.html`, choose **Driver changes**, add the absent
-driver and the reserve, leave status **Upcoming**, and commit. Owners can then swap that driver for free and the
-reserve appears in the market.
+**If a driver doesn't turn up:** just leave them out of the results. They score 0 for that round (no penalty) and show
+greyed out in everyone's team. Reserves can still be typed into the results so the other finishing positions are right,
+but they don't score for anyone.
 
 You can also edit the `.txt` files by hand. The format is documented at the top of every file in `data/rounds/`.
 
@@ -31,7 +31,8 @@ You can also edit the `.txt` files by hand. The format is documented at the top 
 - Chips (once each): Wildcard, Limitless, Extra DRS, No Negative, Autopilot.
 - Deadline = start of Short Quali, Friday 8 pm UK time. Everyone's picks become visible then.
 - Points are provisional until you set the round to Final. Prices and the next transfer window only open on Final.
-- Absent driver after the deadline: owners score the reserve's points. Announced before: free swap.
+- A driver who doesn't turn up scores 0 (like a DNF without the penalty), is greyed out, and the missed round counts
+  as a 0-point race for their price (`prices.absentCountsAsRace` in `data/season.json`). Reserves aren't pickable.
 - Full scoring tables and all numbers live in `data/season.json` (the Rules page renders from that file).
 
 ## Where things live
@@ -62,7 +63,7 @@ The tool prints every price so you can sanity-check it.
 
 - **Team art** lives in `images/teams/`. `data/teams.json` points each team at its `logo`, `car`, and a `photos` map that
   gives every league driver one of the team's real-driver figures. Swap two codes there to change who gets which picture.
-  Reserves have no photo and show a silhouette.
+  Reserves aren't part of the fantasy game, so they have no photo.
 - **League logo:** save it as `images/league-logo.png` (a square image of the round logo). It appears in the header
   automatically. Then run `node tools/dev/make-icons.mjs` to turn it into the phone home-screen icons.
 - **Track outlines:** `images/tracks/*.svg` (white outlines from formula1.com), linked per round by `track` in
@@ -117,8 +118,8 @@ If the race calendar changes, also run `node tools/make-ics.mjs` so the "Add dea
 
 - Sign-up is open to anyone with the link (the `join` edge function allows at most 15 new accounts per 10 minutes, so a
   script can't flood the league). To remove a player: Supabase dashboard, Authentication, Users, delete them.
-- Players log in with name + password (no email). If someone forgets their password they message the contact in
-  `data/season.json` (`contact`, currently Z0MB1XCAT), who resets it in the Supabase dashboard (Authentication, Users).
+- Players log in with name + password (no email). Help links on the site say "Contact us on Discord" and go to
+  `contactUrl` in `data/season.json`. Reset forgotten passwords in the Supabase dashboard (Authentication, Users).
 - If a race date moves, change it in `data/calendar.json` **and** in the Supabase `rounds` table (`lock_at`). The database
   is what actually enforces the deadline.
 - The publishable key in `js/config.js` is meant to be public. Never commit the service-role key.

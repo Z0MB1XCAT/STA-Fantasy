@@ -26,17 +26,15 @@ function load(id) {
   const existing = roundsMap.get(id);
   if (existing && existing.ok && existing.status !== 'upcoming') return clone(existing);
   const b = blank(id);
-  if (existing && existing.ok) { b.out = clone(existing.out); b.subs = clone(existing.subs); }
+  
   return b;
 }
 
 /* ---------------------------------------------------------------- helpers */
-const seat = () => ({ ...st.out, ...st.subs });
-const absent = () => new Set(Object.keys(seat()));
+// reserves can still be placed so everyone else's finishing positions are right; they don't score
 function pool(session) {
   const placed = new Set(st.sessions[session].map(x => x.code));
-  const stand = new Set(Object.values(seat()));
-  return S.drivers.filter(d => !placed.has(d.code) && !absent().has(d.code) && (d.role === 'regular' || stand.has(d.code)));
+  return S.drivers.filter(d => !placed.has(d.code));
 }
 function aliasOf(d) { return [d.simgrid, d.name, d.code].filter(a => a && a.length >= 3).map(a => a.toLowerCase()); }
 function matchLine(line) {
@@ -87,25 +85,13 @@ function previewSeason(parsed) {
 function advisories() {
   const msgs = [];
   const placed = new Set(Object.values(st.sessions).flat().map(x => x.code));
-  const stand = new Set(Object.values(seat()));
-  for (const d of reserves) if (placed.has(d.code) && !stand.has(d.code)) msgs.push(`${d.name} is in the results but is not set as a stand-in. Add who they replaced under "Driver changes".`);
-  const missing = regulars.filter(d => !placed.has(d.code) && !absent().has(d.code));
-  if (st.status !== 'upcoming' && placed.size && missing.length) msgs.push(`Not in any session, so treated as absent with 0 points: ${missing.map(d => d.name).join(', ')}.`);
+  const missing = regulars.filter(d => !placed.has(d.code));
+  if (st.status !== 'upcoming' && placed.size && missing.length) msgs.push(`Not in any session, so they count as absent (0 points, greyed out): ${missing.map(d => d.name).join(', ')}.`);
   for (const s of ['quali', 'reverse', 'feature']) {
     const n = st.sessions[s].length;
     if (st.status !== 'upcoming' && placed.size && n === 0) msgs.push(`${{ quali: 'Short Quali', reverse: 'Reverse Grid', feature: 'Feature Race' }[s]} has no results yet.`);
   }
   return msgs;
-}
-
-function seatEditor(kind, label, help) {
-  const map = st[kind];
-  return `<div class="field"><label>${label}</label><span class="hint">${help}</span>
-    <div class="row-flex" style="gap:8px">
-      <select class="select" data-sel="${kind}-from" style="width:auto;min-width:150px"><option value="">Driver who is out</option>${regulars.filter(d => !map[d.code]).map(d => `<option value="${d.code}">${esc(d.name)}</option>`).join('')}</select>
-      <select class="select" data-sel="${kind}-to" style="width:auto;min-width:150px"><option value="">Stand-in</option>${reserves.map(d => `<option value="${d.code}">${esc(d.name)}</option>`).join('')}</select>
-      <button class="btn btn--ghost btn--sm" type="button" data-act="seat-add" data-kind="${kind}">Add</button></div>
-    ${Object.entries(map).map(([a, b]) => `<div class="row-flex" style="gap:8px;margin-top:6px"><span class="tag" style="--team:${colorOf(S, a)}">${a}</span><span>${esc(nameOf(S, a))} replaced by ${esc(nameOf(S, b))}</span><button class="mini" type="button" data-act="seat-del" data-kind="${kind}" data-code="${a}" aria-label="Remove ${esc(nameOf(S, a))}">Remove</button></div>`).join('')}</div>`;
 }
 
 function sessionBuilder() {
@@ -135,15 +121,15 @@ function previewView(parsed) {
   if (!S2 || !Object.values(st.sessions).some(l => l.length)) return '<p class="muted">Add results to a session above and the points will appear here.</p>';
   const R2 = S2.round(roundId);
   const rows = S2.drivers.map(d => ({ d, own: R2.scores.drivers[d.code], eff: R2.scores.effective[d.code] }))
-    .filter(x => x.own.raced || x.eff.via).sort((a, b) => b.eff.points - a.eff.points);
+    .filter(x => x.d.role === 'regular').sort((a, b) => (a.eff.absent - b.eff.absent) || (b.eff.points - a.eff.points));
   const cons = S2.teams.map(t => R2.scores.constructors[t.id]).sort((a, b) => b.total - a.total);
   const moves = Object.entries(R2.moves || {}).map(([id, m]) => ({ id, ...m })).sort((a, b) => b.delta - a.delta);
   const ups = moves.filter(m => m.delta > 0).slice(0, 4), downs = moves.filter(m => m.delta < 0).slice(-4).reverse();
   const cell = (s, k) => (s[k] ? fmtNum(s[k].pts) : '–');
   return `<div class="cols cols--1-1">
     <div><h3 class="h3" style="padding:0 4px 8px">Driver points</h3><div class="tower">${rows.map((x, i) => `
-      <div class="row">${posBox(i + 1)}${bust(S, x.d.code)}
-        <div class="who"><b>${esc(x.d.name)}${x.eff.via ? ` <span class="mark">via ${esc(nameOf(S, x.eff.via))}</span>` : ''}</b><small>Quali ${cell(x.own.sessions, 'quali')}, reverse ${cell(x.own.sessions, 'reverse')}, feature ${cell(x.own.sessions, 'feature')}</small></div>
+      <div class="row${x.eff.absent ? ' row--absent' : ''}">${posBox(i + 1)}${bust(S, x.d.code)}
+        <div class="who"><b>${esc(x.d.name)}${x.eff.absent ? ' <span class="mark">Absent</span>' : ''}</b><small>Quali ${cell(x.own.sessions, 'quali')}, reverse ${cell(x.own.sessions, 'reverse')}, feature ${cell(x.own.sessions, 'feature')}</small></div>
         <div class="stat stat--lead"><span class="num ${x.eff.points < 0 ? 'dn' : ''}">${fmtNum(x.eff.points)}</span><small>Pts</small></div></div>`).join('')}</div></div>
     <div class="stack" style="--gap:16px"><div><h3 class="h3" style="padding:0 4px 8px">Constructors</h3><div class="tower">${cons.map((c, i) => `
       <div class="row">${posBox(i + 1)}${tchip(S, c.id)}<div class="who"><b>${esc(nameOf(S, c.id))}</b><small>${c.seats.map(s => esc(nameOf(S, s))).join(' and ')}</small></div>
@@ -167,12 +153,7 @@ function render() {
         <section class="panel"><div class="panel__head"><h2 class="h2">Round ${roundId}: ${esc(S.round(roundId).name)}</h2>
           <div class="seg" role="group" aria-label="Status">${['upcoming', 'provisional', 'final'].map(k => `<button type="button" aria-pressed="${st.status === k}" data-act="status" data-k="${k}">${k[0].toUpperCase() + k.slice(1)}</button>`).join('')}</div></div>
           <div class="panel__body--pad stack" style="--gap:16px">
-            <p class="hint">Friday after the races: <b>Provisional</b>. Sunday after the stewards: edit anything that changed, then set <b>Final</b>. Use <b>Upcoming</b> only to announce driver changes before the deadline.</p>
-            <details class="dd"><summary class="btn btn--ghost btn--sm" style="list-style:none;width:max-content">Driver changes (reserves)</summary>
-              <div class="stack" style="--gap:16px;padding-top:14px">
-                ${seatEditor('out', 'Announced out before the deadline', 'Owners can swap this driver for free and the stand-in becomes pickable.')}
-                ${seatEditor('subs', 'Stand-in turned up after the deadline', 'Owners of the absent driver score the stand-in\'s points.')}
-              </div></details>
+            <p class="hint">Friday after the races: <b>Provisional</b>. Sunday after the stewards: edit anything that changed, then set <b>Final</b>. Anyone you leave out of a session counts as absent: 0 points, no penalty. Reserves can be placed so the positions are right, but they don't score.</p>
           </div></section>
 
         <section class="panel"><div class="panel__head"><div class="seg" role="group" aria-label="Session">${[['quali', 'Short Quali'], ['reverse', 'Reverse Grid'], ['feature', 'Feature Race']].map(([k, l]) => `<button type="button" data-act="tab" data-k="${k}" aria-pressed="${tab === k}">${l} <span class="faint">${st.sessions[k].length}</span></button>`).join('')}</div></div>
@@ -214,11 +195,6 @@ app.addEventListener('click', async e => {
   else if (a === 'del') { const [x] = list.splice(+b.dataset.i, 1); if (st.fastest[tab] === x.code) delete st.fastest[tab]; }
   else if (a === 'mark') { const x = list[+b.dataset.i]; x.mark = x.mark === b.dataset.m ? null : b.dataset.m; if (x.mark && st.fastest[tab] === x.code) delete st.fastest[tab]; }
   else if (a === 'paste') applyPaste($('#paste').value);
-  else if (a === 'seat-add') {
-    const k = b.dataset.kind, from = $(`[data-sel=${k}-from]`).value, to = $(`[data-sel=${k}-to]`).value;
-    if (!from || !to) { toast('Choose both the driver and the stand-in', 'bad'); return; }
-    st[k][from] = to;
-  } else if (a === 'seat-del') delete st[b.dataset.kind][b.dataset.code];
   else if (a === 'copy') {
     const text = output().text;
     try { await navigator.clipboard.writeText(text); } catch { const r = document.createRange(); r.selectNodeContents($('#file')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand('copy'); }

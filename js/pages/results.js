@@ -13,14 +13,14 @@ let tab = 'feature';
 
 const BAND = { great: 'Great round', good: 'Good round', poor: 'Poor round', terrible: 'Rough round' };
 const partsText = parts => parts.map(p => `${p.label} ${signed(p.pts)}`).join(', ');
-const standInFor = (R, code) => Object.entries(R.file?.seatMap || {}).find(([, v]) => v === code)?.[0] || null;
+const isReserve = code => S.driverMap.get(code)?.role !== 'regular';
 
 function podium(rows, unit = 'pts') {
   const top = rows.filter(r => !r.mark).slice(0, 3);
   if (top.length < 3) return '';
   const spot = (r, place) => `<div class="podium__spot podium__spot--${place}" style="${teamVar(S, r.code)}">
       ${photoOf(S, r.code) ? `<img class="podium__fig" src="${photoOf(S, r.code)}" alt="">` : ''}
-      <div class="podium__block"><div class="podium__pos">P${place}</div><div class="podium__name">${esc(nameOf(S, r.code))}</div><div class="podium__pts">${fmtNum(r.pts)} ${unit}</div></div></div>`;
+      <div class="podium__block"><div class="podium__pos">P${place}</div><div class="podium__name">${esc(nameOf(S, r.code))}</div><div class="podium__pts">${isReserve(r.code) ? 'Reserve' : `${fmtNum(r.pts)} ${unit}`}</div></div></div>`;
   return `<div class="podium" aria-label="Podium">${spot(top[1], 2)}${spot(top[0], 1)}${spot(top[2], 3)}</div>`;
 }
 
@@ -29,34 +29,33 @@ function sessionView(R, session) {
   if (!rows.length) return '<div class="empty"><span class="display">Not entered yet</span>This session has no results in the round file.</div>';
   const fl = R.file.fastest?.[session];
   return `${podium(rows)}<div class="tower" style="margin-top:8px">${rows.map(r => {
-    const sFor = standInFor(R, r.code);
-    const marks = `${r.mark ? `<span class="mark mark--${r.mark}">${r.mark.toUpperCase()}</span> ` : ''}${fl === r.code ? '<span class="mark mark--fl" title="Fastest lap">Fastest lap</span> ' : ''}${sFor ? `<span class="mark">For ${esc(nameOf(S, sFor))}</span>` : ''}`;
+    const res = isReserve(r.code);
+    const marks = `${r.mark ? `<span class="mark mark--${r.mark}">${r.mark.toUpperCase()}</span> ` : ''}${fl === r.code ? '<span class="mark mark--fl" title="Fastest lap">Fastest lap</span> ' : ''}${res ? '<span class="mark">Reserve</span>' : ''}`;
     const gridInfo = session === 'quali' ? '' : (r.grid != null ? `From P${r.grid}` : '');
     return `<div class="row">
       ${posBox(r.pos)}${bust(S, r.code)}
       <div class="who"><b>${esc(nameOf(S, r.code))} ${marks}</b>
-        <small>${teamWithFlag(S, r.code)}${gridInfo ? `, ${gridInfo}` : ''}${r.parts.length ? `. ${esc(partsText(r.parts))}` : ''}</small></div>
+        <small>${res ? 'Not part of the fantasy game' : teamWithFlag(S, r.code)}${gridInfo ? `, ${gridInfo}` : ''}${!res && r.parts.length ? `. ${esc(partsText(r.parts))}` : ''}</small></div>
       ${S.driverMap.get(r.code)?.team ? tchip(S, S.driverMap.get(r.code).team, 'tchip--sm') : ''}
-      <div class="stat stat--lead"><span class="num ${r.pts < 0 ? 'dn' : ''}">${fmtNum(r.pts)}</span><small>Pts</small></div></div>`;
+      <div class="stat stat--lead"><span class="num ${!res && r.pts < 0 ? 'dn' : ''}">${res ? '–' : fmtNum(r.pts)}</span><small>Pts</small></div></div>`;
   }).join('')}</div>${notRacing(R)}`;
 }
 
 function notRacing(R) {
   const absent = S.drivers.filter(d => d.role === 'regular' && !R.scores.drivers[d.code].raced);
   if (!absent.length) return '';
-  return `<p class="muted small" style="padding:14px 10px 4px">Not racing: ${absent.map(d => { const s = R.file.seatMap?.[d.code]; return esc(d.name) + (s ? ` (stand-in ${esc(nameOf(S, s))})` : ''); }).join(', ')}. Owners of an absent driver score the stand-in's points, or 0 with no penalty if there was none.</p>`;
+  return `<p class="muted small" style="padding:14px 10px 4px">Didn't race: ${absent.map(d => esc(d.name)).join(', ')}. They score 0 points this round, with no penalty.</p>`;
 }
 
 function fantasyView(R) {
-  const list = S.drivers.map(d => ({ d, own: R.scores.drivers[d.code], eff: R.scores.effective[d.code] }))
-    .filter(x => x.own.raced || x.eff.via || x.d.role === 'regular')
-    .sort((a, b) => b.eff.points - a.eff.points);
+  const list = S.drivers.filter(d => d.role === 'regular').map(d => ({ d, own: R.scores.drivers[d.code], eff: R.scores.effective[d.code] }))
+    .sort((a, b) => (a.eff.absent - b.eff.absent) || (b.eff.points - a.eff.points));
   const top = list.slice(0, 3).map(x => ({ code: x.d.code, pts: x.eff.points, mark: null }));
   return `${podium(top)}<div class="tower" style="margin-top:8px">${list.map((x, i) => {
     const s = x.own.sessions;
     const cell = (k, label) => `<div class="stat stat--hide-sm"><span class="num">${s[k] ? fmtNum(s[k].pts) : '–'}</span><small>${label}</small></div>`;
-    return `<div class="row">${posBox(i + 1)}${bust(S, x.d.code)}
-      <div class="who"><b>${esc(x.d.name)}${x.eff.via ? ` <span class="mark">Via ${esc(nameOf(S, x.eff.via))}</span>` : ''}${!x.own.raced && !x.eff.via ? ' <span class="mark">Absent</span>' : ''}</b><small>${esc(teamLine(S, x.d.code))}</small></div>
+    return `<div class="row${x.eff.absent ? ' row--absent' : ''}">${posBox(i + 1)}${bust(S, x.d.code)}
+      <div class="who"><b>${esc(x.d.name)}${x.eff.absent ? ' <span class="mark">Absent</span>' : ''}</b><small>${esc(teamLine(S, x.d.code))}</small></div>
       <div class="stats">${cell('quali', 'Quali')}${cell('reverse', 'Reverse')}${cell('feature', 'Feature')}<div class="stat stat--lead"><span class="num ${x.eff.points < 0 ? 'dn' : ''}">${fmtNum(x.eff.points)}</span><small>Total</small></div></div></div>`;
   }).join('')}</div>`;
 }
@@ -96,10 +95,8 @@ function strip() {
 function body(R) {
   if (R.error) return `<div class="notice notice--signal"><span class="glyph">!</span><div><b>This round's results file has a problem</b><span class="muted">${R.error.map(esc).join('<br>')}</span></div></div>`;
   if (!R.scores) {
-    const out = Object.entries(R.file?.out || {});
     return `<section class="panel"><div class="empty"><span class="display">${R.id === phase.round.id && phase.state === 'open' ? 'Picks are open' : 'No results yet'}</span>
-      Results appear here after the races${R.id === phase.round.id ? `. Picks lock ${fmtDate(R)}, ${fmtLock(R)}` : ''}.</div>
-      ${out.length ? `<div class="panel__body--pad"><div class="notice notice--flag"><span class="glyph">!</span><div><b>Driver changes</b><span class="muted">${out.map(([a, b]) => `${esc(nameOf(S, a))} is out and ${esc(nameOf(S, b))} drives their seat.`).join('<br>')}</span></div></div></div>` : ''}</section>`;
+      Results appear here after the races${R.id === phase.round.id ? `. Picks lock ${fmtDate(R)}, ${fmtLock(R)}` : ''}.</div></section>`;
   }
   const tabs = [['quali', 'Short Quali'], ['reverse', 'Reverse Grid'], ['feature', 'Feature Race'], ['fantasy', 'Fantasy points'], ['constructors', 'Constructors'], ['prices', 'Prices']];
   const view = ['quali', 'reverse', 'feature'].includes(tab) ? sessionView(R, tab) : tab === 'fantasy' ? fantasyView(R) : tab === 'constructors' ? constructorsView(R) : pricesView(R);

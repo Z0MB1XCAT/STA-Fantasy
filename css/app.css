@@ -593,6 +593,14 @@ pre.file { margin: 0; padding: 14px; border-radius: var(--r-sm); background: #08
 .podium__name { text-shadow: none; }
 .tag { color: var(--on-team, #0d0f13); }
 
+/* drivers who didn't turn up in a scored round */
+.dcard--absent .dcard__art { filter: grayscale(1); opacity: .5; }
+.dcard--absent .dcard__name, .dcard--absent .dcard__team { opacity: .6; }
+.lineup__cell.is-absent .lineup__tile { filter: grayscale(1); opacity: .45; }
+.lineup__cell.is-absent .lineup__name, .lineup__cell.is-absent .lineup__meta { opacity: .6; }
+.row--absent .bust { filter: grayscale(1); opacity: .5; }
+.row--absent .who, .row--absent .stats { opacity: .55; }
+
 /* misc */
 details.dd > summary { cursor: pointer; list-style: none; }
 details.dd > summary::-webkit-details-marker { display: none; }
