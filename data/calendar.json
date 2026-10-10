@@ -1,0 +1,129 @@
+{
+  "season": 5,
+  "timezone": "Europe/London",
+  "sessionTime": "20:00",
+  "note": "lockUtc = start of Short Quali (8 PM UK time, so 19:00Z while the UK is on BST and 20:00Z once it is on GMT). Edit a lockUtc here AND in the Supabase rounds table if a race moves.",
+  "rounds": [
+    {
+      "id": 1,
+      "name": "Mexico City",
+      "country": "Mexico",
+      "date": "2026-10-16",
+      "lockUtc": "2026-10-16T19:00:00Z",
+      "iso": "mx",
+      "track": "images/tracks/mexicocity.svg"
+    },
+    {
+      "id": 2,
+      "name": "Sao Paulo",
+      "country": "Brazil",
+      "date": "2026-10-23",
+      "lockUtc": "2026-10-23T19:00:00Z",
+      "iso": "br",
+      "track": "images/tracks/interlagos.svg"
+    },
+    {
+      "id": 3,
+      "name": "Canada",
+      "country": "Canada",
+      "date": "2026-10-30",
+      "lockUtc": "2026-10-30T20:00:00Z",
+      "iso": "ca",
+      "track": "images/tracks/montreal.svg"
+    },
+    {
+      "id": 4,
+      "name": "Barcelona",
+      "country": "Spain",
+      "date": "2026-11-06",
+      "lockUtc": "2026-11-06T20:00:00Z",
+      "iso": "es",
+      "track": "images/tracks/catalunya.svg"
+    },
+    {
+      "id": 5,
+      "name": "Qatar",
+      "country": "Qatar",
+      "date": "2026-11-20",
+      "lockUtc": "2026-11-20T20:00:00Z",
+      "iso": "qa",
+      "track": "images/tracks/lusail.svg"
+    },
+    {
+      "id": 6,
+      "name": "Saudi Arabia",
+      "country": "Saudi Arabia",
+      "date": "2026-11-27",
+      "lockUtc": "2026-11-27T20:00:00Z",
+      "iso": "sa",
+      "track": "images/tracks/jeddah.svg"
+    },
+    {
+      "id": 7,
+      "name": "Japan",
+      "country": "Japan",
+      "date": "2026-12-04",
+      "lockUtc": "2026-12-04T20:00:00Z",
+      "iso": "jp",
+      "track": "images/tracks/suzuka.svg"
+    },
+    {
+      "id": 8,
+      "name": "Imola",
+      "country": "Italy",
+      "date": "2026-12-11",
+      "lockUtc": "2026-12-11T20:00:00Z",
+      "iso": "it",
+      "track": "images/tracks/imola.svg"
+    },
+    {
+      "id": 9,
+      "name": "Abu Dhabi",
+      "country": "UAE",
+      "date": "2027-01-08",
+      "lockUtc": "2027-01-08T20:00:00Z",
+      "iso": "ae",
+      "track": "images/tracks/yasmarina.svg"
+    },
+    {
+      "id": 10,
+      "name": "Zandvoort",
+      "country": "Netherlands",
+      "date": "2027-01-15",
+      "lockUtc": "2027-01-15T20:00:00Z",
+      "iso": "nl",
+      "track": "images/tracks/zandvoort.svg"
+    },
+    {
+      "id": 11,
+      "name": "Bahrain",
+      "country": "Bahrain",
+      "date": "2027-01-22",
+      "lockUtc": "2027-01-22T20:00:00Z",
+      "iso": "bh",
+      "track": "images/tracks/sakhir.svg"
+    },
+    {
+      "id": 12,
+      "name": "Singapore",
+      "country": "Singapore",
+      "date": "2027-01-29",
+      "lockUtc": "2027-01-29T20:00:00Z",
+      "iso": "sg",
+      "track": "images/tracks/singapore.svg"
+    }
+  ],
+  "breaks": [
+    {
+      "label": "Break week",
+      "date": "2026-11-12",
+      "afterRound": 4
+    },
+    {
+      "label": "Holiday break",
+      "date": "2026-12-18",
+      "until": "2027-01-01",
+      "afterRound": 8
+    }
+  ]
+}

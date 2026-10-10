@@ -1,0 +1,4693 @@
+{
+ "generatedFrom": "tools/source/leagueinfo.md",
+ "seasons": [
+  {
+   "season": 4,
+   "rounds": 12,
+   "entries": [
+    {
+     "simgrid": "PORG_Kowu28",
+     "rank": 1,
+     "rating": 3509,
+     "tier": "GOLD",
+     "team": "Aston Martin Aramco Formula One Team",
+     "dsq": false,
+     "points": 327,
+     "rounds": [
+      [
+       "1",
+       "1"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "1",
+       "2"
+      ],
+      [
+       "1",
+       "1"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "3",
+       "1"
+      ],
+      [
+       "1",
+       "2"
+      ],
+      [
+       "1",
+       "2"
+      ],
+      [
+       "1",
+       "2"
+      ],
+      [
+       "5",
+       "3"
+      ],
+      [
+       "8",
+       "2"
+      ]
+     ]
+    },
+    {
+     "simgrid": "jengaaboi",
+     "rank": 2,
+     "rating": 2943,
+     "tier": "SILVER",
+     "team": "Audi Revolut F1 Team",
+     "dsq": false,
+     "points": 291,
+     "rounds": [
+      [
+       "3",
+       "11"
+      ],
+      [
+       "1",
+       "2"
+      ],
+      [
+       "2",
+       "5"
+      ],
+      [
+       "4",
+       "3"
+      ],
+      [
+       "1",
+       "2"
+      ],
+      [
+       "8",
+       "3"
+      ],
+      [
+       "1",
+       "2"
+      ],
+      [
+       "2",
+       "3"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "4",
+       "2"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "kamkaymom153",
+     "rank": 3,
+     "rating": 3064,
+     "tier": "SILVER",
+     "team": "Oracle Red Bull Racing",
+     "dsq": false,
+     "points": 230,
+     "rounds": [
+      [
+       "5",
+       "9"
+      ],
+      [
+       "4",
+       "4"
+      ],
+      [
+       "6",
+       "6"
+      ],
+      [
+       "3",
+       "2"
+      ],
+      [
+       "4",
+       "3"
+      ],
+      [
+       "1",
+       "4"
+      ],
+      [
+       "4",
+       "4"
+      ],
+      [
+       "6",
+       "4"
+      ],
+      [
+       "3",
+       "3"
+      ],
+      [
+       "4",
+       "9"
+      ],
+      [
+       "1",
+       "4"
+      ],
+      [
+       "4",
+       "4"
+      ]
+     ]
+    },
+    {
+     "simgrid": "santipopelka13",
+     "rank": 4,
+     "rating": 2659,
+     "tier": "SILVER",
+     "team": "McLaren Mastercard Formula 1 Team",
+     "dsq": false,
+     "points": 229,
+     "rounds": [
+      [
+       "8",
+       "6"
+      ],
+      [
+       "6",
+       "3"
+      ],
+      [
+       "4",
+       "1"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "12",
+       "DNF"
+      ],
+      [
+       "8",
+       "1"
+      ],
+      [
+       "9",
+       "4"
+      ],
+      [
+       "DNS",
+       "3"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "z0mb1xcat",
+     "rank": 5,
+     "rating": 2067,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "BWT Alpine Formula One Team",
+     "dsq": false,
+     "points": 114,
+     "rounds": [
+      [
+       "9",
+       "DNF"
+      ],
+      [
+       "9",
+       "6"
+      ],
+      [
+       "7",
+       "3"
+      ],
+      [
+       "DNF",
+       "DNF"
+      ],
+      [
+       "7",
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "7",
+       "6"
+      ],
+      [
+       "8",
+       "10"
+      ],
+      [
+       "8",
+       "7"
+      ],
+      [
+       "3",
+       "6"
+      ],
+      [
+       "3",
+       "3"
+      ]
+     ]
+    },
+    {
+     "simgrid": "OvertCow9345580",
+     "rank": 6,
+     "rating": 2476,
+     "tier": "SILVER",
+     "team": "BWT Alpine Formula One Team",
+     "dsq": false,
+     "points": 95,
+     "rounds": [
+      [
+       "2",
+       "3"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "3",
+       "4"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "5",
+       "3"
+      ],
+      [
+       "DNF",
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "5",
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "6",
+       "DNF"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Swahgner",
+     "rank": 7,
+     "rating": 2335,
+     "tier": "SILVER",
+     "team": "Aston Martin Aramco Formula One Team",
+     "dsq": false,
+     "points": 90,
+     "rounds": [
+      [
+       "13",
+       "8"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "5",
+       "7"
+      ],
+      [
+       "2",
+       "4"
+      ],
+      [
+       "3",
+       "6"
+      ],
+      [
+       "5",
+       "5"
+      ],
+      [
+       "6",
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "pabloman334",
+     "rank": 8,
+     "rating": 1961,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "TGR Haas F1 Team",
+     "dsq": false,
+     "points": 83,
+     "rounds": [
+      [
+       "DNF",
+       "13"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "8",
+       "8"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "5",
+       "4"
+      ],
+      [
+       "4",
+       "6"
+      ],
+      [
+       "8",
+       "8"
+      ],
+      [
+       "11",
+       "7"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "9",
+       "8"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "7",
+       "5"
+      ]
+     ]
+    },
+    {
+     "simgrid": "KieranSF1",
+     "rank": 9,
+     "rating": 2671,
+     "tier": "SILVER",
+     "team": "Atlassian Williams F1 Team",
+     "dsq": false,
+     "points": 68,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "4",
+       "7"
+      ],
+      [
+       "7",
+       "4"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "1",
+       "1"
+      ]
+     ]
+    },
+    {
+     "simgrid": "SWUMPY",
+     "rank": 10,
+     "rating": 2074,
+     "tier": "BRONZE",
+     "team": "Cadillac Formula 1 Team",
+     "dsq": false,
+     "points": 59,
+     "rounds": [
+      [
+       "6",
+       "7"
+      ],
+      [
+       "3",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "6",
+       "8"
+      ],
+      [
+       "3",
+       "DNF"
+      ],
+      [
+       "7",
+       "5"
+      ],
+      [
+       "2",
+       "DNF"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Bawzerga22",
+     "rank": 11,
+     "rating": 2493,
+     "tier": "SILVER",
+     "team": "Cadillac Formula 1 Team",
+     "dsq": false,
+     "points": 59,
+     "rounds": [
+      [
+       "DNS",
+       "10"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "9"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "7",
+       "2"
+      ],
+      [
+       "2",
+       "6"
+      ],
+      [
+       "4",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Irt_Kya19",
+     "rank": 12,
+     "rating": 1809,
+     "tier": "BRONZE",
+     "team": "Mercedes-AMG Petronas Formula One Team",
+     "dsq": false,
+     "points": 58,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "12",
+       "13"
+      ],
+      [
+       "7",
+       "9"
+      ],
+      [
+       "8",
+       "DNF"
+      ],
+      [
+       "9",
+       "7"
+      ],
+      [
+       "11",
+       "DNS"
+      ],
+      [
+       "9",
+       "9"
+      ],
+      [
+       "7",
+       "6"
+      ],
+      [
+       "10",
+       "11"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "10",
+       "6"
+      ]
+     ]
+    },
+    {
+     "simgrid": "LTR Phoenix 28",
+     "rank": 13,
+     "rating": 1776,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "McLaren Mastercard Formula 1 Team",
+     "dsq": false,
+     "points": 58,
+     "rounds": [
+      [
+       "DNF",
+       "DNF"
+      ],
+      [
+       "10",
+       "5"
+      ],
+      [
+       "9",
+       "12"
+      ],
+      [
+       "DNF",
+       "6"
+      ],
+      [
+       "10",
+       "DNF"
+      ],
+      [
+       "6",
+       "8"
+      ],
+      [
+       "10",
+       "DNF"
+      ],
+      [
+       "DNF",
+       "8"
+      ],
+      [
+       "DNF",
+       "9"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNF",
+       "DNS"
+      ],
+      [
+       "5",
+       "DNF"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Ricc2009",
+     "rank": 14,
+     "rating": 1978,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Visa Cash App Racing Bulls Formula One Team",
+     "dsq": false,
+     "points": 50,
+     "rounds": [
+      [
+       "12",
+       "5"
+      ],
+      [
+       "5",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "8",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "7",
+       "7"
+      ],
+      [
+       "3",
+       "DNF"
+      ],
+      [
+       "5",
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "sitrax24",
+     "rank": 15,
+     "rating": 1733,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Scuderia Ferrari HP",
+     "dsq": true,
+     "points": 42,
+     "rounds": [
+      [
+       "15",
+       "12"
+      ],
+      [
+       "8",
+       "8"
+      ],
+      [
+       "10",
+       "11"
+      ],
+      [
+       "5",
+       "7"
+      ],
+      [
+       "9",
+       "7"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ]
+     ]
+    },
+    {
+     "simgrid": "TopScore_YT",
+     "rank": 16,
+     "rating": 1809,
+     "tier": "BRONZE",
+     "team": "Atlassian Williams F1 Team",
+     "dsq": false,
+     "points": 41,
+     "rounds": [
+      [
+       "DNF",
+       "DNF"
+      ],
+      [
+       "DNF",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "6",
+       "5"
+      ],
+      [
+       "6",
+       "8"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "10"
+      ],
+      [
+       "5",
+       "10"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "limaloko",
+     "rank": 17,
+     "rating": 1788,
+     "tier": "BRONZE",
+     "team": "Oracle Red Bull Racing",
+     "dsq": false,
+     "points": 39,
+     "rounds": [
+      [
+       "11",
+       "14"
+      ],
+      [
+       "7",
+       "7"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "9",
+       "8"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNF",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "10",
+       "11"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "11",
+       "12"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNF",
+       "8"
+      ]
+     ]
+    },
+    {
+     "simgrid": "heromanben9999",
+     "rank": 18,
+     "rating": 1923,
+     "tier": "BRONZE",
+     "team": "Mercedes-AMG Petronas Formula One Team",
+     "dsq": false,
+     "points": 37,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNF",
+       "DNF"
+      ],
+      [
+       "3",
+       "9"
+      ],
+      [
+       "9",
+       "9"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "6",
+       "6"
+      ],
+      [
+       "6",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Yuki",
+     "rank": 19,
+     "rating": 1922,
+     "tier": "BRONZE",
+     "team": "Visa Cash App Racing Bulls Formula One Team",
+     "dsq": true,
+     "points": 33,
+     "rounds": [
+      [
+       "4",
+       "2"
+      ],
+      [
+       "DNF",
+       "DNF"
+      ],
+      [
+       "11",
+       "10"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Sebo55",
+     "rank": 20,
+     "rating": 2087,
+     "tier": "BRONZE",
+     "team": "Atlassian Williams F1 Team",
+     "dsq": true,
+     "points": 15,
+     "rounds": [
+      [
+       "7",
+       "4"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Serranocul690",
+     "rank": 21,
+     "rating": 1900,
+     "tier": "BRONZE",
+     "team": "Scuderia Ferrari HP",
+     "dsq": false,
+     "points": 13,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "12",
+       "10"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "9",
+       "9"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Cat_Ninja2000",
+     "rank": 22,
+     "rating": 1922,
+     "tier": "BRONZE",
+     "team": "TGR Haas F1 Team",
+     "dsq": false,
+     "points": 10,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "8",
+       "DNF"
+      ],
+      [
+       "11",
+       "7"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Maroon-dungeon8",
+     "rank": 23,
+     "rating": 1316,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Audi Revolut F1 Team",
+     "dsq": false,
+     "points": 5,
+     "rounds": [
+      [
+       "14",
+       "15"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "13",
+       "DNS"
+      ],
+      [
+       "DNF",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNF"
+      ],
+      [
+       "13",
+       "DNF"
+      ],
+      [
+       "12",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Le0",
+     "rank": 24,
+     "rating": 2004,
+     "tier": "BRONZE",
+     "team": "Mercedes-AMG Petronas Formula One Team",
+     "dsq": true,
+     "points": 0,
+     "rounds": [
+      [
+       "10",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ]
+     ]
+    },
+    {
+     "simgrid": "GeorgeKad",
+     "rank": 25,
+     "rating": 2000,
+     "tier": "BRONZE",
+     "team": "Mercedes-AMG Petronas Formula One Team",
+     "dsq": true,
+     "points": 0,
+     "rounds": [
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "season": 3,
+   "rounds": 12,
+   "entries": [
+    {
+     "simgrid": "PORG_Kowu28",
+     "rank": 1,
+     "rating": 3509,
+     "tier": "GOLD",
+     "team": "Stake F1 Team Kick Sauber",
+     "dsq": false,
+     "points": 296,
+     "rounds": [
+      [
+       "1",
+       "1"
+      ],
+      [
+       "1",
+       "1"
+      ],
+      [
+       "1",
+       "4"
+      ],
+      [
+       "4",
+       "2"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "1",
+       "4"
+      ],
+      [
+       "5",
+       "3"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "3",
+       "2"
+      ],
+      [
+       "4",
+       "2"
+      ],
+      [
+       "1"
+      ]
+     ]
+    },
+    {
+     "simgrid": "kamkaymom153",
+     "rank": 2,
+     "rating": 3064,
+     "tier": "SILVER",
+     "team": "Oracle Red Bull Racing",
+     "dsq": false,
+     "points": 292,
+     "rounds": [
+      [
+       "2",
+       "4"
+      ],
+      [
+       "3",
+       "3"
+      ],
+      [
+       "3",
+       "1"
+      ],
+      [
+       "2",
+       "6"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "1",
+       "4"
+      ],
+      [
+       "4",
+       "3"
+      ],
+      [
+       "6",
+       "2"
+      ],
+      [
+       "4",
+       "2"
+      ],
+      [
+       "4",
+       "3"
+      ],
+      [
+       "3",
+       "3"
+      ],
+      [
+       "3"
+      ]
+     ]
+    },
+    {
+     "simgrid": "OvertCow9345580",
+     "rank": 3,
+     "rating": 2476,
+     "tier": "SILVER",
+     "team": "Oracle Red Bull Racing",
+     "dsq": false,
+     "points": 152,
+     "rounds": [
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "4",
+       "DNF"
+      ],
+      [
+       "5",
+       "2"
+      ],
+      [
+       "1",
+       "3"
+      ],
+      [
+       "1",
+       "7"
+      ],
+      [
+       "4",
+       "1"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "santipopelka13",
+     "rank": 4,
+     "rating": 2659,
+     "tier": "SILVER",
+     "team": "Atlassian Williams Racing",
+     "dsq": false,
+     "points": 143,
+     "rounds": [
+      [
+       "6",
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "3",
+       "4"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "5",
+       "3"
+      ],
+      [
+       "7",
+       "2"
+      ],
+      [
+       "4",
+       "6"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "1",
+       "1"
+      ],
+      [
+       "1",
+       "DNF"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "jengaaboi",
+     "rank": 5,
+     "rating": 2943,
+     "tier": "SILVER",
+     "team": "Aston Martin Aramco F1 Team",
+     "dsq": false,
+     "points": 129,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "1",
+       "5"
+      ],
+      [
+       "1",
+       "4"
+      ],
+      [
+       "2",
+       "4"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "2"
+      ]
+     ]
+    },
+    {
+     "simgrid": "kashsyed234",
+     "rank": 6,
+     "rating": 2585,
+     "tier": "SILVER",
+     "team": "Mercedes-AMG Petronas F1 Team",
+     "dsq": false,
+     "points": 126,
+     "rounds": [
+      [
+       "3",
+       "2"
+      ],
+      [
+       "2",
+       "2"
+      ],
+      [
+       "2",
+       "3"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "2",
+       "2"
+      ],
+      [
+       "2",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Swahgner",
+     "rank": 7,
+     "rating": 2335,
+     "tier": "SILVER",
+     "team": "Stake F1 Team Kick Sauber",
+     "dsq": false,
+     "points": 97,
+     "rounds": [
+      [
+       "4",
+       "3"
+      ],
+      [
+       "5",
+       "5"
+      ],
+      [
+       "4",
+       "7"
+      ],
+      [
+       "11",
+       "8"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNF",
+       "6"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "5",
+       "5"
+      ],
+      [
+       "4"
+      ]
+     ]
+    },
+    {
+     "simgrid": "SwimmyFish15",
+     "rank": 8,
+     "rating": 2035,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Scuderia Ferrari HP",
+     "dsq": false,
+     "points": 96,
+     "rounds": [
+      [
+       "9",
+       "8"
+      ],
+      [
+       "8",
+       "4"
+      ],
+      [
+       "7",
+       "10"
+      ],
+      [
+       "6",
+       "7"
+      ],
+      [
+       "6",
+       "5"
+      ],
+      [
+       "7",
+       "8"
+      ],
+      [
+       "3",
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "7",
+       "8"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "sitrax24",
+     "rank": 9,
+     "rating": 1733,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Scuderia Ferrari HP",
+     "dsq": false,
+     "points": 89,
+     "rounds": [
+      [
+       "10",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "12",
+       "11"
+      ],
+      [
+       "8",
+       "1"
+      ],
+      [
+       "7",
+       "3"
+      ],
+      [
+       "11",
+       "9"
+      ],
+      [
+       "8",
+       "10"
+      ],
+      [
+       "8",
+       "DNS"
+      ],
+      [
+       "9",
+       "7"
+      ],
+      [
+       "6",
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "pabloman334",
+     "rank": 10,
+     "rating": 1961,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "MoneyGram Haas F1 Team",
+     "dsq": false,
+     "points": 87,
+     "rounds": [
+      [
+       "8",
+       "DNF"
+      ],
+      [
+       "7",
+       "DNF"
+      ],
+      [
+       "14",
+       "DNF"
+      ],
+      [
+       "9",
+       "9"
+      ],
+      [
+       "9",
+       "4"
+      ],
+      [
+       "8",
+       "5"
+      ],
+      [
+       "9",
+       "9"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "8",
+       "5"
+      ],
+      [
+       "10",
+       "6"
+      ],
+      [
+       "7",
+       "6"
+      ],
+      [
+       "6"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Ricc2009",
+     "rank": 11,
+     "rating": 1978,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Visa Cash App Racing Bulls F1 Team",
+     "dsq": false,
+     "points": 87,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "8",
+       "8"
+      ],
+      [
+       "10",
+       "10"
+      ],
+      [
+       "3",
+       "2"
+      ],
+      [
+       "6",
+       "DNF"
+      ],
+      [
+       "6",
+       "6"
+      ],
+      [
+       "7",
+       "7"
+      ],
+      [
+       "7",
+       "3"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "bonyfish",
+     "rank": 12,
+     "rating": 2240,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Mercedes-AMG Petronas F1 Team",
+     "dsq": false,
+     "points": 82,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "5",
+       "1"
+      ],
+      [
+       "3",
+       "4"
+      ],
+      [
+       "3",
+       "8"
+      ],
+      [
+       "5",
+       "DNF"
+      ],
+      [
+       "9",
+       "7"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "LTR Phoenix 28",
+     "rank": 13,
+     "rating": 1776,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "McLaren Formula 1 Team",
+     "dsq": false,
+     "points": 73,
+     "rounds": [
+      [
+       "11",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "6",
+       "6"
+      ],
+      [
+       "7",
+       "DNF"
+      ],
+      [
+       "4",
+       "DNF"
+      ],
+      [
+       "DNF",
+       "7"
+      ],
+      [
+       "DNF",
+       "7"
+      ],
+      [
+       "DNF",
+       "8"
+      ],
+      [
+       "6",
+       "DNF"
+      ],
+      [
+       "9",
+       "7"
+      ],
+      [
+       "6",
+       "DNF"
+      ],
+      [
+       "5"
+      ]
+     ]
+    },
+    {
+     "simgrid": "SWUMPY",
+     "rank": 14,
+     "rating": 2074,
+     "tier": "BRONZE",
+     "team": "BWT Alpine F1 Team",
+     "dsq": false,
+     "points": 26,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "5",
+       "9"
+      ],
+      [
+       "8",
+       "DNF"
+      ],
+      [
+       "8",
+       "4"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Just1_marky",
+     "rank": 15,
+     "rating": 1837,
+     "tier": "BRONZE",
+     "team": "Aston Martin Aramco F1 Team",
+     "dsq": false,
+     "points": 19,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "10",
+       "8"
+      ],
+      [
+       "9",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNF",
+       "6"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "TopScore_YT",
+     "rank": 16,
+     "rating": 1809,
+     "tier": "BRONZE",
+     "team": "BWT Alpine F1 Team",
+     "dsq": false,
+     "points": 16,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "10",
+       "8"
+      ],
+      [
+       "9",
+       "DNF"
+      ],
+      [
+       "10",
+       "10"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "11",
+       "DNF"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "omerkstm86",
+     "rank": 17,
+     "rating": 1856,
+     "tier": "BRONZE",
+     "team": "MoneyGram Haas F1 Team",
+     "dsq": false,
+     "points": 13,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "11",
+       "9"
+      ],
+      [
+       "10",
+       "10"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "AmethystApex7",
+     "rank": 18,
+     "rating": 1896,
+     "tier": "BRONZE",
+     "team": "McLaren Formula 1 Team",
+     "dsq": false,
+     "points": 8,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "12",
+       "DNS"
+      ],
+      [
+       "10",
+       "8"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Maroon-dungeon8",
+     "rank": 19,
+     "rating": 1316,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Visa Cash App Racing Bulls F1 Team",
+     "dsq": false,
+     "points": 8,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNF",
+       "DNF"
+      ],
+      [
+       "10",
+       "9"
+      ],
+      [
+       "DNF",
+       "DNF"
+      ],
+      [
+       "DNF",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNF"
+      ]
+     ]
+    },
+    {
+     "simgrid": "The gohst8715",
+     "rank": 20,
+     "rating": 1726,
+     "tier": "BRONZE",
+     "team": "Atlassian Williams Racing",
+     "dsq": false,
+     "points": 0,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNF",
+       "DNF"
+      ],
+      [
+       "11",
+       "DNF"
+      ],
+      [
+       "DNF",
+       "DNF"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "season": 2,
+   "rounds": 9,
+   "entries": [
+    {
+     "simgrid": "PORG_Kowu28",
+     "rank": 1,
+     "rating": 3509,
+     "tier": "GOLD",
+     "team": "Atlassian Williams Racing",
+     "dsq": false,
+     "points": 742,
+     "rounds": [
+      [
+       "1",
+       "2"
+      ],
+      [
+       "4",
+       "1"
+      ],
+      [
+       "1"
+      ],
+      [
+       "1",
+       "2"
+      ],
+      [
+       "3",
+       "3"
+      ],
+      [
+       "1"
+      ],
+      [
+       "4",
+       "2"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "2"
+      ]
+     ]
+    },
+    {
+     "simgrid": "kamkaymom153",
+     "rank": 2,
+     "rating": 3064,
+     "tier": "SILVER",
+     "team": "Oracle Red Bull Racing",
+     "dsq": false,
+     "points": 578,
+     "rounds": [
+      [
+       "2",
+       "1"
+      ],
+      [
+       "1",
+       "4"
+      ],
+      [
+       "2"
+      ],
+      [
+       "4",
+       "6"
+      ],
+      [
+       "6",
+       "4"
+      ],
+      [
+       "3"
+      ],
+      [
+       "2",
+       "3"
+      ],
+      [
+       "1",
+       "2"
+      ],
+      [
+       "3"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Bawzerga22",
+     "rank": 3,
+     "rating": 2493,
+     "tier": "SILVER",
+     "team": "Stake F1 Team Kick Sauber",
+     "dsq": false,
+     "points": 497,
+     "rounds": [
+      [
+       "4",
+       "3"
+      ],
+      [
+       "5",
+       "3"
+      ],
+      [
+       "4"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "4",
+       "2"
+      ],
+      [
+       "2"
+      ],
+      [
+       "6",
+       "5"
+      ],
+      [
+       "DNF",
+       "3"
+      ],
+      [
+       "4"
+      ]
+     ]
+    },
+    {
+     "simgrid": "kashsyed234",
+     "rank": 4,
+     "rating": 2585,
+     "tier": "SILVER",
+     "team": "Mercedes-AMG Petronas F1 Team",
+     "dsq": false,
+     "points": 433,
+     "rounds": [
+      [
+       "3",
+       "5"
+      ],
+      [
+       "2",
+       "5"
+      ],
+      [
+       "3"
+      ],
+      [
+       "3",
+       "4"
+      ],
+      [
+       "2",
+       "5"
+      ],
+      [
+       "DNF"
+      ],
+      [
+       "1",
+       "1"
+      ],
+      [
+       "3",
+       "7"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Trax♡",
+     "rank": 5,
+     "rating": 1733,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Oracle Red Bull Racing",
+     "dsq": false,
+     "points": 303,
+     "rounds": [
+      [
+       "6",
+       "4"
+      ],
+      [
+       "7",
+       "8"
+      ],
+      [
+       "6"
+      ],
+      [
+       "6",
+       "8"
+      ],
+      [
+       "11",
+       "6"
+      ],
+      [
+       "8"
+      ],
+      [
+       "7",
+       "8"
+      ],
+      [
+       "9",
+       "11"
+      ],
+      [
+       "9"
+      ]
+     ]
+    },
+    {
+     "simgrid": "SwimmyFish15",
+     "rank": 6,
+     "rating": 2035,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Visa Cash App Racing Bulls F1 Team",
+     "dsq": false,
+     "points": 253,
+     "rounds": [
+      [
+       "7",
+       "6"
+      ],
+      [
+       "8",
+       "6"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "5",
+       "7"
+      ],
+      [
+       "4"
+      ],
+      [
+       "8",
+       "DNF"
+      ],
+      [
+       "7",
+       "10"
+      ],
+      [
+       "6"
+      ]
+     ]
+    },
+    {
+     "simgrid": "pabloman334",
+     "rank": 7,
+     "rating": 1961,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "MoneyGram Haas F1 Team",
+     "dsq": false,
+     "points": 220,
+     "rounds": [
+      [
+       "8",
+       "8"
+      ],
+      [
+       "9",
+       "9"
+      ],
+      [
+       "DNF"
+      ],
+      [
+       "8",
+       "7"
+      ],
+      [
+       "8",
+       "9"
+      ],
+      [
+       "DNF"
+      ],
+      [
+       "9",
+       "7"
+      ],
+      [
+       "8",
+       "8"
+      ],
+      [
+       "8"
+      ]
+     ]
+    },
+    {
+     "simgrid": "BrookSkull_07",
+     "rank": 8,
+     "rating": 2130,
+     "tier": "BRONZE",
+     "team": "Atlassian Williams Racing",
+     "dsq": false,
+     "points": 174,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "7",
+       "3"
+      ],
+      [
+       "1",
+       "1"
+      ],
+      [
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "7"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Terd__Fergeson",
+     "rank": 9,
+     "rating": 2060,
+     "tier": "BRONZE",
+     "team": "BWT Alpine F1 Team",
+     "dsq": false,
+     "points": 162,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "9",
+       "10"
+      ],
+      [
+       "6"
+      ],
+      [
+       "3",
+       "4"
+      ],
+      [
+       "4",
+       "9"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "soccerb13",
+     "rank": 10,
+     "rating": 1797,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Aston Martin Aramco F1 Team",
+     "dsq": false,
+     "points": 134,
+     "rounds": [
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "10",
+       "7"
+      ],
+      [
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "6",
+       "6"
+      ],
+      [
+       "12"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Shineay",
+     "rank": 11,
+     "rating": 3477,
+     "tier": "SILVER",
+     "team": "McLaren Formula 1 Team",
+     "dsq": false,
+     "points": 133,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNF",
+       "5"
+      ],
+      [
+       "1"
+      ]
+     ]
+    },
+    {
+     "simgrid": "santipopelka13",
+     "rank": 12,
+     "rating": 2659,
+     "tier": "SILVER",
+     "team": "Aston Martin Aramco F1 Team",
+     "dsq": false,
+     "points": 115,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "5",
+       "6"
+      ],
+      [
+       "DNF",
+       "4"
+      ],
+      [
+       "5"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Hetitate",
+     "rank": 13,
+     "rating": 1414,
+     "tier": "BRONZE",
+     "team": "McLaren Formula 1 Team",
+     "dsq": false,
+     "points": 110,
+     "rounds": [
+      [
+       "9",
+       "10"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "7"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "10",
+       "11"
+      ],
+      [
+       "DNF"
+      ],
+      [
+       "10",
+       "DNF"
+      ],
+      [
+       "DNF",
+       "DNS"
+      ],
+      [
+       "13"
+      ]
+     ]
+    },
+    {
+     "simgrid": "TVO_Txnio",
+     "rank": 14,
+     "rating": 1897,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Scuderia Ferrari HP",
+     "dsq": false,
+     "points": 106,
+     "rounds": [
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "5",
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "5"
+      ],
+      [
+       "DNF",
+       "9"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Borgo12",
+     "rank": 15,
+     "rating": 1995,
+     "tier": "BRONZE",
+     "team": "BWT Alpine F1 Team",
+     "dsq": false,
+     "points": 83,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "7"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "5",
+       "DNF"
+      ],
+      [
+       "10"
+      ]
+     ]
+    },
+    {
+     "simgrid": "NicolasVH",
+     "rank": 16,
+     "rating": 1719,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Stake F1 Team Kick Sauber",
+     "dsq": false,
+     "points": 44,
+     "rounds": [
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "7",
+       "8"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "11",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "smoky_chip7",
+     "rank": 17,
+     "rating": 1927,
+     "tier": "BRONZE",
+     "team": "Scuderia Ferrari HP",
+     "dsq": false,
+     "points": 40,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "9"
+      ],
+      [
+       "DNF",
+       "10"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Ismael DOURFAYE",
+     "rank": 18,
+     "rating": 1958,
+     "tier": "BRONZE",
+     "team": "Mercedes-AMG Petronas F1 Team",
+     "dsq": false,
+     "points": 20,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "11"
+      ]
+     ]
+    },
+    {
+     "simgrid": "kvaaapa",
+     "rank": 19,
+     "rating": 2000,
+     "tier": "BRONZE",
+     "team": "MoneyGram Haas F1 Team",
+     "dsq": false,
+     "points": 0,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "season": 1,
+   "rounds": 12,
+   "entries": [
+    {
+     "simgrid": "PorgKowu14",
+     "rank": 1,
+     "rating": 3509,
+     "tier": "GOLD",
+     "team": "McLaren Formula 1 Team",
+     "dsq": false,
+     "points": 899,
+     "rounds": [
+      [
+       "1",
+       "2"
+      ],
+      [
+       "1",
+       "1"
+      ],
+      [
+       "3",
+       "6"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "1",
+       "5"
+      ],
+      [
+       "4",
+       "1"
+      ],
+      [
+       "1",
+       "2"
+      ],
+      [
+       "1"
+      ],
+      [
+       "1",
+       "1"
+      ],
+      [
+       "1",
+       "1"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "3"
+      ]
+     ]
+    },
+    {
+     "simgrid": "kamkaymom153",
+     "rank": 2,
+     "rating": 3064,
+     "tier": "SILVER",
+     "team": "Oracle Red Bull Racing",
+     "dsq": false,
+     "points": 680,
+     "rounds": [
+      [
+       "8",
+       "9"
+      ],
+      [
+       "9",
+       "9"
+      ],
+      [
+       "4",
+       "7"
+      ],
+      [
+       "7"
+      ],
+      [
+       "2",
+       "1"
+      ],
+      [
+       "6",
+       "2"
+      ],
+      [
+       "2",
+       "3"
+      ],
+      [
+       "3"
+      ],
+      [
+       "3",
+       "2"
+      ],
+      [
+       "4",
+       "4"
+      ],
+      [
+       "1",
+       "3"
+      ],
+      [
+       "1"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Swahgner",
+     "rank": 3,
+     "rating": 2335,
+     "tier": "SILVER",
+     "team": "McLaren Formula 1 Team",
+     "dsq": false,
+     "points": 405,
+     "rounds": [
+      [
+       "2",
+       "4"
+      ],
+      [
+       "7",
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "4"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "10",
+       "7"
+      ],
+      [
+       "9",
+       "6"
+      ],
+      [
+       "4"
+      ],
+      [
+       "4",
+       "4"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "5",
+       "6"
+      ],
+      [
+       "6"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Bawzerga22",
+     "rank": 4,
+     "rating": 2493,
+     "tier": "SILVER",
+     "team": "BWT Alpine F1 Team",
+     "dsq": false,
+     "points": 390,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "8"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "1",
+       "3"
+      ],
+      [
+       "5",
+       "5"
+      ],
+      [
+       "2"
+      ],
+      [
+       "2",
+       "5"
+      ],
+      [
+       "3",
+       "9"
+      ],
+      [
+       "3",
+       "2"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "uuiiuu",
+     "rank": 5,
+     "rating": 2419,
+     "tier": "SILVER",
+     "team": "Visa Cash App Racing Bulls F1 Team",
+     "dsq": false,
+     "points": 347,
+     "rounds": [
+      [
+       "6",
+       "1"
+      ],
+      [
+       "3",
+       "7"
+      ],
+      [
+       "5",
+       "1"
+      ],
+      [
+       "1"
+      ],
+      [
+       "4",
+       "3"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "LameIoGoat",
+     "rank": 6,
+     "rating": 1797,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Aston Martin Aramco F1 Team",
+     "dsq": false,
+     "points": 283,
+     "rounds": [
+      [
+       "12",
+       "10"
+      ],
+      [
+       "14",
+       "14"
+      ],
+      [
+       "6",
+       "8"
+      ],
+      [
+       "14"
+      ],
+      [
+       "7",
+       "6"
+      ],
+      [
+       "3",
+       "6"
+      ],
+      [
+       "11",
+       "DNF"
+      ],
+      [
+       "7"
+      ],
+      [
+       "9",
+       "9"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "7"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Trax♡",
+     "rank": 7,
+     "rating": 1733,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Oracle Red Bull Racing",
+     "dsq": false,
+     "points": 272,
+     "rounds": [
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "12",
+       "13"
+      ],
+      [
+       "10",
+       "11"
+      ],
+      [
+       "13"
+      ],
+      [
+       "9",
+       "4"
+      ],
+      [
+       "7",
+       "DNF"
+      ],
+      [
+       "7",
+       "7"
+      ],
+      [
+       "8"
+      ],
+      [
+       "13",
+       "14"
+      ],
+      [
+       "11",
+       "DNS"
+      ],
+      [
+       "8",
+       "7"
+      ],
+      [
+       "8"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Txnio17",
+     "rank": 8,
+     "rating": 1897,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "BWT Alpine F1 Team",
+     "dsq": false,
+     "points": 270,
+     "rounds": [
+      [
+       "9",
+       "5"
+      ],
+      [
+       "5",
+       "12"
+      ],
+      [
+       "11",
+       "DNF"
+      ],
+      [
+       "10"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "5",
+       "4"
+      ],
+      [
+       "10",
+       "DNF"
+      ],
+      [
+       "10"
+      ],
+      [
+       "7",
+       "7"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "5"
+      ]
+     ]
+    },
+    {
+     "simgrid": "he1mdall",
+     "rank": 9,
+     "rating": 2100,
+     "tier": "BRONZE",
+     "team": "Scuderia Ferrari HP",
+     "dsq": false,
+     "points": 250,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "4",
+       "DNF"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "6",
+       "3"
+      ],
+      [
+       "2",
+       "2"
+      ],
+      [
+       "7",
+       "9"
+      ],
+      [
+       "4"
+      ]
+     ]
+    },
+    {
+     "simgrid": "ifyellow8",
+     "rank": 10,
+     "rating": 2069,
+     "tier": "BRONZE",
+     "team": "MoneyGram Haas F1 Team",
+     "dsq": false,
+     "points": 195,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "6"
+      ],
+      [
+       "8",
+       "3"
+      ],
+      [
+       "4",
+       "5"
+      ],
+      [
+       "2"
+      ]
+     ]
+    },
+    {
+     "simgrid": "kashsyed234",
+     "rank": 11,
+     "rating": 2585,
+     "tier": "SILVER",
+     "team": "Mercedes-AMG Petronas F1 Team",
+     "dsq": false,
+     "points": 190,
+     "rounds": [
+      [
+       "3",
+       "6"
+      ],
+      [
+       "DNF",
+       "8"
+      ],
+      [
+       "7",
+       "DNF"
+      ],
+      [
+       "6"
+      ],
+      [
+       "6",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "6",
+       "4"
+      ],
+      [
+       "DNF"
+      ]
+     ]
+    },
+    {
+     "simgrid": "LoganS186080",
+     "rank": 12,
+     "rating": 1583,
+     "tier": "BRONZE",
+     "team": "Scuderia Ferrari HP",
+     "dsq": false,
+     "points": 177,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "8",
+       "2"
+      ],
+      [
+       "12"
+      ],
+      [
+       "8",
+       "11"
+      ],
+      [
+       "12",
+       "5"
+      ],
+      [
+       "13",
+       "DNF"
+      ],
+      [
+       "DNF"
+      ],
+      [
+       "14",
+       "DNF"
+      ],
+      [
+       "10",
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Edonic005",
+     "rank": 13,
+     "rating": 1746,
+     "tier": "BRONZE",
+     "team": "Mercedes-AMG Petronas F1 Team",
+     "dsq": false,
+     "points": 155,
+     "rounds": [
+      [
+       "10",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "12",
+       "10"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNF",
+       "7"
+      ],
+      [
+       "11",
+       "10"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "9"
+      ],
+      [
+       "5",
+       "13"
+      ],
+      [
+       "5",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "TheTomeckiRacing",
+     "rank": 14,
+     "rating": 1645,
+     "tier": "BRONZE",
+     "team": "MoneyGram Haas F1 Team",
+     "dsq": false,
+     "points": 113,
+     "rounds": [
+      [
+       "13",
+       "DNF"
+      ],
+      [
+       "13",
+       "15"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "15"
+      ],
+      [
+       "11",
+       "9"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "12",
+       "11"
+      ],
+      [
+       "7",
+       "7"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "ShaunMcW",
+     "rank": 15,
+     "rating": 1927,
+     "tier": "BRONZE",
+     "team": "Mercedes-AMG Petronas F1 Team",
+     "dsq": false,
+     "points": 90,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "10",
+       "10"
+      ],
+      [
+       "DNS",
+       "DNF"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "6",
+       "DNF"
+      ],
+      [
+       "5"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Hetitate",
+     "rank": 16,
+     "rating": 1414,
+     "tier": "BRONZE",
+     "team": "Atlassian Williams Racing",
+     "dsq": false,
+     "points": 87,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "11"
+      ],
+      [
+       "11",
+       "12"
+      ],
+      [
+       "DNF",
+       "6"
+      ],
+      [
+       "10",
+       "8"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Nik_Joseph20",
+     "rank": 17,
+     "rating": 2122,
+     "tier": "BRONZE",
+     "team": "Aston Martin Aramco F1 Team",
+     "dsq": false,
+     "points": 75,
+     "rounds": [
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "3",
+       "1"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Hall_owzz-",
+     "rank": 18,
+     "rating": 1987,
+     "tier": "BRONZE",
+     "team": "Stake F1 Team Kick Sauber",
+     "dsq": false,
+     "points": 68,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "6"
+      ],
+      [
+       "10",
+       "8"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNF"
+      ]
+     ]
+    },
+    {
+     "simgrid": "God_Cheat",
+     "rank": 19,
+     "rating": 1873,
+     "tier": "BRONZE",
+     "team": "Visa Cash App Racing Bulls F1 Team",
+     "dsq": false,
+     "points": 56,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "10",
+       "8"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNF"
+      ],
+      [
+       "8",
+       "10"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "pabloman334",
+     "rank": 20,
+     "rating": 1961,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "MoneyGram Haas F1 Team",
+     "dsq": false,
+     "points": 39,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "12",
+       "8"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "9",
+       "DNF"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "SwimmyFish15",
+     "rank": 21,
+     "rating": 2035,
+     "tier": "EXPERIENCED BRONZE",
+     "team": "Aston Martin Aramco F1 Team",
+     "dsq": false,
+     "points": 36,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "15",
+       "DNF"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "9",
+       "8"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "749363835285902",
+     "rank": 22,
+     "rating": 1981,
+     "tier": "BRONZE",
+     "team": "McLaren Formula 1 Team",
+     "dsq": false,
+     "points": 36,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "6",
+       "8"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "alpha-kobra-02",
+     "rank": 23,
+     "rating": 1800,
+     "tier": "BRONZE",
+     "team": "BWT Alpine F1 Team",
+     "dsq": false,
+     "points": 26,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNF",
+       "10"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "9",
+       "DNF"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Ak1sha",
+     "rank": 24,
+     "rating": 1913,
+     "tier": "BRONZE",
+     "team": "Oracle Red Bull Racing",
+     "dsq": false,
+     "points": 9,
+     "rounds": [
+      [
+       "DNF",
+       "12"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    },
+    {
+     "simgrid": "Jmulligan467",
+     "rank": 25,
+     "rating": 2000,
+     "tier": "BRONZE",
+     "team": "Visa Cash App Racing Bulls F1 Team",
+     "dsq": false,
+     "points": 0,
+     "rounds": [
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "—"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS",
+       "DNS"
+      ],
+      [
+       "DNS"
+      ]
+     ]
+    }
+   ]
+  }
+ ]
+}

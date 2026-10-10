@@ -1,0 +1,7 @@
+# Same line endings for everyone, whether files are edited locally or on github.com
+* text=auto eol=lf
+# calendar files must use CRLF (iCalendar spec)
+*.ics text eol=crlf
+*.png binary
+*.jpg binary
+*.avif binary

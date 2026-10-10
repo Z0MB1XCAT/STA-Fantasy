@@ -1,0 +1,19 @@
+# Round 7: Japan, Friday 4 Dec 2026
+#
+# HOW TO FILL THIS IN  (full guide: README.md, or use admin.html to build this file for you)
+#   status:   upcoming  ->  provisional (Friday, after the races)  ->  final (Sunday, after the stewards)
+#   Type drivers by their 3-letter code in FINISHING order, P1 first (codes are listed on admin.html).
+#   Put :dnf  :dsq  or :dns straight after a code, e.g.  ICE:dnf
+#   Anyone not listed in a session is treated as absent: 0 points, no penalty.
+#   Lines starting with # are ignored. Delete the # to switch a line on.
+#
+round: 7
+status: upcoming
+
+# out:  ZMB>XMK          announced absent BEFORE the deadline (ZMB is out, XMK drives the seat; owners may swap for free)
+# subs: ZMB>XMK          stand-in turned up AFTER the deadline (owners of ZMB get XMK's points)
+# quali:   KAM JEN NFS
+# reverse: NFS KAM JEN
+# feature: JEN KAM NFS:dnf
+# fastest: reverse=NFS feature=JEN
+# notes:   anything worth remembering, e.g. +5s on KAM after stewards

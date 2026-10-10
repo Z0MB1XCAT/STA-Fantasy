@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Page not found | STA Fantasy</title>
+  <meta name="description" content="Fantasy racing for the STA league. Pick 5 drivers and 2 constructors, play your chips and climb the table.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0a0b0e">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="STA Fantasy">
+  <meta property="og:title" content="Page not found">
+  <meta property="og:description" content="Fantasy racing for the STA league. Pick 5 drivers and 2 constructors, play your chips and climb the table.">
+  <meta property="og:image" content="https://z0mb1xcat.github.io/STA-Fantasy/images/app/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="STA Fantasy">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/images/app/favicon-64.png" type="image/png">
+  <link rel="apple-touch-icon" href="/images/app/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,100..125,600..900;1,100..125,700..900&family=Titillium+Web:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <main class="wrap" style="min-height:70vh;display:grid;place-content:center;text-align:center;gap:14px">
+    <p class="shead__title" style="font-size:clamp(3rem,10vw,6rem);color:var(--brand)">404</p>
+    <h1 class="h1">Off the track</h1>
+    <p class="muted">That page does not exist. It may have moved, or the link is wrong.</p>
+    <p><a class="btn btn--red" id="home" href="/">Back to STA Fantasy</a></p>
+  </main>
+  <script>
+    // project sites live under /<repo>/, so send people to that root rather than the domain root
+    var seg = location.hostname.endsWith('github.io') ? location.pathname.split('/')[1] : '';
+    var base = seg ? '/' + seg + '/' : '/';
+    document.getElementById('home').href = base;
+    document.querySelectorAll('link[href^="/"]').forEach(function (l) { l.href = base + l.getAttribute('href').slice(1); });
+  </script>
+</body>
+</html>

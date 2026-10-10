@@ -1,0 +1,141 @@
+{
+  "name": "Season 5",
+  "budget": 100,
+  "squad": {
+    "drivers": 5,
+    "constructors": 2
+  },
+  "drs": {
+    "multiplier": 2,
+    "fallbackWhenAbsent": true
+  },
+  "transfers": {
+    "freePerRound": 2,
+    "maxBanked": 1,
+    "penaltyPerExtra": 10
+  },
+  "chips": {
+    "wildcard": {
+      "name": "Wildcard",
+      "desc": "Unlimited free transfers this round. Your new team stays."
+    },
+    "limitless": {
+      "name": "Limitless",
+      "desc": "No budget cap and unlimited free transfers for one round. Your old team returns afterwards."
+    },
+    "extradrs": {
+      "name": "Extra DRS",
+      "desc": "Your DRS Boost driver scores 3x instead of 2x."
+    },
+    "nonegative": {
+      "name": "No Negative",
+      "desc": "Any driver or constructor with a negative round score is counted as 0."
+    },
+    "autopilot": {
+      "name": "Autopilot",
+      "desc": "Your DRS Boost automatically goes to your best-scoring driver this round."
+    }
+  },
+  "scoring": {
+    "quali": {
+      "positions": [
+        10,
+        9,
+        8,
+        7,
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+      ],
+      "dsq": -5
+    },
+    "reverse": {
+      "label": "Reverse Grid",
+      "weight": "25% race",
+      "positions": [
+        12,
+        9,
+        7,
+        6,
+        4,
+        3,
+        2,
+        1
+      ],
+      "fastestLap": 1,
+      "gainPerPlace": 1,
+      "gainCap": 5,
+      "lossCap": 5,
+      "dnf": -5,
+      "dsq": -5
+    },
+    "feature": {
+      "label": "Feature Race",
+      "weight": "35% race",
+      "positions": [
+        25,
+        20,
+        16,
+        13,
+        11,
+        10,
+        9,
+        8,
+        7,
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+      ],
+      "fastestLap": 1,
+      "gainPerPlace": 1,
+      "gainCap": 10,
+      "lossCap": 10,
+      "dnf": -10,
+      "dsq": -10
+    },
+    "constructor": {
+      "bothInPointsBonus": {
+        "session": "feature",
+        "topN": 15,
+        "points": 5
+      }
+    }
+  },
+  "prices": {
+    "min": 4.5,
+    "max": 32,
+    "reservePrice": 4.5,
+    "window": 3,
+    "tierSplit": 18,
+    "tierSplitConstructor": 14,
+    "bands": {
+      "great": 0.25,
+      "good": 0.5,
+      "poor": 0.75
+    },
+    "moves": {
+      "A": {
+        "great": 0.5,
+        "good": 0.2,
+        "poor": -0.2,
+        "terrible": -0.5
+      },
+      "B": {
+        "great": 0.8,
+        "good": 0.3,
+        "poor": -0.3,
+        "terrible": -0.8
+      }
+    },
+    "constructorFactor": 0.55,
+    "targetDriverMean": 14
+  },
+  "discord": "https://discord.gg/fEjHrAX6aF",
+  "contact": "Z0MB1XCAT"
+}

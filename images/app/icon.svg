@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Fallback app icon in the league's colours. Replaced by the real logo once images/league-logo.png exists
+       (run: node tools/dev/make-icons.mjs). -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff3b3f"/>
+      <stop offset="1" stop-color="#ff7a3a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#0c0d11"/>
+  <circle cx="256" cy="256" r="214" fill="url(#g)"/>
+  <circle cx="166" cy="256" r="36" fill="#fff"/>
+  <circle cx="256" cy="256" r="36" fill="#fff"/>
+  <circle cx="346" cy="256" r="36" fill="#fff"/>
+</svg>

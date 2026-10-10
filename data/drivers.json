@@ -1,0 +1,382 @@
+{
+ "generatedBy": "tools/seed-prices.mjs",
+ "note": "Starting prices before Round 1. Safe to hand-edit a price, but re-running the tool overwrites this file.",
+ "model": {
+  "fieldSize": 20,
+  "seasonWeights": {
+   "1": 0.15,
+   "2": 0.3,
+   "3": 0.55,
+   "4": 1
+  },
+  "shrinkK": 6,
+  "priorQuality": 0.6307,
+  "curveExponent": 1.389,
+  "ratingFit": {
+   "slope": 0.00023609149859039462,
+   "intercept": 0.12594386281330738,
+   "r2": 0.885,
+   "n": 23
+  }
+ },
+ "drivers": [
+  {
+   "code": "ARI",
+   "name": "Ari",
+   "simgrid": "WafflezEnjoyer",
+   "team": "alpine",
+   "role": "regular",
+   "nat": "de",
+   "price": 10.9,
+   "basis": "simgrid-rating",
+   "rating": 1958,
+   "quality": 0.599,
+   "historySessions": 0
+  },
+  {
+   "code": "ZMB",
+   "name": "Z0MB1XCAT",
+   "simgrid": "z0mb1xcat",
+   "team": "alpine",
+   "role": "regular",
+   "nat": "gb-wls",
+   "price": 13.1,
+   "basis": "history",
+   "rating": 2067,
+   "quality": 0.631,
+   "historySessions": 20
+  },
+  {
+   "code": "SER",
+   "name": "SERRA160",
+   "simgrid": "Serranocul690",
+   "team": "aston",
+   "role": "regular",
+   "nat": "es",
+   "price": 10.3,
+   "basis": "history",
+   "rating": 1900,
+   "quality": 0.589,
+   "historySessions": 4
+  },
+  {
+   "code": "NIS",
+   "name": "nissediesel",
+   "simgrid": "nissedisse317",
+   "team": "aston",
+   "role": "regular",
+   "nat": null,
+   "price": 11.4,
+   "basis": "simgrid-unrated",
+   "rating": 2000,
+   "quality": 0.606,
+   "historySessions": 0
+  },
+  {
+   "code": "STX",
+   "name": "statix",
+   "simgrid": "statix_75",
+   "team": "audi",
+   "role": "regular",
+   "nat": "gb",
+   "price": 11.4,
+   "basis": "simgrid-unrated",
+   "rating": 2000,
+   "quality": 0.606,
+   "historySessions": 0
+  },
+  {
+   "code": "JEN",
+   "name": "jengaaboi",
+   "simgrid": "jengaaboi",
+   "team": "audi",
+   "role": "regular",
+   "nat": "gb",
+   "price": 32,
+   "basis": "history",
+   "rating": 2943,
+   "quality": 0.853,
+   "historySessions": 27
+  },
+  {
+   "code": "PHX",
+   "name": "Phoenix",
+   "simgrid": "LTR Phoenix 28",
+   "team": "cadillac",
+   "role": "regular",
+   "nat": "us",
+   "price": 4.5,
+   "basis": "history",
+   "rating": 1776,
+   "quality": 0.462,
+   "historySessions": 32.6
+  },
+  {
+   "code": "NFS",
+   "name": "NFSanti",
+   "simgrid": "santipopelka13",
+   "team": "cadillac",
+   "role": "regular",
+   "nat": null,
+   "price": 23.8,
+   "basis": "history",
+   "rating": 2659,
+   "quality": 0.764,
+   "historySessions": 28.2
+  },
+  {
+   "code": "DON",
+   "name": "Don Lucio",
+   "simgrid": "SwimmyFish15",
+   "team": "ferrari",
+   "role": "regular",
+   "nat": "ro",
+   "price": 15,
+   "basis": "history",
+   "rating": 2035,
+   "quality": 0.658,
+   "historySessions": 13
+  },
+  {
+   "code": "SWU",
+   "name": "Swumpy",
+   "simgrid": "SWUMPY",
+   "team": "ferrari",
+   "role": "regular",
+   "nat": "it",
+   "price": 13.8,
+   "basis": "history",
+   "rating": 2074,
+   "quality": 0.64,
+   "historySessions": 14.3
+  },
+  {
+   "code": "SOU",
+   "name": "soul_cat",
+   "simgrid": "Cat_Ninja2000",
+   "team": "haas",
+   "role": "regular",
+   "nat": "za",
+   "price": 9.1,
+   "basis": "history",
+   "rating": 1922,
+   "quality": 0.569,
+   "historySessions": 4
+  },
+  {
+   "code": "ARG",
+   "name": "argeen",
+   "simgrid": "argeen",
+   "team": "haas",
+   "role": "regular",
+   "nat": null,
+   "price": 11.4,
+   "basis": "simgrid-unrated",
+   "rating": 2000,
+   "quality": 0.606,
+   "historySessions": 0
+  },
+  {
+   "code": "FAZ",
+   "name": "Md.Faizan",
+   "simgrid": "Mr-Immortal05",
+   "team": "mclaren",
+   "role": "regular",
+   "nat": "in",
+   "price": 11.4,
+   "basis": "simgrid-unrated",
+   "rating": 2000,
+   "quality": 0.606,
+   "historySessions": 0
+  },
+  {
+   "code": "ANI",
+   "name": "S.Aniruth",
+   "simgrid": "Leo19verstappen",
+   "team": "mclaren",
+   "role": "regular",
+   "nat": "gb",
+   "price": 11.4,
+   "basis": "simgrid-unrated",
+   "rating": 2000,
+   "quality": 0.606,
+   "historySessions": 0
+  },
+  {
+   "code": "ICE",
+   "name": "Iceman",
+   "simgrid": "OvertCow9345580",
+   "team": "mercedes",
+   "role": "regular",
+   "nat": "it",
+   "price": 20.7,
+   "basis": "history",
+   "rating": 2476,
+   "quality": 0.729,
+   "historySessions": 18.6
+  },
+  {
+   "code": "RIC",
+   "name": "RicCapricorno",
+   "simgrid": "Ricc2009",
+   "team": "mercedes",
+   "role": "regular",
+   "nat": null,
+   "price": 12,
+   "basis": "history",
+   "rating": 1978,
+   "quality": 0.615,
+   "historySessions": 19.7
+  },
+  {
+   "code": "KAM",
+   "name": "Kam",
+   "simgrid": "kamkaymom153",
+   "team": "redbull",
+   "role": "regular",
+   "nat": "us",
+   "price": 29.7,
+   "basis": "history",
+   "rating": 3064,
+   "quality": 0.829,
+   "historySessions": 44.3
+  },
+  {
+   "code": "PAB",
+   "name": "Pabl0man334",
+   "simgrid": "pabloman334",
+   "team": "redbull",
+   "role": "regular",
+   "nat": null,
+   "price": 11,
+   "basis": "history",
+   "rating": 1961,
+   "quality": 0.601,
+   "historySessions": 32.7
+  },
+  {
+   "code": "ZZK",
+   "name": "zzetkazz",
+   "simgrid": "zzetkazz",
+   "team": "vcarb",
+   "role": "regular",
+   "nat": null,
+   "price": 10.7,
+   "basis": "simgrid-rating",
+   "rating": 1943,
+   "quality": 0.596,
+   "historySessions": 0
+  },
+  {
+   "code": "DEX",
+   "name": "Dark Experience",
+   "simgrid": "LevTrotskij1918",
+   "team": "vcarb",
+   "role": "regular",
+   "nat": "it",
+   "price": 11.4,
+   "basis": "simgrid-unrated",
+   "rating": 2000,
+   "quality": 0.606,
+   "historySessions": 0
+  },
+  {
+   "code": "LAI",
+   "name": "Lainey Milligan",
+   "simgrid": "Lainey Milligan",
+   "team": "williams",
+   "role": "regular",
+   "nat": null,
+   "price": 11.8,
+   "basis": "simgrid-rating",
+   "rating": 2035,
+   "quality": 0.612,
+   "historySessions": 0
+  },
+  {
+   "code": "MAT",
+   "name": "mattiabagio",
+   "simgrid": "mattiabagio",
+   "team": "williams",
+   "role": "regular",
+   "nat": null,
+   "price": 11.4,
+   "basis": "simgrid-unrated",
+   "rating": 2000,
+   "quality": 0.606,
+   "historySessions": 0
+  },
+  {
+   "code": "XMK",
+   "name": "XMarks",
+   "simgrid": "Xmarks7838",
+   "team": null,
+   "role": "reserve",
+   "nat": null,
+   "price": 4.5,
+   "basis": "simgrid-unrated",
+   "rating": 2000,
+   "quality": 0.606,
+   "historySessions": 0
+  },
+  {
+   "code": "KIE",
+   "name": "KieSF1",
+   "simgrid": "KieranSF1",
+   "team": null,
+   "role": "reserve",
+   "nat": null,
+   "price": 4.5,
+   "basis": "history",
+   "rating": 2671,
+   "quality": 0.736,
+   "historySessions": 6
+  }
+ ],
+ "constructors": [
+  {
+   "id": "alpine",
+   "price": 13.2
+  },
+  {
+   "id": "aston",
+   "price": 11.9
+  },
+  {
+   "id": "audi",
+   "price": 23.9
+  },
+  {
+   "id": "cadillac",
+   "price": 15.6
+  },
+  {
+   "id": "ferrari",
+   "price": 15.8
+  },
+  {
+   "id": "haas",
+   "price": 11.3
+  },
+  {
+   "id": "mclaren",
+   "price": 12.5
+  },
+  {
+   "id": "mercedes",
+   "price": 18
+  },
+  {
+   "id": "redbull",
+   "price": 22.4
+  },
+  {
+   "id": "vcarb",
+   "price": 12.2
+  },
+  {
+   "id": "williams",
+   "price": 12.8
+  }
+ ]
+}

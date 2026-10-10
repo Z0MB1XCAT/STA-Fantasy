@@ -1,0 +1,17 @@
+{
+  "note": "SimGrid grid ratings for drivers with NO league history (rookies), copied from SimGrid on 2026-10-10. Then run: node tools/seed-prices.mjs. A rating of exactly 2000 is SimGrid's starting value (no rated races yet), so those drivers are flagged 'unrated'. Any rookie left null gets the placeholder rating.",
+  "placeholderRating": 1900,
+  "ratings": {
+    "WafflezEnjoyer": 1958,
+    "nissedisse317": 2000,
+    "statix_75": 2000,
+    "argeen": 2000,
+    "Mr-Immortal05": 2000,
+    "Leo19verstappen": 2000,
+    "zzetkazz": 1943,
+    "LevTrotskij1918": 2000,
+    "Lainey Milligan": 2035,
+    "mattiabagio": 2000,
+    "Xmarks7838": 2000
+  }
+}

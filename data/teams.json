@@ -1,0 +1,192 @@
+{
+  "note": "Colours are livery-based approximations. logo/car/photos point at images/teams. photos maps each league driver code to the real-driver image used for them; swap freely.",
+  "teams": [
+    {
+      "id": "alpine",
+      "name": "Alpine",
+      "short": "ALP",
+      "color": "#0090FF",
+      "color2": "#FF87BC",
+      "logo": "images/teams/2026alpinelogowhite.avif",
+      "drivers": [
+        "ARI",
+        "ZMB"
+      ],
+      "car": "images/teams/2026alpinecarright.avif",
+      "photos": {
+        "ZMB": "images/teams/2026alpinepiegas01right.avif",
+        "ARI": "images/teams/2026alpinefracol01right.avif"
+      }
+    },
+    {
+      "id": "aston",
+      "name": "Aston Martin",
+      "short": "AMR",
+      "color": "#229971",
+      "color2": "#CEDC00",
+      "logo": "images/teams/2026astonmartinlogowhite.avif",
+      "drivers": [
+        "SER",
+        "NIS"
+      ],
+      "car": "images/teams/2026astonmartincarright.avif",
+      "photos": {
+        "SER": "images/teams/2026astonmartinferalo01right.avif",
+        "NIS": "images/teams/2026astonmartinlanstr01right.avif"
+      }
+    },
+    {
+      "id": "audi",
+      "name": "Audi",
+      "short": "AUD",
+      "color": "#A9AFB8",
+      "color2": "#F50537",
+      "logo": "images/teams/2026audilogowhite.avif",
+      "drivers": [
+        "STX",
+        "JEN"
+      ],
+      "car": "images/teams/2026audicarright.avif",
+      "photos": {
+        "JEN": "images/teams/2026audinichul01right.avif",
+        "STX": "images/teams/2026audigabbor01right.avif"
+      }
+    },
+    {
+      "id": "cadillac",
+      "name": "Cadillac",
+      "short": "CAD",
+      "color": "#6F86A8",
+      "color2": "#E9EAEC",
+      "logo": "images/teams/2026cadillaclogowhite.avif",
+      "drivers": [
+        "PHX",
+        "NFS"
+      ],
+      "car": "images/teams/2026cadillaccarright.avif",
+      "photos": {
+        "NFS": "images/teams/2026cadillacserper01right.avif",
+        "PHX": "images/teams/2026cadillacvalbot01right.avif"
+      }
+    },
+    {
+      "id": "ferrari",
+      "name": "Ferrari",
+      "short": "FER",
+      "color": "#E8002D",
+      "color2": "#FFF200",
+      "logo": "images/teams/2026ferrarilogowhite.avif",
+      "drivers": [
+        "DON",
+        "SWU"
+      ],
+      "car": "images/teams/2026ferraricarright.avif",
+      "photos": {
+        "DON": "images/teams/2026ferrarichalec01right.avif",
+        "SWU": "images/teams/2026ferrarilewham01right.avif"
+      }
+    },
+    {
+      "id": "haas",
+      "name": "Haas",
+      "short": "HAA",
+      "color": "#ECEEF1",
+      "color2": "#E10600",
+      "logo": "images/teams/2026haasf1teamlogowhite.avif",
+      "drivers": [
+        "SOU",
+        "ARG"
+      ],
+      "car": "images/teams/2026haasf1teamcarright.avif",
+      "photos": {
+        "SOU": "images/teams/2026haasf1teamestoco01right.avif",
+        "ARG": "images/teams/2026haasf1teamolibea01right.avif"
+      }
+    },
+    {
+      "id": "mclaren",
+      "name": "McLaren",
+      "short": "MCL",
+      "color": "#FF8000",
+      "color2": "#47C7FC",
+      "logo": "images/teams/2026mclarenlogowhite.avif",
+      "drivers": [
+        "FAZ",
+        "ANI"
+      ],
+      "car": "images/teams/2026mclarencarright.avif",
+      "photos": {
+        "FAZ": "images/teams/2026mclarenlannor01right.avif",
+        "ANI": "images/teams/2026mclarenoscpia01right.avif"
+      }
+    },
+    {
+      "id": "mercedes",
+      "name": "Mercedes",
+      "short": "MER",
+      "color": "#27D6C0",
+      "color2": "#C8CCCE",
+      "logo": "images/teams/2026mercedeslogowhite.avif",
+      "drivers": [
+        "ICE",
+        "RIC"
+      ],
+      "car": "images/teams/2026mercedescarright.avif",
+      "photos": {
+        "ICE": "images/teams/2026mercedesgeorus01right.avif",
+        "RIC": "images/teams/2026mercedesandant01right.avif"
+      }
+    },
+    {
+      "id": "redbull",
+      "name": "Red Bull",
+      "short": "RBR",
+      "color": "#3671C6",
+      "color2": "#FFD400",
+      "logo": "images/teams/2026redbullracinglogowhite.avif",
+      "drivers": [
+        "KAM",
+        "PAB"
+      ],
+      "car": "images/teams/2026redbullracingcarright.avif",
+      "photos": {
+        "KAM": "images/teams/2026redbullracingmaxver01right.avif",
+        "PAB": "images/teams/2026redbullracingisahad01right.avif"
+      }
+    },
+    {
+      "id": "vcarb",
+      "name": "Racing Bulls",
+      "short": "VCB",
+      "color": "#7C8CFF",
+      "color2": "#FFFFFF",
+      "logo": "images/teams/2026racingbullslogowhite.avif",
+      "drivers": [
+        "ZZK",
+        "DEX"
+      ],
+      "car": "images/teams/2026racingbullscarright.avif",
+      "photos": {
+        "ZZK": "images/teams/2026racingbullslialaw01right.avif",
+        "DEX": "images/teams/2026racingbullsarvlin01right.avif"
+      }
+    },
+    {
+      "id": "williams",
+      "name": "Williams",
+      "short": "WIL",
+      "color": "#64C4FF",
+      "color2": "#041E42",
+      "logo": "images/teams/2026williamslogowhite.avif",
+      "drivers": [
+        "LAI",
+        "MAT"
+      ],
+      "car": "images/teams/2026williamscarright.avif",
+      "photos": {
+        "LAI": "images/teams/2026williamscarsai01right.avif",
+        "MAT": "images/teams/2026williamsalealb01right.avif"
+      }
+    }
+  ]
+}
