@@ -9,6 +9,7 @@ const ICONS = {
   results: '<path d="M5 21V4"/><path d="M5 4.5c3-1.6 5.5 1.6 8.5 0s5-1.2 6 0v8c-1-1.2-3-1.6-6 0s-5.5-1.6-8.5 0"/>',
   rules: '<path d="M4.5 5.5A2.5 2.5 0 0 1 7 3h12.5v15H7a2.5 2.5 0 0 0-2.5 2.5z"/><path d="M4.5 20.5V5.5"/><path d="M8.5 7.5h7"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/>',
+  check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
   close: '<path d="M6 6l12 12M18 6 6 18"/>',
   logout: '<path d="M15 4h3.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H15"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/>',
   chevron: '<path d="m9 6 6 6-6 6"/>',

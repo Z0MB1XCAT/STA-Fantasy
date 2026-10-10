@@ -36,7 +36,7 @@ for (const n of ['Ferrari', 'Alpine']) await click(`[aria-label="Add ${n}"]`);
 await click('[data-act=drs][data-id=DON]');
 await click('[data-act=save]');
 await wait(1500);
-console.log('save toast               ->', await page.$eval('#toast', e => e.textContent).catch(() => '(none)'));
+console.log('save dock                ->', await page.$eval('.savedock b', e => e.textContent).catch(() => '(none)'));
 
 await click('[data-act=rename]');
 await page.$eval('#rn-input', e => (e.value = ''));

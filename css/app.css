@@ -501,8 +501,35 @@ dialog.sheet { width: min(620px, 100vw); max-height: min(88vh, 900px); margin: a
 .chipbtn small { color: var(--text2); line-height: 1.35; font-size: .8rem; }
 .chipbtn[aria-pressed='true'] { border-color: var(--yellow); box-shadow: 0 0 0 1px var(--yellow) inset; background: #232013; }
 .chipbtn[disabled] { opacity: .4; cursor: not-allowed; }
-.savebar { position: sticky; bottom: calc(12px + var(--tabbar) + env(safe-area-inset-bottom)); z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 9px 9px 20px; border-radius: 999px; background: var(--s3); box-shadow: var(--sh-3); border: 1px solid var(--line2); flex-wrap: wrap; }
-@media (max-width: 560px) { .savebar { border-radius: var(--r-lg); padding: 12px; } .savebar .btn { width: 100%; } }
+/* save dock: pinned to the bottom of the screen while picks are open, red when there is something to save */
+.savedock { position: fixed; left: 50%; bottom: calc(12px + var(--tabbar) + env(safe-area-inset-bottom)); z-index: 70; width: min(720px, calc(100vw - 20px));
+  display: flex; align-items: center; gap: 14px; padding: 10px 10px 10px 16px; border-radius: var(--r-lg);
+  background: var(--s3); border: 1px solid var(--line2); color: var(--text); transform: translateX(-50%);
+  box-shadow: 0 20px 44px -14px rgba(0, 0, 0, .85), 0 2px 6px rgba(0, 0, 0, .35); }
+.savedock__icon { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgba(52, 210, 123, .16); color: var(--green); }
+.savedock__icon svg { width: 18px; height: 18px; }
+.savedock__text { flex: 1 1 auto; min-width: 0; }
+.savedock__text b { display: block; font-weight: 700; font-size: 1.02rem; line-height: 1.25; }
+.savedock__text small { display: block; color: var(--text2); font-size: .84rem; line-height: 1.35; }
+.savedock .btn { flex: 0 0 auto; height: 48px; padding-inline: 24px; font-size: 1rem; }
+.savedock--unsaved { background: var(--brand); border-color: transparent; color: #fff;
+  box-shadow: 0 20px 44px -14px rgba(240, 74, 55, .6), 0 2px 6px rgba(0, 0, 0, .35); }
+.savedock--unsaved .savedock__text small { color: rgba(255, 255, 255, .9); }
+.savedock--unsaved .btn--light { background: #fff; color: #14161b; }
+.savedock--unsaved .btn:focus-visible { outline-color: #fff; }
+.savedock.is-new { animation: dock-in .5s var(--ease) both; }
+.savedock--unsaved.is-new .btn { animation: dock-nudge .6s .35s var(--ease) both; }
+@keyframes dock-in { from { opacity: 0; transform: translate(-50%, 28px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes dock-nudge { 0%, 100% { transform: scale(1); } 45% { transform: scale(1.07); } }
+body.has-savedock main.wrap { padding-bottom: 150px; }
+@media (min-width: 980px) { body.has-savedock .market-sticky .scroll-y { max-height: calc(100vh - 370px); } }
+body.has-savedock .toast { bottom: calc(96px + var(--tabbar) + env(safe-area-inset-bottom)); }
+@media (max-width: 560px) {
+  .savedock { gap: 10px; padding: 8px 8px 8px 12px; }
+  .savedock .btn { height: 46px; padding-inline: 18px; }
+  .savedock__text b { font-size: .96rem; }
+  .savedock__text small { font-size: .8rem; }
+}
 @media (min-width: 980px) { .market-sticky { position: sticky; top: 80px; } .market-sticky .scroll-y { max-height: calc(100vh - 250px); } }
 .scroll-y { max-height: min(74vh, 820px); overflow-y: auto; padding-right: 4px; scrollbar-width: thin; scrollbar-color: var(--s3) transparent; }
 .mrow { padding: 8px 8px; min-height: 58px; }

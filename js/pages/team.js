@@ -74,6 +74,8 @@ const prices = R.prices;
 const editable = phase.state === 'open';
 const out = notRacing(R);   // announced before the deadline as not racing
 const saved = mine[R.id] || null;
+const isSaved = () => !!mine[R.id];   // updates after the first save; `saved` is only the team we loaded
+let lastDock = null;
 
 let draft = saved
   ? { drivers: [...saved.drivers], constructors: [...saved.constructors], drs: saved.drs, chip: saved.chip }
@@ -190,14 +192,29 @@ function marketRows() {
   }).join('') || '<div class="empty">Nothing matches that search.</div>';
 }
 
-function saveBarView() {
+/** What the save dock says: something to fix, something to save, already saved, or carried over from last round. */
+function dockState() {
   const c = check();
-  const msg = c.complete
-    ? (dirty || !saved ? (state.base && !dirty && !saved ? 'Your last team carries over. Save only if you change it.' : 'Ready to save') : 'Saved. Any changes you make need saving again.')
-    : c.errs[0];
-  const canSave = editable && c.complete && (dirty || (!saved && !state.base));
-  return `<div class="savebar"><span class="${c.complete ? '' : 'dn'}" style="font-weight:600" role="status">${esc(msg)}</span>
-    <button class="btn btn--red" type="button" data-act="save" ${canSave ? '' : 'disabled'}>Save team for ${esc(R.name)}</button></div>`;
+  const by = `${fmtDate(R, true)}, ${fmtLock(R)}`;
+  if (!c.complete) {
+    const empty = !draft.drivers.length && !draft.constructors.length;
+    return { kind: 'todo', title: empty ? `Pick ${cfg.squad.drivers} drivers and ${cfg.squad.constructors} constructors` : c.errs[0], sub: `Then save your team before ${by}.` };
+  }
+  if (dirty || (!isSaved() && !state.base)) return { kind: 'unsaved', title: isSaved() ? 'You have unsaved changes' : 'Your team is not saved yet', sub: `Save before ${by}, or these picks won't count.` };
+  if (isSaved()) return { kind: 'saved', title: `Team saved for ${R.name}`, sub: 'Change anything and you will need to save again.' };
+  return { kind: 'carried', title: 'Your last team carries over', sub: 'No need to save unless you change something.' };
+}
+
+function saveBarView() {
+  const d = dockState();
+  // slide in when there is something new to save, and again to confirm the save
+  const fresh = d.kind !== lastDock && (d.kind === 'unsaved' || (d.kind === 'saved' && lastDock !== null));
+  lastDock = d.kind;
+  const btn = d.kind === 'saved' ? ''
+    : `<button class="btn ${d.kind === 'unsaved' ? 'btn--light' : d.kind === 'carried' ? 'btn--ghost' : 'btn--red'}" type="button" data-act="save" ${d.kind === 'todo' ? 'disabled' : ''}>${d.kind === 'carried' ? 'Save anyway' : 'Save team'}</button>`;
+  return `<div class="savedock savedock--${d.kind}${fresh ? ' is-new' : ''}" role="region" aria-label="Save your team">
+    ${d.kind === 'saved' || d.kind === 'carried' ? `<span class="savedock__icon">${icon('check')}</span>` : ''}
+    <div class="savedock__text" role="status"><b>${esc(d.title)}</b><small>${esc(d.sub)}</small></div>${btn}</div>`;
 }
 
 function seasonView() {
@@ -335,8 +352,7 @@ async function act(a, id) {
     try {
       await store.save(R.id, { drivers: draft.drivers, constructors: draft.constructors, drs: draft.chip === 'autopilot' ? null : draft.drs, chip: draft.chip });
       mine[R.id] = { ...draft }; subs[me.id] = mine;
-      dirty = false;
-      toast('Team saved for ' + R.name);
+      dirty = false;   // the save dock turns into the confirmation
     } catch (e) { toast(e.message, 'bad'); }
   }
   refresh();
@@ -350,5 +366,7 @@ app.addEventListener('input', e => { if (e.target.id === 'q') { query = e.target
 app.addEventListener('change', e => { if (e.target.id === 'sort') { sort = e.target.value; $('#market').innerHTML = marketRows(); } });
 addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
 
+// the save dock is pinned to the bottom of the screen, so leave room for it under the page
+if (editable) document.body.classList.add('has-savedock');
 render();
 }
