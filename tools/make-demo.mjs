@@ -49,12 +49,13 @@ function write(dir, plan) {
   fs.mkdirSync(abs, { recursive: true });
   for (let id = 1; id <= 12; id++) {
     const p = plan[id] || ['upcoming', 100 + id, { absent: 0 }];
-    fs.writeFileSync(path.join(abs, String(id).padStart(2, '0') + '.txt'), p[0] === 'upcoming' ? `round: ${id}\nstatus: upcoming\n` : makeRound(id, p[0], p[1], p[2]));
+    const upcoming = `round: ${id}\nstatus: upcoming\n${p[2]?.out ? `out: ${p[2].out.join(' ')}\n` : ''}`;
+    fs.writeFileSync(path.join(abs, String(id).padStart(2, '0') + '.txt'), p[0] === 'upcoming' ? upcoming : makeRound(id, p[0], p[1], p[2]));
   }
 }
 
-// R1-R3 final -> picks open for round 4
-write('rounds', { 1: ['final', 11, {}], 2: ['final', 22, { absent: 4 }], 3: ['final', 33, {}] });
+// R1-R3 final -> picks open for round 4, with KAM and FAZ announced as not racing
+write('rounds', { 1: ['final', 11, {}], 2: ['final', 22, { absent: 4 }], 3: ['final', 33, {}], 4: ['upcoming', 44, { out: ['KAM', 'FAZ'] }] });
 // R1-R2 final, R3 provisional -> window closed, waiting on the stewards
 write('rounds-prov', { 1: ['final', 11, {}], 2: ['final', 22, { absent: 4 }], 3: ['provisional', 33, {}] });
 console.log('Wrote tests/fixtures/rounds and tests/fixtures/rounds-prov');

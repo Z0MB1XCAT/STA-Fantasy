@@ -4,7 +4,7 @@
 import puppeteer from 'puppeteer';
 
 const BASE = process.env.BASE || 'http://localhost:3000/';
-const pages = ['index', 'team', 'drivers', 'results', 'rules', 'admin', '404'];
+const pages = ['index', 'team', 'league', 'drivers', 'results', 'rules', 'admin', '404'];
 const browser = await puppeteer.launch({ headless: 'new' });
 let problems = 0;
 

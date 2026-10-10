@@ -5,10 +5,12 @@
 #   Type drivers by their 3-letter code in FINISHING order, P1 first (codes are listed on admin.html).
 #   Put :dnf  :dsq  or :dns straight after a code, e.g.  ICE:dnf
 #   Anyone not listed in a session is treated as absent: 0 points, no penalty.
+#   Know before the deadline that someone can't race? Add  out: CODE  (heads-up only, transfers work as normal).
 #   Lines starting with # are ignored. Delete the # to switch a line on.
 #
 round: 11
 status: upcoming
+# out:     PAB
 
 # quali:   KAM JEN NFS
 # reverse: NFS KAM JEN

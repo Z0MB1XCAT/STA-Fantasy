@@ -1,12 +1,14 @@
 import { boot, problemsNotice } from '../shell.js';
 import { esc, $, money, delta, fmtNum, nameOf, teamLine, statusBadge } from '../ui.js';
 import { ownership } from '../league.js';
+import { notRacing } from './common.js';
 import { icon, driverCard, constructorCard, bust, photoOf, teamOf, teamVar, natFlag, countryName } from '../components.js';
 
 const { S, store, now, problems } = await boot('drivers');
 const app = $('#app');
 const phase = S.phase(now);
 const R = phase.round;
+const out = notRacing(R);
 
 let players = [], subs = {};
 try { [players, subs] = await Promise.all([store.players(), store.submissions()]); } catch (e) { console.warn(e); }
@@ -39,7 +41,7 @@ function grid() {
       const s = S.assetSummary(id);
       return driverCard(S, id, {
         price: prices[id],
-        top: movePill(id),
+        top: `${out.has(id) ? '<span class="mark mark--dnf">Not racing</span>' : ''}${movePill(id)}`,
         meta: s.rounds ? `${fmtNum(s.avg)} avg<br>${fmtNum(s.total)} pts` : 'No races yet',
         attrs: `data-open="${id}" aria-label="${esc(nameOf(S, id))}, ${money(prices[id])}. Show details"`,
       });

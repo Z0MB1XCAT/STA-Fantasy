@@ -12,6 +12,7 @@ const DESC = 'Fantasy racing for the STA league. Pick 5 drivers and 2 constructo
 const pages = [
   ['index.html', 'STA Fantasy', 'home', DESC],
   ['team.html', 'My team', 'team', 'Build your STA Fantasy team before the Friday deadline.'],
+  ['league.html', 'League', 'league', 'Every player’s team, round by round, in STA Fantasy.'],
   ['drivers.html', 'Drivers', 'drivers', 'Prices, points and form for every driver and constructor in the STA league.'],
   ['results.html', 'Results', 'results', 'Race results and fantasy points for every round of the STA league.'],
   ['rules.html', 'How it works', 'rules', 'Scoring, transfers, chips and prices for STA Fantasy.'],

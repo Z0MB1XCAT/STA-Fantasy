@@ -145,7 +145,7 @@ main.wrap { padding-block: 20px 64px; }
 
 /* mobile tab bar */
 .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; view-transition-name: tabbar;
-  display: grid; grid-template-columns: repeat(5, 1fr); height: calc(var(--tabbar) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);
+  display: grid; grid-template-columns: repeat(6, 1fr); height: calc(var(--tabbar) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);
   background: #0a0b0e; border-top: 1px solid var(--line2); }
 @media (min-width: 860px) { .tabbar { display: none; } }
 .tabbar a { position: relative; display: grid; place-items: center; align-content: center; gap: 3px; text-decoration: none; color: var(--text3); font-size: .72rem; font-weight: 600; }
@@ -535,6 +535,7 @@ dialog.sheet { width: min(620px, 100vw); max-height: min(88vh, 900px); margin: a
 .pool button .bust { width: 30px; height: 30px; }
 .pool button:hover { border-color: rgba(255, 255, 255, .3); }
 .pool button:active { transform: scale(.96); }
+.pool button[aria-pressed='true'] { border-color: var(--brand); background: rgba(240, 74, 55, .16); }
 pre.file { margin: 0; padding: 14px; border-radius: var(--r-sm); background: #08090b; border: 1px solid var(--line); overflow: auto; font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; font-size: .84rem; line-height: 1.6; color: #d8d5cc; white-space: pre-wrap; word-break: break-word; }
 
 /* rules: contents + one reading column, plain sections (no card nesting) */
@@ -619,6 +620,35 @@ details.dd > summary::-webkit-details-marker { display: none; }
 footer.site { border-top: 1px solid var(--line); padding-block: 24px 36px; color: var(--text3); font-size: .86rem; margin-top: 24px; }
 footer.site a { color: var(--text2); }
 footer.site a:hover { color: var(--text); }
+
+/* league: everyone's teams */
+.league__search { flex: 0 1 320px; min-width: 220px; }
+.tgrid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
+.tcard { overflow: hidden; }
+.tcard--me { border-color: rgba(240, 74, 55, .5); box-shadow: inset 0 3px 0 var(--brand), var(--sh-1); }
+.tcard__head { display: flex; align-items: center; gap: 11px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.tcard__rank { flex: 0 0 auto; min-width: 1.5em; font-family: var(--display); font-style: italic; font-weight: 900; font-stretch: 125%; font-size: 1.55rem; line-height: 1; letter-spacing: -0.03em; color: var(--text3); font-variant-numeric: tabular-nums; }
+.tcard__rank--top { color: var(--text); }
+.tcard__name { font-family: var(--display); font-weight: 800; font-stretch: 110%; font-size: 1rem; }
+.tcard__pts { flex: 0 0 auto; text-align: right; }
+.tcard__pts .num { display: block; font-size: 1.35rem; line-height: 1; }
+.tcard__pts small { display: block; color: var(--text3); font-size: .74rem; margin-top: 3px; white-space: nowrap; }
+.tcard__body { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.tcard__cons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.tcard__con { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 6px 9px 6px 6px; border-radius: var(--r-sm); background: var(--s2); }
+.tcard__con b { flex: 1 1 auto; min-width: 0; font-size: .84rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tcard__con .num { flex: 0 0 auto; font-size: .9rem; }
+.tcard__notes { display: flex; flex-wrap: wrap; gap: 6px; }
+.tcard__notes .badge svg { width: 14px; height: 14px; margin-right: 4px; }
+.badge--bad { background: rgba(255, 97, 112, .14); color: var(--down); }
+.pick__h { padding: 6px 10px 0; font-size: .9rem; }
+.pick { min-height: 50px; }
+.pick__bar { display: block; height: 4px; margin-top: 6px; border-radius: 2px; background: var(--s3); overflow: hidden; }
+.pick__bar i { display: block; height: 100%; background: var(--brand); transform-origin: left; }
+.pick__pct { flex: 0 0 auto; min-width: 46px; text-align: right; font-size: 1rem; }
+.pchips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pchip { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 12px 0 4px; border-radius: 999px; background: var(--s1); border: 1px solid var(--line); font-weight: 600; font-size: .9rem; }
+.pchip .avatar { width: 30px; height: 30px; border-radius: 50%; font-size: .7rem; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }

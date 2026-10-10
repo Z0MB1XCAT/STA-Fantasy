@@ -95,7 +95,7 @@ $('#app').innerHTML = `<div class="stack" style="--gap:22px">
 
       ${section('prices', `
         <ul class="ticks">
-          <li>After each round, drivers and constructors are compared on points per million over their last ${pr.window} races.</li>
+          <li>After each round, drivers and constructors are compared on points per million over their last ${pr.window} races${pr.absentCountsAsRace === false ? '. A driver who misses a round keeps their price' : ''}.</li>
           <li>The best value rises, the worst value falls. Cheaper players move more: up to ${money(pr.moves.B.great)} a round, against ${money(pr.moves.A.great)} for expensive ones.</li>
           <li>Prices stay between ${money(pr.min)} and ${money(pr.max)}. You always sell at the current price.</li>
           <li>New prices only count once a round is marked final.</li>
@@ -105,7 +105,8 @@ $('#app').innerHTML = `<div class="stack" style="--gap:22px">
         <ul class="ticks">
           <li>A driver who doesn't turn up scores <b>0 points</b> for that round. It works like a DNF, but without the penalty points.</li>
           <li>They show greyed out in your team for that round. If they were your DRS Boost, the boost scores 0 too.</li>
-          <li>${c.prices.absentCountsAsRace !== false ? 'For prices, the missed round counts as a 0-point race, so a no-show can drop in price.' : 'Missing a race does not change their price.'}</li>
+          <li>${c.prices.absentCountsAsRace !== false ? 'For prices, the missed round counts as a 0-point race, so a no-show can drop in price.' : 'Their price stays the same, and the missed round is left out of their form.'}</li>
+          <li>If we know before the deadline that someone can't make it, they're marked <b>Not racing</b> and greyed out in advance, so you have time to swap them. That uses a transfer as normal. If they turn up after all, they score as usual.</li>
           <li>Reserve drivers aren't part of the game. They can't be picked and don't score for anyone, including constructors.</li>
         </ul>`)}
 

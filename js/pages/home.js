@@ -3,7 +3,7 @@ import { carry } from '../env.js';
 import { esc, $, fmtDate, fmtLock, statusBadge, countdownParts, pad2, money, delta, nameOf, flag, fmtNum } from '../ui.js';
 import { standings } from '../league.js';
 import { resolvePlayer } from '../engine/squad.js';
-import { leaderboardRows, squadRows, lineup, rivalSheet, absentIn } from './common.js';
+import { leaderboardRows, squadRows, lineup, rivalSheet, absentIn, notRacing } from './common.js';
 import { icon, bust, tchip, teamOf, teamWithFlag, trackImg, shead, avatar, ordinal } from '../components.js';
 
 const ctx = await boot('home');
@@ -172,6 +172,15 @@ function moversSection() {
     <div class="panel"><div class="panel__body" style="display:grid;gap:6px;padding-top:6px">${list(titleA, a)}${list(titleB, b)}</div></div></section>`;
 }
 
+function notRacingNotice() {
+  const out = [...notRacing(R)];
+  if (!out.length || phase.state === 'complete') return '';
+  const names = out.map(c => esc(nameOf(S, c)));
+  const list = names.length < 2 ? names[0] : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
+  return `<div class="notice notice--flag"><span class="glyph">!</span><div><b>Not racing in ${esc(R.name)}: ${list}</b>
+    <span class="muted">${names.length === 1 ? 'They score' : 'They each score'} 0 points this round.${phase.state === 'open' ? ` If you have ${names.length === 1 ? 'them' : names.length === 2 ? 'either of them' : 'any of them'}, you can swap them out on <a href="team.html${q}">My team</a> before the deadline. That uses one of your transfers as normal.` : ''}</span></div></div>`;
+}
+
 function calendarSection() {
   const breaks = ctx.raw.calendar.breaks || [];
   const rows = [];
@@ -200,11 +209,12 @@ app.innerHTML = `
   <div class="stack" style="--gap:22px">
     ${problemsNotice(problems)}
     ${heroHtml()}
+    ${notRacingNotice()}
     ${phase.state === 'provisional' ? '<div class="notice notice--flag"><span class="glyph">P</span><div><b>These points are provisional</b><span class="muted">The stewards can still change results until Sunday. Everything recalculates when the round is marked final.</span></div></div>' : ''}
     <div class="cols cols--2-1">
       <div class="stack" style="--gap:28px">
         ${lastRoundSection()}
-        <section>${shead('Standings', standingsAside)}
+        <section>${shead('Standings', `<span class="row-flex" style="gap:14px">${standingsAside}<a class="link-more" href="league.html${q}">All teams${icon('chevron')}</a></span>`)}
           <div class="panel"><div class="panel__body" style="padding-top:8px">${leaderboardRows(board, me?.id, 12)}</div>${!lastScored ? '<p class="muted small" style="padding:0 18px 16px">Points start after round 1.</p>' : ''}</div></section>
         ${calendarSection()}
       </div>

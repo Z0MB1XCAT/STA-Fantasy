@@ -7,6 +7,7 @@ import { icon, avatar } from './components.js';
 const NAV = [
   ['index.html', 'Home', 'home'],
   ['team.html', 'My team', 'team'],
+  ['league.html', 'League', 'league'],
   ['drivers.html', 'Drivers', 'drivers'],
   ['results.html', 'Results', 'results'],
   ['rules.html', 'Rules', 'rules'],
@@ -123,7 +124,7 @@ function wireAuth(store) {
 
 /**
  * Loads data + store and paints the chrome. Returns what pages need.
- * @param pageId one of home | team | drivers | results | rules | admin
+ * @param pageId one of home | team | league | drivers | results | rules | admin
  */
 export async function boot(pageId) {
   const app = $('#app');

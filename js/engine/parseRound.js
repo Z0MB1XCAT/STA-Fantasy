@@ -2,6 +2,7 @@
 //
 //   round: 5
 //   status: provisional            # upcoming | provisional | final
+//   out: ZMB KAM                   # optional: announced before the deadline as not racing (a heads-up only)
 //   quali:   KAM JEN NFS ...       # finishing order, P1 first
 //   reverse: ... ICE:dnf
 //   feature: ... SOU:dsq
@@ -62,10 +63,16 @@ export function parseRound(text, opts = {}) {
   if (!STATUSES.includes(status)) errors.push(`status must be one of ${STATUSES.join(', ')} (got "${raw.status}")`);
 
   // old files may still have stand-in lines; they no longer do anything
-  if (raw.out || raw.subs) warnings.push('"out:" and "subs:" lines are no longer used and are ignored. Absent drivers just score 0.');
+  if (raw.subs) warnings.push('"subs:" lines are no longer used and are ignored. Absent drivers just score 0.');
+  if (raw.out && raw.out.includes('>')) warnings.push('"out:" no longer takes a stand-in (A>B); only the first code of each pair is used.');
+
+  // drivers announced as not racing; old "A>B" pairs keep just A
+  const out = raw.out ? parseOrder(raw.out.replace(/>\S*/g, ''), errors, 'out', codes).map(x => x.code) : [];
 
   const sessions = {};
   for (const s of SESSIONS) sessions[s] = raw[s] ? parseOrder(raw[s], errors, s, codes) : [];
+  const inResults = new Set(SESSIONS.flatMap(s => sessions[s].map(x => x.code)));
+  for (const c of out) if (inResults.has(c)) warnings.push(`${c} was marked as not racing but has results, so they score as normal`);
 
   const grids = {};
   if (raw.gridreverse) grids.reverse = parseOrder(raw.gridreverse, errors, 'gridreverse', codes).map(x => x.code);
@@ -89,7 +96,7 @@ export function parseRound(text, opts = {}) {
     warnings.push('No quali order, so places gained/lost cannot be scored (add quali or a grid override)');
   }
 
-  return { round, status, sessions, grids, fastest, notes: raw.notes || '', errors, warnings, ok: errors.length === 0 };
+  return { round, status, out, sessions, grids, fastest, notes: raw.notes || '', errors, warnings, ok: errors.length === 0 };
 }
 
 const orderToText = list => list.map(x => x.code + (x.mark ? ':' + x.mark : '')).join(' ');
@@ -99,6 +106,7 @@ export function serializeRound(r) {
   const lines = [];
   lines.push(`round: ${r.round}`);
   lines.push(`status: ${r.status}`);
+  if (r.out?.length) lines.push(`out: ${r.out.join(' ')}`);
   for (const s of SESSIONS) if (r.sessions?.[s]?.length) lines.push(`${s}: ${orderToText(r.sessions[s])}`);
   if (r.grids?.reverse?.length) lines.push(`gridreverse: ${r.grids.reverse.join(' ')}`);
   if (r.grids?.feature?.length) lines.push(`gridfeature: ${r.grids.feature.join(' ')}`);

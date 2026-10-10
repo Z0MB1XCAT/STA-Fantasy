@@ -17,8 +17,9 @@ export function baseData() {
 }
 
 /** Build a season from the real data files plus the given round files (text, keyed by round id). */
-export function seasonWith(roundTexts = {}) {
+export function seasonWith(roundTexts = {}, tweak = null) {
   const data = baseData();
+  if (tweak) tweak(data);
   const codes = new Set(data.drivers.drivers.map(d => d.code));
   const rounds = new Map();
   for (const [id, text] of Object.entries(roundTexts)) rounds.set(Number(id), parseRound(text, { codes }));

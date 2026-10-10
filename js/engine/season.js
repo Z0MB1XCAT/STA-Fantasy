@@ -52,7 +52,7 @@ export function buildSeason(data) {
       for (const t of teams) log(t.id, cal.id, scored.constructors[t.id].total, scored.constructors[t.id].raced);
 
       const dGroup = [], cGroup = [];
-      // a no-show counts like a race with 0 points (unless prices.absentCountsAsRace is false)
+      // a no-show's price stays put and the miss is skipped in their form (prices.absentCountsAsRace: true counts it as 0 points instead)
       const absentCounts = cfg.prices.absentCountsAsRace !== false;
       for (const d of drivers) {
         if (d.role !== 'regular' || d.retired) continue;

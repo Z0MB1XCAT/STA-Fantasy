@@ -2,6 +2,7 @@
 import { esc, posBox, money, fmtNum, nameOf, teamLine } from '../ui.js';
 import { avatar, ident, carImg, photoOf, teamVar, teamOf, ordinal, icon } from '../components.js';
 import { resolvePlayer } from '../engine/squad.js';
+import { carry } from '../env.js';
 
 export { playerColor } from '../components.js';
 
@@ -20,10 +21,20 @@ export function leaderboardRows(rows, meId, limit = 10) {
 }
 const ordinalRank = n => ordinal(n);
 
-/** Drivers in a squad who didn't turn up in a scored round (shown greyed out). */
+/** Drivers announced as not racing in a round that has no results yet. */
+export function notRacing(R) {
+  return new Set(R && !R.scores ? R.file?.out || [] : []);
+}
+
+/**
+ * Drivers in a squad to grey out, with the label to show: "Absent" once a scored round says they
+ * didn't turn up, "Not racing" when they were announced out before the results are in.
+ */
 export function absentIn(R, squad) {
-  if (!R?.scores || !squad) return null;
-  return new Set(squad.drivers.filter(d => R.scores.effective[d]?.absent));
+  if (!R || !squad) return null;
+  if (R.scores) return new Map(squad.drivers.filter(d => R.scores.effective[d]?.absent).map(d => [d, 'Absent']));
+  const out = notRacing(R);
+  return new Map(squad.drivers.filter(d => out.has(d)).map(d => [d, 'Not racing']));
 }
 
 /**
@@ -48,7 +59,8 @@ export function rivalSheet(S, standing, subsOfPlayer, now) {
           ${row.roundTotal != null ? `<span class="num" style="font-size:1.1rem">${fmtNum(row.roundTotal)} pts</span>` : '<span class="muted small">Not scored yet</span>'}
         </div>
         ${lineup(S, row.squad, revealed.prices, pts, absentIn(revealed, row.squad))}
-        <div style="margin-top:10px">${squadRows(S, row.squad, revealed.prices, pts, true)}</div>`;
+        <div style="margin-top:10px">${squadRows(S, row.squad, revealed.prices, pts, true)}</div>
+        <p style="margin-top:14px;text-align:center"><a class="link-more" href="league.html${carry}#r${revealed.id}">See every team${icon('chevron')}</a></p>`;
     }
   }
   return `<div class="sheet__scroll">
@@ -62,7 +74,7 @@ export function rivalSheet(S, standing, subsOfPlayer, now) {
 export function lineup(S, squad, prices, pointsByAsset = null, absent = null) {
   return `<div class="lineup">${squad.drivers.map(code => {
     const src = photoOf(S, code);
-    const away = absent?.has(code);
+    const away = absent?.get(code);
     return `<div class="lineup__cell${away ? ' is-absent' : ''}">
       <div class="lineup__tile" style="${teamVar(S, code)}">
         ${teamOf(S, code)?.logo ? `<img class="lineup__logo" src="${teamOf(S, code).logo}" alt="">` : ''}
@@ -70,7 +82,7 @@ export function lineup(S, squad, prices, pointsByAsset = null, absent = null) {
         ${squad.drs === code ? '<span class="mark mark--drs lineup__drs">DRS</span>' : ''}
       </div>
       <div class="lineup__name">${esc(nameOf(S, code))}</div>
-      <div class="lineup__meta">${away ? 'Absent' : pointsByAsset ? `${fmtNum(pointsByAsset[code] ?? 0)} pts` : money(prices[code] ?? 0)}</div>
+      <div class="lineup__meta">${away || (pointsByAsset ? `${fmtNum(pointsByAsset[code] ?? 0)} pts` : money(prices[code] ?? 0))}</div>
     </div>`;
   }).join('')}</div>`;
 }

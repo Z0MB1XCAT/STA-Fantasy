@@ -135,8 +135,8 @@
     },
     "constructorFactor": 0.55,
     "targetDriverMean": 14,
-    "absentCountsAsRace": true
+    "absentCountsAsRace": false
   },
   "discord": "https://discord.gg/fEjHrAX6aF",
-  "contactUrl": "https://discord.gg/fEjHrAX6aF"
+  "contactUrl": "https://discord.com/users/713009405008019557"
 }

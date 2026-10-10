@@ -6,15 +6,14 @@ import { parseRound, serializeRound } from '../engine/parseRound.js';
 import { buildSeason } from '../engine/season.js';
 
 const ctx = await boot('admin');
-const { S, raw, store } = ctx;
+const { S, raw, store, now } = ctx;
 const roundsMap = ctx.rounds;
 const app = $('#app');
 const codes = new Set(S.drivers.map(d => d.code));
 const regulars = S.drivers.filter(d => d.role === 'regular');
-const reserves = S.drivers.filter(d => d.role === 'reserve');
 const pad = n => String(n).padStart(2, '0');
 
-const blank = id => ({ round: id, status: 'provisional', out: {}, subs: {}, sessions: { quali: [], reverse: [], feature: [] }, grids: {}, fastest: {}, notes: '' });
+const blank = id => ({ round: id, status: 'provisional', out: [], sessions: { quali: [], reverse: [], feature: [] }, grids: {}, fastest: {}, notes: '' });
 const clone = o => JSON.parse(JSON.stringify(o));
 
 let roundId = (S.currentRound() || S.rounds[0]).id;
@@ -25,8 +24,10 @@ let pasteMsg = '';
 function load(id) {
   const existing = roundsMap.get(id);
   if (existing && existing.ok && existing.status !== 'upcoming') return clone(existing);
+  // no results yet: before the deadline you are most likely announcing who isn't racing, after it entering results
   const b = blank(id);
-  
+  b.status = now < S.round(id).lockAt ? 'upcoming' : 'provisional';
+  if (existing?.ok) b.out = [...existing.out];
   return b;
 }
 
@@ -86,6 +87,8 @@ function advisories() {
   const msgs = [];
   const placed = new Set(Object.values(st.sessions).flat().map(x => x.code));
   const missing = regulars.filter(d => !placed.has(d.code));
+  const outButPlaced = st.out.filter(c => placed.has(c));
+  if (outButPlaced.length) msgs.push(`Marked as not racing but in the results, so they score as normal: ${outButPlaced.map(c => nameOf(S, c)).join(', ')}.`);
   if (st.status !== 'upcoming' && placed.size && missing.length) msgs.push(`Not in any session, so they count as absent (0 points, greyed out): ${missing.map(d => d.name).join(', ')}.`);
   for (const s of ['quali', 'reverse', 'feature']) {
     const n = st.sessions[s].length;
@@ -153,7 +156,13 @@ function render() {
         <section class="panel"><div class="panel__head"><h2 class="h2">Round ${roundId}: ${esc(S.round(roundId).name)}</h2>
           <div class="seg" role="group" aria-label="Status">${['upcoming', 'provisional', 'final'].map(k => `<button type="button" aria-pressed="${st.status === k}" data-act="status" data-k="${k}">${k[0].toUpperCase() + k.slice(1)}</button>`).join('')}</div></div>
           <div class="panel__body--pad stack" style="--gap:16px">
-            <p class="hint">Friday after the races: <b>Provisional</b>. Sunday after the stewards: edit anything that changed, then set <b>Final</b>. Anyone you leave out of a session counts as absent: 0 points, no penalty. Reserves can be placed so the positions are right, but they don't score.</p>
+            <p class="hint">Before the deadline: <b>Upcoming</b>, if you're only marking who isn't racing. Friday after the races: <b>Provisional</b>. Sunday after the stewards: edit anything that changed, then set <b>Final</b>. Anyone you leave out of a session counts as absent: 0 points, no penalty. Reserves can be placed so the positions are right, but they don't score.</p>
+          </div></section>
+
+        <section class="panel"><div class="panel__head"><h2 class="h2">Not racing this round</h2><span class="muted small">${st.out.length ? `${st.out.length} marked` : 'Nobody marked'}</span></div>
+          <div class="panel__body--pad stack" style="--gap:14px">
+            <p class="hint">Know before the deadline that someone can't make it? Tap them here, keep the status on <b>Upcoming</b> and commit the file. Everyone sees them greyed out as <b>Not racing</b>, so they can use a transfer on them in time. Transfers work as normal. If they turn up after all, just put them in the results and they score as usual.</p>
+            <div class="pool" role="group" aria-label="Drivers not racing">${regulars.filter(d => !d.retired).map(d => `<button type="button" data-act="out" data-code="${d.code}" aria-pressed="${st.out.includes(d.code)}">${bust(S, d.code)}${esc(d.name)}</button>`).join('')}</div>
           </div></section>
 
         <section class="panel"><div class="panel__head"><div class="seg" role="group" aria-label="Session">${[['quali', 'Short Quali'], ['reverse', 'Reverse Grid'], ['feature', 'Feature Race']].map(([k, l]) => `<button type="button" data-act="tab" data-k="${k}" aria-pressed="${tab === k}">${l} <span class="faint">${st.sessions[k].length}</span></button>`).join('')}</div></div>
@@ -188,6 +197,7 @@ app.addEventListener('click', async e => {
   const list = st.sessions[tab];
   if (a === 'round') { roundId = Number(b.dataset.id); st = load(roundId); pasteMsg = ''; }
   else if (a === 'status') st.status = b.dataset.k;
+  else if (a === 'out') { const c = b.dataset.code; st.out = st.out.includes(c) ? st.out.filter(x => x !== c) : regulars.map(d => d.code).filter(x => x === c || st.out.includes(x)); }
   else if (a === 'tab') { tab = b.dataset.k; pasteMsg = ''; }
   else if (a === 'place') list.push({ code: b.dataset.code, mark: null });
   else if (a === 'up') move(list, +b.dataset.i, -1);

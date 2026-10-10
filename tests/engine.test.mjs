@@ -79,15 +79,40 @@ test('place gains are capped (reverse grid back-marker)', () => {
   assert.equal(win.pts, 12 + 5);                                // 12 base + cap of +5
 });
 
-test('a no-show scores 0 with no penalty, reserves score for nobody, and the miss counts as a 0-point race for price', () => {
+test('a no-show scores 0 with no penalty, reserves score for nobody, and the no-show keeps their price', () => {
   const S = seasonWith({ 1: 'round: 1\nstatus: final\nquali: KAM XMK JEN\nfeature: KAM XMK JEN\nreverse: JEN XMK KAM' });
   const R = S.round(1);
   assert.equal(R.scores.effective.ZMB.points, 0);
   assert.equal(R.scores.effective.ZMB.absent, true);
   assert.equal(R.scores.constructors.alpine.seats.includes('XMK'), false);   // reserve's points don't go to Alpine
   assert.equal(R.scores.constructors.alpine.total, 0);
-  assert.ok(S.round(2).prices.ZMB < S.round(1).prices.ZMB, 'no-show counts as a 0-point race');
+  assert.equal(S.round(2).prices.ZMB, S.round(1).prices.ZMB, 'a no-show keeps their price');
   assert.equal(S.round(2).prices.XMK, S.round(1).prices.XMK);               // reserves never move
+});
+
+test('with prices.absentCountsAsRace a no-show counts as a 0-point race and drops', () => {
+  const S = seasonWith({ 1: ["round: 1", "status: final", "quali: KAM JEN", "feature: KAM JEN", "reverse: JEN KAM"].join('\n') }, d => { d.season.prices.absentCountsAsRace = true; });
+  assert.ok(S.round(2).prices.ZMB < S.round(1).prices.ZMB);
+});
+
+test('out: marks drivers as not racing before the deadline, as a heads-up only', () => {
+  const codes = codesOf();
+  const p = parseRound(["round: 4", "status: upcoming", "out: ZMB kam"].join('\n'), { codes });
+  assert.deepEqual(p.out, ['ZMB', 'KAM']);
+  assert.deepEqual(parseRound(serializeRound(p), { codes }).out, ['ZMB', 'KAM']);
+  const old = parseRound(["round: 4", "status: upcoming", "out: ZMB>XMK"].join('\n'), { codes });
+  assert.equal(old.ok, true);
+  assert.deepEqual(old.out, ['ZMB']);
+  const raced = parseRound(["round: 4", "status: provisional", "out: KAM", "quali: KAM JEN"].join('\n'), { codes });
+  assert.match(raced.warnings.join(' '), /KAM was marked as not racing but has results/);
+  // transfers are normal: swapping an announced driver still costs a transfer
+  const S0 = seasonWith({ 1: ROUND1 });
+  const cheap = S0.drivers.filter(d => d.role === 'regular').sort((a, b) => S0.round(2).prices[a.code] - S0.round(2).prices[b.code]).slice(0, 6).map(d => d.code);
+  const S = seasonWith({ 1: ROUND1, 2: ['round: 2', 'status: upcoming', `out: ${cheap[4]}`].join('\n') });
+  const sq = { drivers: cheap.slice(0, 5), constructors: ['haas', 'aston'], drs: cheap[0] };
+  const res = resolvePlayer(S, { 1: sq, 2: { ...sq, drivers: [...cheap.slice(0, 4), cheap[5]] } }, { upTo: 2 });
+  assert.equal(res.rows[1].valid, true, res.rows[1].issues.join('; '));
+  assert.equal(res.rows[1].transfers.effective, 1);
 });
 
 test('price bands: percentile ranked, clamped and rounded', () => {
@@ -112,8 +137,7 @@ test('after a final round, raced assets move and absent ones stay put', () => {
   const S = seasonWith({ 1: ROUND1 });
   const r1 = S.round(1), r2 = S.round(2);
   assert.equal(r2.priceStatus, 'final');
-  assert.ok(r2.prices.PAB < r1.prices.PAB, 'a no-show counts as a 0-point race, so their price falls');
-  assert.ok(r2.prices.PAB <= r1.prices.PAB, 'absent driver counted as 0 points');
+  assert.equal(r2.prices.PAB, r1.prices.PAB, 'a no-show keeps their price');
   assert.ok(['KAM', 'JEN', 'NFS'].some(c => r2.prices[c] > r1.prices[c]) || true);
   const prov = seasonWith({ 1: ROUND1.replace('final', 'provisional') });
   assert.equal(prov.round(2).priceStatus, 'projected');

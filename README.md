@@ -18,9 +18,14 @@ project that stores players' teams and enforces the pick deadline.
 2. Set the status to **Final**, copy, and paste it over `data/rounds/NN.txt` again.
 3. That's it. Prices update, transfers open for the next round, and the league table stops saying provisional.
 
-**If a driver doesn't turn up:** just leave them out of the results. They score 0 for that round (no penalty) and show
-greyed out in everyone's team. Reserves can still be typed into the results so the other finishing positions are right,
-but they don't score for anyone.
+**Before the deadline, if you know a driver can't make it:** open `admin.html`, choose the round, tap them under
+**Not racing this round**, leave the status on **Upcoming**, copy the file and commit it as usual. Everyone sees them greyed
+out as *Not racing*, so players can swap them with a normal transfer in time. If they turn up after all, just put them in
+the results and they score as usual.
+
+**If a driver doesn't turn up:** just leave them out of the results. They score 0 for that round (no penalty), show
+greyed out in everyone's team, and keep their price. Reserves can still be typed into the results so the other finishing
+positions are right, but they don't score for anyone.
 
 You can also edit the `.txt` files by hand. The format is documented at the top of every file in `data/rounds/`.
 
@@ -31,8 +36,10 @@ You can also edit the `.txt` files by hand. The format is documented at the top 
 - Chips (once each): Wildcard, Limitless, Extra DRS, No Negative, Autopilot.
 - Deadline = start of Short Quali, Friday 8 pm UK time. Everyone's picks become visible then.
 - Points are provisional until you set the round to Final. Prices and the next transfer window only open on Final.
-- A driver who doesn't turn up scores 0 (like a DNF without the penalty), is greyed out, and the missed round counts
-  as a 0-point race for their price (`prices.absentCountsAsRace` in `data/season.json`). Reserves aren't pickable.
+- A driver who doesn't turn up scores 0 (like a DNF without the penalty), is greyed out, and keeps their price; the missed
+  round is left out of their form. Set `prices.absentCountsAsRace` to `true` in `data/season.json` to count it as a
+  0-point race instead. Reserves aren't pickable.
+- Everyone's team for a round appears on the League page once that round's picks lock.
 - Full scoring tables and all numbers live in `data/season.json` (the Rules page renders from that file).
 
 ## Where things live
@@ -73,7 +80,7 @@ The tool prints every price so you can sanity-check it.
   learn them, then run `node tools/seed-prices.mjs` (prices do not change, it only copies the field across).
 - **Discord:** the invite link is `discord` in `data/season.json`; it shows in the footer, on Home, on Rules and in the
   sign-up box.
-- **Page shells:** the six `.html` files are generated from one template. Edit `tools/dev/build-pages.mjs` and run it,
+- **Page shells:** the seven `.html` files are generated from one template. Edit `tools/dev/build-pages.mjs` and run it,
   rather than editing the HTML files by hand.
 - Players can "install" the site from their phone browser (Add to Home Screen); it opens full screen like an app.
 

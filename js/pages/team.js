@@ -1,6 +1,6 @@
 import { boot, problemsNotice } from '../shell.js';
 import { carry } from '../env.js';
-import { absentIn } from './common.js';
+import { absentIn, notRacing } from './common.js';
 import { esc, $, money, delta, fmtNum, nameOf, teamLine, statusBadge, fmtDate, fmtLock, toast, flag } from '../ui.js';
 import { resolvePlayer, transferInfo, squadValue, assetsOf } from '../engine/squad.js';
 import { icon, ident, carImg, driverCard, constructorCard, emptyDriverCard, emptyConstructorCard, teamWithFlag, shead, avatar, bust, tchip } from '../components.js';
@@ -72,6 +72,7 @@ const before = resolvePlayer(S, mine, { upTo: R.id - 1 });
 const state = before.state;
 const prices = R.prices;
 const editable = phase.state === 'open';
+const out = notRacing(R);   // announced before the deadline as not racing
 const saved = mine[R.id] || null;
 
 let draft = saved
@@ -128,10 +129,12 @@ function squadView() {
     if (!id) return editable ? emptyDriverCard('Add driver', 'data-act="tab" data-id="drivers"') : '<div class="dcard dcard--empty dcard--static"><span>Empty</span></div>';
     const s = S.assetSummary(id);
     const top = `${draft.chip !== 'autopilot' ? `<button class="cardbtn" type="button" data-act="drs" data-id="${id}" aria-pressed="${draft.drs === id}" ${editable ? '' : 'disabled'} title="DRS Boost: ${draft.chip === 'extradrs' ? 3 : cfg.drs.multiplier}x points">DRS</button>` : ''}${editable ? `<button class="cardbtn" type="button" data-act="remove" data-id="${id}" aria-label="Remove ${esc(nameOf(S, id))}">${icon('close')}</button>` : ''}`;
-    // once this round has results, show the round's points and grey out anyone who didn't turn up
+    // once this round has results, show the round's points and grey out anyone who didn't turn up;
+    // before that, grey out anyone announced as not racing
     const eff = R.scores?.effective[id];
-    const meta = eff ? (eff.absent ? 'Absent<br>0 pts' : `${fmtNum(eff.points)} pts<br>this round`) : (s.rounds ? `${fmtNum(s.avg)} avg<br>${fmtNum(s.total)} pts` : 'No races yet');
-    return driverCard(S, id, { tag: 'div', cls: `dcard--static${draft.drs === id ? ' is-in' : ''}${eff?.absent ? ' dcard--absent' : ''}`, price: prices[id], top, meta });
+    const meta = eff ? (eff.absent ? 'Absent<br>0 pts' : `${fmtNum(eff.points)} pts<br>this round`)
+      : out.has(id) ? 'Not racing<br>this round' : (s.rounds ? `${fmtNum(s.avg)} avg<br>${fmtNum(s.total)} pts` : 'No races yet');
+    return driverCard(S, id, { tag: 'div', cls: `dcard--static${draft.drs === id ? ' is-in' : ''}${eff?.absent || out.has(id) ? ' dcard--absent' : ''}`, price: prices[id], top, meta });
   });
   const cCards = Array.from({ length: nC }, (_, i) => {
     const id = draft.constructors[i];
@@ -175,7 +178,7 @@ function marketRows() {
     const d = S.priceDelta(id);
     return `<div class="row mrow${inSquad ? ' mrow--in' : ''}${blocked ? ' mrow--off' : ''}">
       ${ident(S, id)}
-      <div class="who"><b>${esc(nameOf(S, id))}</b>
+      <div class="who"><b>${esc(nameOf(S, id))}${out.has(id) ? ' <span class="mark mark--dnf">Not racing</span>' : ''}</b>
         <small>${isD ? teamWithFlag(S, id) : esc(teamLine(S, id))}</small></div>
       ${isD ? '' : carImg(S, id)}
       <div class="stats">
@@ -238,14 +241,20 @@ function seasonView() {
       const rr = S.round(r.round);
       return `<a class="row row--link" href="results.html${carry}#r${rr.id}"><span class="pos">${r.round}</span>${flag(rr, 'md')}
         <div class="who"><b>${esc(rr.name)}</b>
-          <small>${absentIn(rr, r.squad)?.size ? `${[...absentIn(rr, r.squad)].map(d => esc(nameOf(S, d))).join(' and ')} didn't race. ` : ''}${r.chip ? esc(cfg.chips[r.chip].name) + ' played. ' : ''}${r.transfers.penalty ? `${r.transfers.effective} transfers, -${r.transfers.penalty} pts. ` : ''}${esc(r.issues.join('. ')) || (rr.status === 'provisional' ? 'Provisional' : 'Final')}</small></div>
+          <small>${absentIn(rr, r.squad)?.size ? `${[...absentIn(rr, r.squad).keys()].map(d => esc(nameOf(S, d))).join(' and ')} didn't race. ` : ''}${r.chip ? esc(cfg.chips[r.chip].name) + ' played. ' : ''}${r.transfers.penalty ? `${r.transfers.effective} transfers, -${r.transfers.penalty} pts. ` : ''}${esc(r.issues.join('. ')) || (rr.status === 'provisional' ? 'Provisional' : 'Final')}</small></div>
         <div class="stat stat--lead"><span class="num">${r.roundTotal == null ? '–' : fmtNum(r.roundTotal)}</span><small>Points</small></div></a>`;
     }).join('')}</div></div></div></div></section>`;
 }
 
+const andList = xs => xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`;
+
 function banner() {
   if (phase.state === 'provisional') return `<div class="notice notice--flag"><span class="glyph">P</span><div><b>Waiting on the stewards</b><span class="muted">Round ${R.id} results are provisional. Transfers and new prices open for round ${R.id + 1} once it is marked final.</span></div></div>`;
   if (phase.state === 'locked') return `<div class="notice notice--signal"><span class="glyph">!</span><div><b>Round ${R.id} is locked</b><span class="muted">This is the team you are racing with. Points appear once the results are entered.</span></div></div>`;
+  if (out.size) {
+    const names = [...out].map(c => esc(nameOf(S, c)));
+    return `<div class="notice notice--flag"><span class="glyph">!</span><div><b>Not racing in ${esc(R.name)}: ${andList(names)}</b><span class="muted">${names.length === 1 ? 'They score' : 'They each score'} 0 points this round. If you have ${names.length === 1 ? 'them' : names.length === 2 ? 'either of them' : 'any of them'}, you can swap them out before the deadline. That uses one of your transfers as normal.</span></div></div>`;
+  }
   return '';
 }
 
