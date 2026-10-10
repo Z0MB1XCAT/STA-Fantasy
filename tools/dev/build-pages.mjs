@@ -62,21 +62,16 @@ const tpl = (title, script, desc) => `${head(title, desc, { noindex: script === 
 for (const [file, title, script, desc] of pages) fs.writeFileSync(path.join(root, file), tpl(title, script, desc));
 
 // GitHub Pages serves this for any missing URL, possibly from a nested path, so links are resolved at runtime.
-fs.writeFileSync(path.join(root, '404.html'), `${head('Page not found', DESC, { noindex: true }).replace(/href="(manifest|images|css)/g, 'href="/$1')}
+// GitHub serves 404.html at whatever path was requested, so its assets need absolute URLs.
+const abs = SITE_URL ? `${SITE_URL}/` : '/';
+fs.writeFileSync(path.join(root, '404.html'), `${head('Page not found', DESC, { noindex: true }).replace(/href="(manifest|images|css)/g, `href="${abs}$1`)}
 <body>
   <main class="wrap" style="min-height:70vh;display:grid;place-content:center;text-align:center;gap:14px">
     <p class="shead__title" style="font-size:clamp(3rem,10vw,6rem);color:var(--brand)">404</p>
     <h1 class="h1">Off the track</h1>
     <p class="muted">That page does not exist. It may have moved, or the link is wrong.</p>
-    <p><a class="btn btn--red" id="home" href="/">Back to STA Fantasy</a></p>
+    <p><a class="btn btn--red" href="${abs}">Back to STA Fantasy</a></p>
   </main>
-  <script>
-    // project sites live under /<repo>/, so send people to that root rather than the domain root
-    var seg = location.hostname.endsWith('github.io') ? location.pathname.split('/')[1] : '';
-    var base = seg ? '/' + seg + '/' : '/';
-    document.getElementById('home').href = base;
-    document.querySelectorAll('link[href^="/"]').forEach(function (l) { l.href = base + l.getAttribute('href').slice(1); });
-  </script>
 </body>
 </html>
 `);
