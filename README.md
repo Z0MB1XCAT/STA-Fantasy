@@ -105,11 +105,13 @@ Demo mode (no login, fake players, never touches Supabase):
 - `node tools/dev/make-icons.mjs`: redraws the home-screen icons from the league logo.
 - Developer URL switches (`?store=local`, `?demo=1`, `?now=`, `?rounds=`) only work on localhost.
 
-## Deploying (GitHub Pages)
+## Live site
 
-1. Create a **public** repository and push this folder (`tools/source/` and `temporary screenshots/` are git-ignored).
-2. Repo Settings, Pages, deploy from branch `main`, folder `/ (root)`.
-3. The keep-alive workflow in `.github/workflows` runs by itself on a public repo.
+**https://z0mb1xcat.github.io/STA-Fantasy/** (GitHub Pages, branch `main`, folder `/`).
+
+Anything committed to `main` is live within a minute or two, including round files edited on github.com.
+The keep-alive workflow in `.github/workflows` pings Supabase twice a week so the free project never pauses.
+If the race calendar changes, also run `node tools/make-ics.mjs` so the "Add deadlines to your calendar" file matches.
 
 ## Admin notes
 

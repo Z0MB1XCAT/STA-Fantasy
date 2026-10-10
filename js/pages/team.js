@@ -20,8 +20,38 @@ const pageHead = (right = '') => `
     <div class="row-flex" style="gap:16px;flex-wrap:nowrap;min-width:0">${flag(R, 'lg')}
       <div style="min-width:0"><h1 class="h1">${esc(me?.team || 'My team')}</h1>
         <p class="muted">Round ${R.id}, ${esc(R.name)}. Picks lock ${fmtDate(R)}, ${fmtLock(R)}.</p></div></div>
-    ${right}
+    <div class="row-flex">${me ? '<button class="btn btn--ghost btn--sm" type="button" data-act="rename">Rename team</button>' : ''}${right}</div>
   </div>`;
+
+function openRename() {
+  let dlg = $('#rename');
+  if (!dlg) {
+    document.body.insertAdjacentHTML('beforeend', `<dialog id="rename" class="floating" aria-labelledby="rn-title"><form class="dialog__in" id="rn-form" novalidate>
+      <h2 class="h2" id="rn-title">Rename your team</h2>
+      <div class="field"><label for="rn-input">Team name</label><input class="input" id="rn-input" maxlength="30" required></div>
+      <p class="error" id="rn-error" role="alert"></p>
+      <div class="row-flex" style="justify-content:flex-end"><button class="btn btn--ghost" type="button" id="rn-cancel">Cancel</button><button class="btn btn--red" type="submit">Save name</button></div>
+    </form></dialog>`);
+    dlg = $('#rename');
+    $('#rn-cancel').addEventListener('click', () => dlg.close());
+    $('#rn-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = $('#rn-input').value.trim();
+      if (!name) { $('#rn-error').textContent = 'Enter a team name.'; return; }
+      try {
+        await store.renameTeam(name);
+        me.team = name;
+        dlg.close();
+        toast('Team renamed');
+        render();
+      } catch (ex) { $('#rn-error').textContent = ex.message; }
+    });
+  }
+  $('#rn-input').value = me.team || '';
+  $('#rn-error').textContent = '';
+  dlg.showModal();
+  $('#rn-input').select();
+}
 
 /* ---------------------------------------------------------------- logged out */
 if (!me) {
@@ -278,6 +308,7 @@ async function act(a, id) {
     if (matchMedia('(max-width: 979px)').matches) $('#market-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
   }
+  if (a === 'rename') { openRename(); return; }
   if (!editable) return;
   if (a === 'add') {
     const arr = S.driverMap.has(id) ? draft.drivers : draft.constructors;
