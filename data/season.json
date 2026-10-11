@@ -17,11 +17,13 @@
   "chips": {
     "wildcard": {
       "name": "Wildcard",
-      "desc": "Unlimited free transfers this round. Your new team stays."
+      "desc": "Unlimited free transfers this round. Your new team stays.",
+      "needsTeam": true
     },
     "limitless": {
       "name": "Limitless",
-      "desc": "No budget cap and unlimited free transfers for one round. Your old team returns afterwards."
+      "desc": "No budget cap and unlimited free transfers for one round. Your old team returns afterwards.",
+      "needsTeam": true
     },
     "extradrs": {
       "name": "Extra DRS",

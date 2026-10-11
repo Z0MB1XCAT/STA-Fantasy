@@ -19,11 +19,6 @@ const ICONS = {
   clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
   absent: '<circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0 1 13 0"/><path d="m17 8 4 4m0-4-4 4"/>',
   trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
-  wildcard: '<path d="M4 7h3.5l9 10H20M4 17h3.5l2.6-2.9M14 9.9 16.5 7H20M17.5 4.5 20 7l-2.5 2.5M17.5 14.5 20 17l-2.5 2.5"/>',
-  limitless: '<path d="M8 8.5c-2 0-3.5 1.6-3.5 3.5S6 15.5 8 15.5c3 0 5-7 8-7 2 0 3.5 1.6 3.5 3.5S18 15.5 16 15.5c-3 0-5-7-8-7z"/>',
-  extradrs: '<text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="800" font-family="Archivo, sans-serif" fill="currentColor" stroke="none">3x</text>',
-  nonegative: '<path d="M12 3.5 5 6v5.5c0 4.2 3 7.6 7 9 4-1.4 7-4.8 7-9V6z"/><path d="m9 12 2 2 4-4"/>',
-  autopilot: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2"/><path d="M3.8 10.6 10 12M14 12l6.2-1.4M12 14v6.4"/>',
   league: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a2.5 2.5 0 0 0 3 4M16 6h3a2.5 2.5 0 0 1-3 4"/><path d="M12 13v4M8.5 20h7M10 17h4"/>',
   trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a2.5 2.5 0 0 0 3 4M16 6h3a2.5 2.5 0 0 1-3 4"/><path d="M12 13v4M8.5 20h7M10 17h4"/>',
   calendar: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/>',
@@ -31,6 +26,9 @@ const ICONS = {
 };
 export const icon = (name, cls = '') =>
   `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
+
+/** Chip artwork (images/chips/<id>.webp, cut from the chip guide by tools/dev/make-chips.mjs). */
+export const chipImg = (id, cls = '') => `<img class="chipimg ${cls}" src="images/chips/${id}.webp" alt="" width="128" height="128" loading="lazy" decoding="async">`;
 
 /* --------------------------------------------------------------- team art */
 const SILHOUETTE = 'data:image/svg+xml;utf8,' + encodeURIComponent(

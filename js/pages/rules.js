@@ -1,6 +1,6 @@
 import { boot, problemsNotice, contactLink } from '../shell.js';
 import { esc, $, $$, money } from '../ui.js';
-import { icon, shead } from '../components.js';
+import { icon, chipImg, shead } from '../components.js';
 
 const { S, problems } = await boot('rules');
 const c = S.cfg;
@@ -91,7 +91,7 @@ $('#app').innerHTML = `<div class="stack" style="--gap:22px">
 
       ${section('chips', `
         <p>Each chip can be played once a season, and only one per round.</p>
-        <div class="chipgrid">${Object.values(c.chips).map(ch => `<div><b>${esc(ch.name)}</b><span>${esc(ch.desc)}</span></div>`).join('')}</div>`)}
+        <div class="chipgrid">${Object.entries(c.chips).map(([id, ch]) => `<div>${chipImg(id)}<b>${esc(ch.name)}</b><span>${esc(ch.desc)}${ch.needsTeam ? " Not available in round 1, as you need a team first." : ''}</span></div>`).join('')}</div>`)}
 
       ${section('prices', `
         <ul class="ticks">

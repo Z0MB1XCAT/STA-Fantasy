@@ -1,4 +1,4 @@
-import { boot, problemsNotice, contactLink } from '../shell.js';
+import { boot, problemsNotice, contactLink, loadLeague, serverDownNotice, atDeadline } from '../shell.js';
 import { carry } from '../env.js';
 import { esc, $, fmtDate, fmtLock, statusBadge, countdownParts, pad2, money, delta, nameOf, flag, fmtNum } from '../ui.js';
 import { standings } from '../league.js';
@@ -11,8 +11,7 @@ const { S, store, now, problems } = ctx;
 const app = $('#app');
 const q = carry;
 
-let players = [], subs = {};
-try { [players, subs] = await Promise.all([store.players(), store.submissions()]); } catch (e) { console.warn(e); }
+const { players, subs, ok: leagueOk } = await loadLeague(store);
 
 const phase = S.phase(now);
 const R = phase.round;
@@ -135,6 +134,8 @@ function myTeamSection() {
   if (!me) {
     body = `<div class="panel__body--pad prose muted" style="padding-top:16px"><p>Pick 5 drivers and 2 constructors within ${money(S.cfg.budget)}, choose a DRS Boost driver and climb the table. Anyone can join.</p>
       <p style="margin-top:14px"><button class="btn btn--red" type="button" onclick="openAuth('join')">Join the league</button></p></div>`;
+  } else if (!leagueOk) {
+    body = `<div class="panel__body--pad prose muted" style="padding-top:16px"><p>Your team can't be loaded right now. It is safe, and will show again once the league server is back.</p></div>`;
   } else if (!myRow?.squad) {
     body = `<div class="panel__body--pad prose muted" style="padding-top:16px"><p>You have not picked a team yet.</p>
       <p style="margin-top:14px"><a class="btn btn--red" href="team.html${q}">Pick your team${icon('chevron')}</a></p></div>`;
@@ -203,11 +204,12 @@ function helpCard() {
 
 /* --------------------------------------------------------------- compose */
 const board = standings(S, players, subs);
-const standingsAside = lastScored ? (phase.state === 'provisional' ? 'Includes provisional points' : `After round ${lastScored.id}`)
+const standingsAside = !leagueOk ? '' : lastScored ? (phase.state === 'provisional' ? 'Includes provisional points' : `After round ${lastScored.id}`)
   : `${players.length} ${players.length === 1 ? 'player' : 'players'} so far`;
 app.innerHTML = `
   <div class="stack" style="--gap:22px">
     ${problemsNotice(problems)}
+    ${leagueOk ? '' : serverDownNotice(S)}
     ${heroHtml()}
     ${notRacingNotice()}
     ${phase.state === 'provisional' ? '<div class="notice notice--flag"><span class="glyph">P</span><div><b>These points are provisional</b><span class="muted">The stewards can still change results until Sunday. Everything recalculates when the round is marked final.</span></div></div>' : ''}
@@ -215,7 +217,7 @@ app.innerHTML = `
       <div class="stack" style="--gap:28px">
         ${lastRoundSection()}
         <section>${shead('Standings', `<span class="row-flex" style="gap:14px">${standingsAside}<a class="link-more" href="league.html${q}">All teams${icon('chevron')}</a></span>`)}
-          <div class="panel"><div class="panel__body" style="padding-top:8px">${leaderboardRows(board, me?.id, 12)}</div>${!lastScored ? '<p class="muted small" style="padding:0 18px 16px">Points start after round 1.</p>' : ''}</div></section>
+          <div class="panel"><div class="panel__body" style="padding-top:8px">${leagueOk ? leaderboardRows(board, me?.id, 12) : '<div class="empty">Standings are unavailable right now.</div>'}</div>${leagueOk && !lastScored ? '<p class="muted small" style="padding:0 18px 16px">Points start after round 1.</p>' : ''}</div></section>
         ${calendarSection()}
       </div>
       <div class="stack" style="--gap:28px">${myTeamSection()}${moversSection()}${helpCard()}</div>
@@ -239,3 +241,5 @@ app.addEventListener('click', e => {
 runLights();
 tick();
 if ($('#clock')) setInterval(tick, 1000);
+// at zero, load the locked view by itself
+if (phase.state === 'open') atDeadline(R, now, () => location.reload());

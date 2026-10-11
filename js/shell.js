@@ -1,8 +1,10 @@
 // Page chrome (header, footer, login dialog) + boot sequence shared by every page.
-import { loadSeason } from './data.js';
+import { loadSeason, serverClockOffset } from './data.js';
 import { createStore } from './store.js';
 import { esc, $, loaderHtml, toast } from './ui.js';
 import { icon, avatar } from './components.js';
+import { watchForOutage } from './fallback.js';
+import { watchForNewResults, latestSaved } from './live.js';
 
 const NAV = [
   ['index.html', 'Home', 'home'],
@@ -14,8 +16,34 @@ const NAV = [
 ];
 
 import { params as qs, carry } from './env.js';
-/** ?now=2026-10-16T18:00:00Z pretends it is that moment (testing only) */
-export const clock = () => (qs.get('now') ? new Date(qs.get('now')) : new Date());
+/**
+ * The current time. Follows the server's clock rather than the device's, because the database enforces the deadline
+ * with its own clock. ?now=2026-10-16T18:00:00Z pretends it is that moment (testing only).
+ */
+export const clock = () => (qs.get('now') ? new Date(qs.get('now')) : new Date(Date.now() + serverClockOffset()));
+
+/**
+ * Runs `then` just after a round's pick deadline passes, even if the tab was asleep or in the background,
+ * so a page left open turns into the locked view by itself instead of letting someone edit a team that can't be saved.
+ */
+export function atDeadline(R, now, then) {
+  let done = false;
+  const fire = () => { if (!done) { done = true; then(); } };
+  const ms = R.lockAt - now + 1500;
+  if (ms > 0 && ms < 2 ** 31 - 1) setTimeout(fire, ms);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && clock() >= R.lockAt + 1000) fire(); });
+}
+
+/** Everyone's players and visible picks. `ok` is false when the league server could not be reached. */
+export async function loadLeague(store) {
+  try {
+    const [players, subs] = await Promise.all([store.players(), store.submissions()]);
+    return { players, subs, ok: true };
+  } catch (e) {
+    console.warn('League data unavailable', e);
+    return { players: [], subs: {}, ok: false };
+  }
+}
 
 const link = (href, id, pageId) => `href="${href}${carry}"${id === pageId ? ' aria-current="page"' : ''}`;
 
@@ -145,13 +173,22 @@ export async function boot(pageId) {
   $('#site-footer').innerHTML = footer(store, season.S) + tabbar(pageId);
   document.body.insertAdjacentHTML('beforeend', authDialog(season.S));
   wireAuth(store);
+  watchForOutage();
+  if (pageId !== 'admin') watchForNewResults(latestSaved(season.sources));   // the admin page is where results come from
   return { ...season, store, now: clock() };
 }
+
+/** Shown instead of "no players yet" when the league server can't be reached. */
+export const serverDownNotice = S => `
+  <div class="notice notice--signal"><span class="glyph">!</span><div>
+    <b>Can't reach the league server</b>
+    <span class="muted">Standings, teams and logins are unavailable right now, but results and prices still show. Refresh in a minute. If it carries on, ${contactLink(S)}.</span></div>
+    <button class="btn btn--ghost btn--sm" type="button" onclick="location.reload()" style="margin-left:auto;flex:0 0 auto">Refresh</button></div>`;
 
 export function problemsNotice(problems) {
   if (!problems.length) return '';
   return problems.map(p => `
     <div class="notice notice--signal"><span class="glyph">!</span><div>
-      <b>Round ${p.round} results file has a problem, so it is being ignored</b>
+      <b>Round ${p.round} results have a problem, so they are being ignored</b>
       <span class="muted">${p.errors.map(esc).join('<br>')}</span></div></div>`).join('');
 }

@@ -1,9 +1,9 @@
-import { boot, problemsNotice } from '../shell.js';
+import { boot, problemsNotice, serverDownNotice, atDeadline } from '../shell.js';
 import { carry } from '../env.js';
 import { absentIn, notRacing } from './common.js';
 import { esc, $, money, delta, fmtNum, nameOf, teamLine, statusBadge, fmtDate, fmtLock, toast, flag } from '../ui.js';
 import { resolvePlayer, transferInfo, squadValue, assetsOf } from '../engine/squad.js';
-import { icon, ident, carImg, driverCard, constructorCard, emptyDriverCard, emptyConstructorCard, teamWithFlag, shead, avatar, bust, tchip } from '../components.js';
+import { icon, chipImg, ident, carImg, driverCard, constructorCard, emptyDriverCard, emptyConstructorCard, teamWithFlag, shead, avatar, bust, tchip } from '../components.js';
 
 const ctx = await boot('team');
 const { S, store, now, problems } = ctx;
@@ -13,8 +13,8 @@ const R = phase.round;
 const cfg = S.cfg;
 const me = store.user;
 
-let subs = {};
-try { subs = await store.submissions(); } catch (e) { console.warn(e); }
+let subs = {}, subsOk = true;
+try { subs = await store.submissions(); } catch (e) { console.warn(e); subsOk = false; }
 
 const pageHead = (right = '') => `
   <div class="page-head">
@@ -64,6 +64,9 @@ if (!me) {
       <div class="hero__cta"><button class="btn btn--red" type="button" onclick="openAuth('login')">Log in</button><button class="btn btn--ghost" type="button" onclick="openAuth('join')">Join the league</button></div>
     </div></section>
     <div class="dgrid">${S.drivers.filter(d => d.role === 'regular').sort((a, b) => R.prices[b.code] - R.prices[a.code]).slice(0, 10).map(d => driverCard(S, d.code, { tag: 'div', cls: 'dcard--static', price: R.prices[d.code] })).join('')}</div></div>`;
+} else if (!subsOk) {
+  // never show an empty team builder here: it would look as if the saved team had been lost
+  app.innerHTML = `<div class="stack" style="--gap:18px">${problemsNotice(problems)}${pageHead()}${serverDownNotice(S)}<p class="muted">Your saved team is safe. It can't be shown or changed until the league server is back.</p></div>`;
 } else {
 
 /* ------------------------------------------------------------------ state */
@@ -117,7 +120,7 @@ function costbarView() {
         <span class="kpi">${icon('coins')}Team <b>${money(cost())}</b> of ${money(w)}</span>
         <span class="kpi">${icon('swap')}Transfers <b>${ti.effective}</b> ${freeTxt}</span>
         <span class="kpi ${ti.penalty ? 'bad' : ''}">Penalty <b>${ti.penalty ? '-' + ti.penalty : '0'}</b></span>
-        ${draft.chip ? `<span class="kpi">${icon('bolt')}<b>${esc(cfg.chips[draft.chip].name)}</b></span>` : ''}
+        ${draft.chip ? `<span class="kpi">${chipImg(draft.chip, 'chipimg--xs')}<b>${esc(cfg.chips[draft.chip].name)}</b></span>` : ''}
       </div>
     </div>
     <div class="costbar__track" role="meter" aria-label="Budget used" aria-valuemin="0" aria-valuemax="${w}" aria-valuenow="${cost()}"><div class="costbar__fill${over ? ' over' : ''}" style="transform:scaleX(${unlimited() ? 1 : used})"></div></div>
@@ -152,8 +155,10 @@ function chipsView() {
   before.rows.forEach(r => { if (r.chip) usedAt[r.chip] = r.round; });
   return `<div class="chips-row">${Object.entries(cfg.chips).map(([id, ch]) => {
     const used = state.chips.includes(id);
-    return `<button class="chipbtn" type="button" data-act="chip" data-id="${id}" aria-pressed="${draft.chip === id}" ${used || !editable ? 'disabled' : ''}>
-      <b>${esc(ch.name)}</b><small>${used ? `Used in round ${usedAt[id] ?? '?'}` : esc(ch.desc)}</small></button>`;
+    const noTeam = !!ch.needsTeam && !state.base;     // nothing to change yet, so it would be wasted
+    const note = used ? `Used in round ${usedAt[id] ?? '?'}` : noTeam ? 'Needs a team from an earlier round' : ch.desc;
+    return `<button class="chipbtn" type="button" data-act="chip" data-id="${id}" aria-pressed="${draft.chip === id}" ${used || noTeam || !editable ? 'disabled' : ''}>
+      ${chipImg(id)}<b>${esc(ch.name)}</b><small>${esc(note)}</small></button>`;
   }).join('')}</div>`;
 }
 
@@ -250,7 +255,7 @@ function seasonView() {
       <div class="xfer"><div class="xfer__labels"><span>Free transfers<b>${free}</b></span><span style="text-align:right">Extra (-${cfg.transfers.penaltyPerExtra} each)<b>${extra}</b></span></div>
         <div class="xfer__bar">${free || extra ? `<span style="flex:${free}"></span><span style="flex:${extra}"></span>` : ''}</div></div>
       <div><small style="display:block;color:var(--text2);font-weight:600;font-size:.82rem;margin-bottom:8px">Chips used</small>
-        <div class="chipicons">${Object.entries(cfg.chips).map(([id, ch]) => `<div class="chipicon${chipRound[id] ? ' used' : ''}" title="${esc(ch.name)}${chipRound[id] ? `, played in round ${chipRound[id]}` : ', not used yet'}"><span>${icon(id)}</span>${chipRound[id] ? `Round ${chipRound[id]}` : esc(ch.name)}</div>`).join('')}</div></div>
+        <div class="chipicons">${Object.entries(cfg.chips).map(([id, ch]) => `<div class="chipicon${chipRound[id] ? ' used' : ''}" title="${esc(ch.name)}${chipRound[id] ? `, played in round ${chipRound[id]}` : ', not used yet'}"><span>${chipImg(id)}</span>${chipRound[id] ? `Round ${chipRound[id]}` : esc(ch.name)}</div>`).join('')}</div></div>
     </div></article>`;
   return `<section>${shead('Your season', `${fmtNum(res.total)} points`)}
     <div class="cols cols--1-1">${stats}
@@ -369,4 +374,6 @@ addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.retur
 // the save dock is pinned to the bottom of the screen, so leave room for it under the page
 if (editable) document.body.classList.add('has-savedock');
 render();
+// once the deadline passes a tab left open can no longer save, so switch it to the locked view
+if (editable) atDeadline(R, now, () => { dirty = false; toast('Picks have locked. Your last saved team is the one that counts.'); setTimeout(() => location.reload(), 2500); });
 }

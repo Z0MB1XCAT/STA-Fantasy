@@ -1,17 +1,16 @@
 // Everyone's team, round by round. A round's picks only show once its deadline has passed
 // (the database hides them before that), so there is nothing here to copy ahead of time.
-import { boot, problemsNotice } from '../shell.js';
+import { boot, problemsNotice, loadLeague, serverDownNotice } from '../shell.js';
 import { esc, $, money, fmtNum, fmtDate, fmtLock, nameOf, statusBadge, flag, roundStatus } from '../ui.js';
 import { standings, ownership } from '../league.js';
 import { lineup, absentIn } from './common.js';
-import { icon, avatar, bust, tchip, shead, teamWithFlag, ordinal } from '../components.js';
+import { icon, chipImg, avatar, bust, tchip, shead, teamWithFlag, ordinal } from '../components.js';
 
 const { S, store, now, problems } = await boot('league');
 const app = $('#app');
 const me = store.user;
 
-let players = [], subs = {};
-try { [players, subs] = await Promise.all([store.players(), store.submissions()]); } catch (e) { console.warn(e); }
+const { players, subs, ok: leagueOk } = await loadLeague(store);
 
 const revealed = S.rounds.filter(r => r.lockAt <= now);
 const fromHash = () => Number((location.hash.match(/^#r(\d+)$/) || [])[1]) || null;
@@ -31,7 +30,7 @@ function teamCard({ st, row }, R) {
   const mine = p.id === me?.id;
   const pts = row.points?.assets || null;
   const notes = [
-    row.chip ? `<span class="badge">${icon('bolt')}${esc(S.cfg.chips[row.chip].name)}</span>` : '',
+    row.chip ? `<span class="badge">${chipImg(row.chip, 'chipimg--xs')}${esc(S.cfg.chips[row.chip].name)}</span>` : '',
     row.transfers.penalty ? `<span class="badge badge--bad">-${row.transfers.penalty} transfer penalty</span>` : '',
   ].filter(Boolean).join('');
   return `<article class="panel tcard${mine ? ' tcard--me' : ''}" data-name="${esc(`${p.team || ''} ${p.name}`.toLowerCase())}">
@@ -100,6 +99,10 @@ function before() {
 }
 
 function render() {
+  if (!leagueOk) {
+    app.innerHTML = `<div class="stack" style="--gap:18px">${problemsNotice(problems)}<div class="page-head"><div><h1 class="h1">League</h1><p class="muted">Everyone's team, round by round.</p></div></div>${serverDownNotice(S)}</div>`;
+    return;
+  }
   if (!selected) { app.innerHTML = before(); return; }
   const { R, picked, missing } = teamsFor(selected);
   const lede = R.scores

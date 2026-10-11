@@ -1,4 +1,5 @@
-// Results entry helper: builds data/rounds/NN.txt for you, with a live points preview.
+// Results entry: build a round's results with a live points preview, then save them to the database so
+// the site shows them straight away (no commit, no deploy). Copy and download stay as a backup.
 import { boot } from '../shell.js';
 import { esc, $, $$, money, fmtNum, signed, colorOf, nameOf, teamLine, statusBadge, posBox, toast, roundStatus } from '../ui.js';
 import { bust, tchip, ident } from '../components.js';
@@ -6,7 +7,8 @@ import { parseRound, serializeRound } from '../engine/parseRound.js';
 import { buildSeason } from '../engine/season.js';
 
 const ctx = await boot('admin');
-const { S, raw, store, now } = ctx;
+const { raw, store, now, sources } = ctx;
+let S = ctx.S;                       // rebuilt after a save so round chips and previews stay current
 const roundsMap = ctx.rounds;
 const app = $('#app');
 const codes = new Set(S.drivers.map(d => d.code));
@@ -16,10 +18,19 @@ const pad = n => String(n).padStart(2, '0');
 const blank = id => ({ round: id, status: 'provisional', out: [], sessions: { quali: [], reverse: [], feature: [] }, grids: {}, fastest: {}, notes: '' });
 const clone = o => JSON.parse(JSON.stringify(o));
 
-let roundId = (S.currentRound() || S.rounds[0]).id;
-let st = load(roundId);
+let roundId, st, baseline;           // baseline: the round as opened or last saved, to tell whether there is anything to save
 let tab = 'quali';
 let pasteMsg = '';
+let saving = false, saveError = '';
+let history = null, historyBusy = false, historyError = '';   // earlier versions of the open round, loaded on request
+const canSave = () => !!store.user?.isAdmin;
+
+function openRound(id) {
+  roundId = id;
+  st = load(id);
+  baseline = serializeRound(st);
+  pasteMsg = ''; saveError = ''; history = null; historyError = '';
+}
 
 function load(id) {
   const existing = roundsMap.get(id);
@@ -27,7 +38,7 @@ function load(id) {
   // no results yet: before the deadline you are most likely announcing who isn't racing, after it entering results
   const b = blank(id);
   b.status = now < S.round(id).lockAt ? 'upcoming' : 'provisional';
-  if (existing?.ok) b.out = [...existing.out];
+  if (existing?.ok) { b.out = [...existing.out]; b.notes = existing.notes; }
   return b;
 }
 
@@ -142,12 +153,64 @@ function previewView(parsed) {
         <div class="stat">${m.delta > 0 ? `<span class="up num">▲ ${m.delta.toFixed(1)}</span>` : `<span class="dn num">▼ ${Math.abs(m.delta).toFixed(1)}</span>`}</div></div>`).join('')}</div></div>` : ''}</div></div>`;
 }
 
+const isDirty = () => output().text !== baseline;
+
+/** The line under the Save button: what players see right now. */
+function saveStatus(dirty) {
+  if (saveError) return `<span class="dn">${esc(saveError)}</span>`;
+  if (saving) return 'Saving…';
+  if (dirty) return 'Unsaved changes. Players still see the previous version.';
+  const src = sources.get(roundId);
+  if (src?.source === 'database' && src.updatedAt) {
+    const when = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(src.updatedAt));
+    return `Saved ${when}. This is what players see.`;
+  }
+  return 'No changes to save.';
+}
+
+const when = iso => new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(iso));
+
+/** One line describing a saved version, e.g. "Provisional, 3 sessions". */
+function versionSummary(content) {
+  const p = parseRound(content, { codes });
+  const sessions = Object.values(p.sessions).filter(l => l.length).length;
+  return [p.status[0].toUpperCase() + p.status.slice(1), sessions && `${sessions} session${sessions === 1 ? '' : 's'}`, p.out.length && `${p.out.length} not racing`].filter(Boolean).join(', ');
+}
+
+/** Every replaced save is kept by the database; this lists them and lets the admin load one back into the editor. */
+function historyPanel() {
+  if (!canSave()) return '';
+  let body;
+  if (historyBusy) body = '<p class="muted small" role="status">Loading…</p>';
+  else if (history && history.roundId === roundId) {
+    body = history.items.length
+      ? `<div class="tower">${history.items.map((h, i) => `<div class="row"><div class="who"><b>${when(h.savedAt)}</b><small>${esc(versionSummary(h.content))}${h.by ? `, saved by ${esc(h.by)}` : ''}</small></div>
+          <button class="btn btn--ghost btn--sm" type="button" data-act="restore" data-i="${i}">Load</button></div>`).join('')}</div>`
+      : '<p class="muted small">No earlier versions of this round yet. One is kept each time a saved round is replaced.</p>';
+  } else {
+    body = `<p class="hint">Each time you replace a saved round, the old version is kept, so a wrong save can be put back.</p>
+      <div><button class="btn btn--ghost btn--sm" type="button" data-act="history">Show earlier versions</button></div>`;
+  }
+  return `<section class="panel"><div class="panel__head"><h2 class="h2">Earlier versions</h2><span class="muted small">Round ${roundId}</span></div>
+    <div class="panel__body--pad stack" style="--gap:12px">${historyError ? `<p class="dn small" role="alert">${esc(historyError)}</p>` : ''}${body}</div></section>`;
+}
+
+function accessNotice() {
+  if (canSave()) return '';
+  const body = store.user
+    ? `<b>This account can't save results</b><span class="muted">You can still build and preview a round here. Log in with the admin account to save it.</span>`
+    : `<b>Log in to save results</b><span class="muted">You can still build and preview a round here, but saving needs the admin account. Log in before you start: logging in reloads this page.</span>`;
+  return `<div class="notice notice--flag"><span class="glyph">!</span><div>${body}</div>${store.user ? '' : '<button class="btn btn--ghost btn--sm" type="button" data-act="login" style="margin-left:auto;flex:0 0 auto">Log in</button>'}</div>`;
+}
+
 function render() {
   const { text, parsed } = output();
   const adv = advisories();
   const fileName = `${pad(roundId)}.txt`;
+  const dirty = text !== baseline;
   app.innerHTML = `<div class="stack" style="--gap:22px">
-    <div><h1 class="h1">Enter results</h1><p class="muted" style="margin-top:8px;max-width:64ch">Build a round's results here, then copy the file into the repo. Nothing is saved from this page, so you can experiment safely.</p></div>
+    <div><h1 class="h1">Enter results</h1><p class="muted" style="margin-top:8px;max-width:64ch">Build a round's results here, then press Save to site. Players see the change as soon as they refresh. Nothing is saved until you press it, so you can experiment safely.</p></div>
+    ${accessNotice()}
 
     <nav class="rounds-strip" aria-label="Round">${S.rounds.map(r => `<button class="rchip" type="button" data-act="round" data-id="${r.id}" ${r.id === roundId ? 'aria-current="true"' : ''}><small>Round ${r.id}</small><b>${esc(r.name)}</b>${roundStatus(r)}</button>`).join('')}</nav>
 
@@ -161,7 +224,7 @@ function render() {
 
         <section class="panel"><div class="panel__head"><h2 class="h2">Not racing this round</h2><span class="muted small">${st.out.length ? `${st.out.length} marked` : 'Nobody marked'}</span></div>
           <div class="panel__body--pad stack" style="--gap:14px">
-            <p class="hint">Know before the deadline that someone can't make it? Tap them here, keep the status on <b>Upcoming</b> and commit the file. Everyone sees them greyed out as <b>Not racing</b>, so they can use a transfer on them in time. Transfers work as normal. If they turn up after all, just put them in the results and they score as usual.</p>
+            <p class="hint">Know before the deadline that someone can't make it? Tap them here, keep the status on <b>Upcoming</b> and press <b>Save to site</b>. Everyone sees them greyed out as <b>Not racing</b>, so they can use a transfer on them in time. Transfers work as normal. If they turn up after all, just put them in the results and they score as usual.</p>
             <div class="pool" role="group" aria-label="Drivers not racing">${regulars.filter(d => !d.retired).map(d => `<button type="button" data-act="out" data-code="${d.code}" aria-pressed="${st.out.includes(d.code)}">${bust(S, d.code)}${esc(d.name)}</button>`).join('')}</div>
           </div></section>
 
@@ -170,20 +233,21 @@ function render() {
       </div>
 
       <div class="stack" style="--gap:20px">
-        <section class="panel panel--raised"><div class="panel__head"><h2 class="h2">${fileName}</h2>${parsed.ok ? statusBadge('final', 'File is valid') : statusBadge('locked', 'Needs fixing')}</div>
+        <section class="panel panel--raised"><div class="panel__head"><h2 class="h2">Round ${roundId} results</h2>${parsed.ok ? statusBadge('final', 'Ready to save') : statusBadge('locked', 'Needs fixing')}</div>
           <div class="panel__body--pad stack" style="--gap:14px">
             <pre class="file" id="file">${esc(text)}</pre>
             ${adv.length ? `<div class="notice notice--flag"><span class="glyph">!</span><div>${adv.map(a => `<span class="muted" style="display:block">${esc(a)}</span>`).join('')}</div></div>` : ''}
             <div class="field"><label for="notes">Notes <span class="faint">(optional)</span></label><input class="input" id="notes" value="${esc(st.notes)}" placeholder="e.g. +5s on KAM after stewards"></div>
-            <div class="row-flex"><button class="btn btn--primary" type="button" data-act="copy" ${parsed.ok ? '' : 'disabled'}>Copy file</button><button class="btn btn--ghost" type="button" data-act="download" ${parsed.ok ? '' : 'disabled'}>Download ${fileName}</button></div>
-            <ol class="steps small muted"><li>Open <b>data/rounds/${fileName}</b> on GitHub and press the pencil.</li><li>Select everything, paste, then commit. The site updates in a minute or two.</li></ol>
+            <div class="row-flex"><button class="btn btn--red" type="button" data-act="save" ${parsed.ok && canSave() && !saving && dirty ? '' : 'disabled'}>Save to site</button><span class="hint" id="save-status" role="status" tabindex="-1">${saveStatus(dirty)}</span></div>
+            <div class="row-flex"><button class="btn btn--ghost btn--sm" type="button" data-act="copy" ${parsed.ok ? '' : 'disabled'}>Copy file</button><button class="btn btn--ghost btn--sm" type="button" data-act="download" ${parsed.ok ? '' : 'disabled'}>Download ${fileName}</button><span class="hint">Backup copy of the file</span></div>
           </div></section>
+        ${historyPanel()}
         <details class="panel dd"><summary class="panel__head" style="cursor:pointer;list-style:none"><h2 class="h2">Driver codes</h2><span class="muted small">Tap to expand</span></summary>
           <div class="panel__body"><div class="tower">${S.drivers.map(d => `<div class="row">${bust(S, d.code)}<b class="num" style="font-size:1.1rem;min-width:44px">${d.code}</b><div class="who"><b>${esc(d.name)}</b><small>${esc(teamLine(S, d.code))}, ${esc(d.simgrid)}</small></div></div>`).join('')}</div></div></details>
       </div>
     </div>
 
-    <section class="panel"><div class="panel__head"><h2 class="h2">Points preview</h2><span class="muted small">What the site will show once this file is live</span></div><div class="panel__body--pad">${previewView(parsed)}</div></section>
+    <section class="panel"><div class="panel__head"><h2 class="h2">Points preview</h2><span class="muted small">What players will see once this is saved</span></div><div class="panel__body--pad">${previewView(parsed)}</div></section>
   </div>`;
 }
 
@@ -195,7 +259,48 @@ app.addEventListener('click', async e => {
   if (!b || b.disabled) return;
   const a = b.dataset.act;
   const list = st.sessions[tab];
-  if (a === 'round') { roundId = Number(b.dataset.id); st = load(roundId); pasteMsg = ''; }
+  if (a === 'round') {
+    if (Number(b.dataset.id) === roundId) return;
+    if (isDirty() && !confirm('You have unsaved changes to this round. Discard them?')) return;
+    openRound(Number(b.dataset.id));
+  }
+  else if (a === 'login') { window.openAuth?.('login'); return; }
+  else if (a === 'save') {
+    const { text, parsed } = output();
+    if (saving || !parsed.ok || !canSave()) return;
+    saving = true; saveError = '';
+    render();
+    try {
+      const res = await store.saveResult(roundId, text);
+      baseline = text;
+      sources.set(roundId, { source: 'database', updatedAt: res.updatedAt });
+      roundsMap.set(roundId, parsed);
+      S = buildSeason({ ...raw, rounds: roundsMap });
+      history = null;                      // saving may have kept a new earlier version
+      toast(`Saved round ${roundId}. Players see it when they refresh.`);
+    } catch (ex) {
+      saveError = ex.message || 'Could not save. Try again.';
+      toast(saveError, 'bad');
+    }
+    saving = false;
+  }
+  else if (a === 'history') {
+    historyBusy = true; historyError = '';
+    render();
+    try { history = { roundId, items: await store.resultHistory(roundId) }; }
+    catch (ex) { historyError = ex.message || 'Could not load earlier versions.'; }
+    historyBusy = false;
+  }
+  else if (a === 'restore') {
+    const h = history?.items[+b.dataset.i];
+    const p = h && parseRound(h.content, { codes });
+    if (!p) return;
+    if (!p.ok) { toast('That version has a problem and cannot be loaded.', 'bad'); return; }
+    if (isDirty() && !confirm('Replace your unsaved changes with this earlier version?')) return;
+    st = { round: roundId, status: p.status, out: [...p.out], sessions: clone(p.sessions), grids: clone(p.grids), fastest: { ...p.fastest }, notes: p.notes };
+    saveError = '';
+    toast('Loaded. Check it, then press Save to site.');
+  }
   else if (a === 'status') st.status = b.dataset.k;
   else if (a === 'out') { const c = b.dataset.code; st.out = st.out.includes(c) ? st.out.filter(x => x !== c) : regulars.map(d => d.code).filter(x => x === c || st.out.includes(x)); }
   else if (a === 'tab') { tab = b.dataset.k; pasteMsg = ''; }
@@ -216,18 +321,25 @@ app.addEventListener('click', async e => {
     document.body.append(link); link.click(); link.remove(); URL.revokeObjectURL(url);
     return;
   }
+  if (a !== 'save') saveError = '';
   const open = $$('details[open]').map(d => d.querySelector('summary')?.textContent);
   render();
   $$('details').forEach(d => { if (open.includes(d.querySelector('summary')?.textContent)) d.open = true; });
+  if (a === 'save') $('#save-status')?.focus();
 });
+window.addEventListener('beforeunload', e => { if (isDirty()) e.preventDefault(); });
 app.addEventListener('change', e => {
   if (e.target.id === 'fl') { if (e.target.value) st.fastest[tab] = e.target.value; else delete st.fastest[tab]; render(); }
 });
 app.addEventListener('input', e => {
   if (e.target.id === 'notes') {
     st.notes = e.target.value;
-    const { text } = output(); $('#file').textContent = text;
+    const { text, parsed } = output(); $('#file').textContent = text;
+    const dirty = text !== baseline;
+    const btn = $('[data-act="save"]'); if (btn) btn.disabled = !(parsed.ok && canSave() && !saving && dirty);
+    const line = $('#save-status'); if (line) line.innerHTML = saveStatus(dirty);
   }
 });
 
+openRound((S.currentRound() || S.rounds[0]).id);
 render();

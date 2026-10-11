@@ -201,8 +201,12 @@ test('transfers: 2 free per round, -10 for each extra, banking 1, wildcard waive
   assert.equal(quiet.rows[1].squad.drivers.join(), sq1.drivers.join());   // squad carries over
 });
 
+// Limitless normally needs a team from an earlier round. A few scoring tests use it in round 1 as a shortcut to
+// field any squad they like, so they run with that rule switched off.
+const noTeamNeeded = d => { for (const c of Object.values(d.season.chips)) delete c.needsTeam; };
+
 test('points: DRS doubles, chips apply, penalty is deducted', () => {
-  const S = seasonWith({ 1: ROUND1 });
+  const S = seasonWith({ 1: ROUND1 }, noTeamNeeded);
   // fixed squad using drivers who scored: need a legal squad, so build a cheap one but include scorers via limitless
   const sq = { drivers: ['KAM', 'JEN', 'NFS', 'ICE', 'PAB'], constructors: ['audi', 'redbull'], drs: 'JEN', chip: 'limitless' };
   const p = resolvePlayer(S, { 1: sq }, { upTo: 1 });
@@ -217,7 +221,7 @@ test('points: DRS doubles, chips apply, penalty is deducted', () => {
 });
 
 test('DRS on a no-show is simply wasted (0 x 2), like a DNF without the penalty', () => {
-  const S = seasonWith({ 1: 'round: 1\nstatus: final\nquali: KAM\nfeature: KAM\nreverse: KAM' });
+  const S = seasonWith({ 1: 'round: 1\nstatus: final\nquali: KAM\nfeature: KAM\nreverse: KAM' }, noTeamNeeded);
   const sq = { drivers: ['PAB', 'ZMB', 'SWU', 'KAM', 'RIC'], constructors: ['redbull', 'alpine'], drs: 'PAB', chip: 'limitless' };
   const row = resolvePlayer(S, { 1: sq }, { upTo: 1 }).rows[0];
   assert.equal(row.points.drs, 'PAB');
@@ -226,7 +230,7 @@ test('DRS on a no-show is simply wasted (0 x 2), like a DNF without the penalty'
 });
 
 test('No Negative floors losses at 0 and Autopilot picks the best driver', () => {
-  const S = seasonWith({ 1: `round: 1\nstatus: final\nquali: KAM JEN\nfeature: JEN KAM ICE:dnf\nreverse: JEN KAM` });
+  const S = seasonWith({ 1: `round: 1\nstatus: final\nquali: KAM JEN\nfeature: JEN KAM ICE:dnf\nreverse: JEN KAM` }, noTeamNeeded);
   const R = S.round(1);
   const sq = { drivers: ['KAM', 'JEN', 'ICE', 'PAB', 'ZMB'], constructors: ['audi', 'redbull'], drs: 'ICE' };
   const raw = resolvePlayer(S, { 1: { ...sq, chip: 'limitless' } }, { upTo: 1 }).rows[0].points;
@@ -242,4 +246,60 @@ test('reserves cannot be picked', () => {
   const ev = evaluate(S, emptyState(S), R, { drivers: [...cheap, 'XMK'], constructors: ['haas', 'aston'], drs: cheap[0] });
   assert.equal(ev.valid, false);
   assert.match(ev.issues.join(' '), /reserve and can't be picked/);
+});
+
+// ---- chips that need an existing team ------------------------------------------------------
+
+test('Wildcard and Limitless are not played (or used up) in round 1, when there is no team to change', () => {
+  const S = seasonWith({});
+  const R = S.round(1);
+  const sq = { ...cheapSquad(S, R) }; sq.drs = sq.drivers[0];
+  for (const chip of ['wildcard', 'limitless']) {
+    const ev = evaluate(S, emptyState(S), R, { ...sq, chip });
+    assert.equal(ev.chip, null, `${chip} should be ignored`);
+    assert.deepEqual(ev.next.chips, [], `${chip} should not be spent`);
+    assert.match(ev.issues.join(' '), /needs a team from an earlier round/);
+    assert.equal(ev.valid, true, 'the team itself is still fine');
+  }
+});
+
+test('an over-budget Limitless team in round 1 can no longer be smuggled in', () => {
+  const S = seasonWith({});
+  const R = S.round(1);
+  const rich = S.drivers.filter(d => d.role === 'regular').sort((a, b) => R.prices[b.code] - R.prices[a.code]);
+  const bad = { drivers: rich.slice(0, 5).map(d => d.code), constructors: ['audi', 'redbull'], drs: rich[0].code, chip: 'limitless' };
+  const ev = evaluate(S, emptyState(S), R, bad);
+  assert.equal(ev.valid, false);
+  assert.match(ev.issues.join(' '), /Over budget/);
+});
+
+test('the same chips work normally once there is a team (round 2 onward)', () => {
+  const S = seasonWith({ 1: ROUND1 });
+  const R1 = S.round(1);
+  const sq1 = { ...cheapSquad(S, R1) }; sq1.drs = sq1.drivers[0];
+  const p = resolvePlayer(S, { 1: sq1, 2: { ...sq1, chip: 'wildcard' }, 3: { ...sq1, chip: 'limitless' } }, { upTo: 3 });
+  assert.equal(p.rows[1].chip, 'wildcard');
+  assert.equal(p.rows[2].chip, 'limitless');
+  assert.deepEqual(p.rows[1].issues, []);
+});
+
+test('a late joiner is treated the same: the chips need their first team to exist', () => {
+  const S = seasonWith({ 1: ROUND1 });
+  const R3 = S.round(3);
+  const sq = { ...cheapSquad(S, R3) }; sq.drs = sq.drivers[0];
+  const p = resolvePlayer(S, { 3: { ...sq, chip: 'wildcard' } }, { upTo: 3 });
+  assert.equal(p.rows[2].chip, null);
+  assert.equal(p.rows[2].valid, true);
+});
+
+test('Autopilot with no DRS saved raises no "no DRS chosen" warning', () => {
+  const S = seasonWith({});
+  const R = S.round(1);
+  const sq = { ...cheapSquad(S, R), drs: null, chip: 'autopilot' };
+  const ev = evaluate(S, emptyState(S), R, sq);
+  assert.equal(ev.valid, true);
+  assert.deepEqual(ev.issues, []);
+  // without Autopilot the warning is still given
+  const plain = evaluate(S, emptyState(S), R, { ...sq, chip: null });
+  assert.match(plain.issues.join(' '), /No DRS Boost driver chosen/);
 });

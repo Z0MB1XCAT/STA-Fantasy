@@ -6,9 +6,10 @@ import { carry } from '../env.js';
 
 export { playerColor } from '../components.js';
 
+/** The standings list. If you are outside the top `limit`, your own row is pinned under it so you can always find yourself. */
 export function leaderboardRows(rows, meId, limit = 10) {
   if (!rows.length) return '<div class="empty"><span class="display">No players yet</span>Join the league to be the first on the board.</div>';
-  return `<div class="tower">${rows.slice(0, limit).map(r => `
+  const row = r => `
     <button class="row row--link row--btn${r.player.id === meId ? ' row--me' : ''}" type="button" data-player="${esc(r.player.id)}" aria-label="${esc(r.player.team || r.player.name)}, ${ordinalRank(r.rank)} with ${fmtNum(r.total)} points. Show their team">
       ${posBox(r.rank)}
       ${avatar(r.player.team || r.player.name, `avatar--lg${r.player.id === meId ? ' avatar--me' : ''}`)}
@@ -17,7 +18,12 @@ export function leaderboardRows(rows, meId, limit = 10) {
         <div class="stat stat--hide-sm"><span class="num">${r.lastRound == null ? '–' : fmtNum(r.lastRound)}</span><small>Last round</small></div>
         <div class="stat stat--lead"><span class="num">${fmtNum(r.total)}</span><small>${r.provisional ? 'Provisional' : 'Points'}</small></div>
       </div>
-    </button>`).join('')}</div>`;
+    </button>`;
+  const top = rows.slice(0, limit);
+  const mine = meId ? rows.find(r => r.player.id === meId) : null;
+  const pinned = mine && !top.includes(mine) ? mine : null;
+  const skipped = pinned ? rows.indexOf(pinned) - limit : 0;      // players between the top list and you
+  return `<div class="tower">${top.map(row).join('')}${skipped > 0 ? `<div class="tower__gap">${skipped} more ${skipped === 1 ? 'player' : 'players'}</div>` : ''}${pinned ? row(pinned) : ''}</div>`;
 }
 const ordinalRank = n => ordinal(n);
 

@@ -26,7 +26,7 @@ function podium(rows, unit = 'pts') {
 
 function sessionView(R, session) {
   const rows = sessionTable(R.file, R.scores, session);
-  if (!rows.length) return '<div class="empty"><span class="display">Not entered yet</span>This session has no results in the round file.</div>';
+  if (!rows.length) return '<div class="empty"><span class="display">Not entered yet</span>This session has no results yet.</div>';
   const fl = R.file.fastest?.[session];
   return `${podium(rows)}<div class="tower" style="margin-top:8px">${rows.map(r => {
     const res = isReserve(r.code);
@@ -93,7 +93,7 @@ function strip() {
 }
 
 function body(R) {
-  if (R.error) return `<div class="notice notice--signal"><span class="glyph">!</span><div><b>This round's results file has a problem</b><span class="muted">${R.error.map(esc).join('<br>')}</span></div></div>`;
+  if (R.error) return `<div class="notice notice--signal"><span class="glyph">!</span><div><b>This round's results have a problem</b><span class="muted">${R.error.map(esc).join('<br>')}</span></div></div>`;
   if (!R.scores) {
     return `<section class="panel"><div class="empty"><span class="display">${R.id === phase.round.id && phase.state === 'open' ? 'Picks are open' : 'No results yet'}</span>
       Results appear here after the races${R.id === phase.round.id ? `. Picks lock ${fmtDate(R)}, ${fmtLock(R)}` : ''}.</div></section>`;

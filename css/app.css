@@ -223,6 +223,7 @@ main.wrap { padding-block: 20px 64px; }
 
 /* ----------------------------------------------------- list rows (tower) */
 .tower { display: grid; grid-template-columns: minmax(0, 1fr); }
+.tower__gap { padding: 8px 14px; text-align: center; font-size: .8rem; font-weight: 600; color: var(--text3); border-top: 1px dashed var(--line2); border-bottom: 1px dashed var(--line2); }
 .row { position: relative; display: flex; align-items: center; gap: 12px; padding: 9px 10px; border-radius: var(--r-sm); min-height: 56px; }
 .row + .row::after { content: ''; position: absolute; left: 10px; right: 10px; top: 0; height: 1px; background: var(--line); }
 .row > * { position: relative; z-index: 1; }
@@ -418,12 +419,15 @@ main.wrap { padding-block: 20px 64px; }
 .xfer__bar { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--s3); }
 .xfer__bar span:first-child { background: repeating-linear-gradient(-45deg, var(--green) 0 6px, #2ab868 6px 12px); }
 .xfer__bar span:last-child { background: var(--brand); }
+/* chip artwork: round badges cut from the chip guide (images/chips) */
+.chipimg { display: block; width: 40px; height: 40px; flex: none; border-radius: 50%; object-fit: cover; }
+.chipimg--xs { display: inline-block; width: 18px; height: 18px; margin-right: 6px; vertical-align: -4px; }
+.kpi .chipimg--xs { margin: 0; align-self: center; }
 .chipicons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; }
 .chipicon { display: grid; justify-items: center; align-content: start; gap: 5px; width: 62px; font-size: .72rem; font-weight: 700; line-height: 1.2; text-align: center; color: var(--text3); }
-.chipicon span { position: relative; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--s3); color: var(--text3); }
-.chipicon svg { width: 20px; height: 20px; }
+.chipicon span { position: relative; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--s3); }
+.chipicon:not(.used) .chipimg { filter: grayscale(1); opacity: .4; }
 .chipicon.used { color: var(--text); }
-.chipicon.used span { background: var(--brand); color: #fff; }
 .chipicon.used span::after { content: '✓'; position: absolute; top: -3px; right: -3px; width: 16px; height: 16px; border-radius: 50%; background: var(--green); color: #052; font-size: .62rem; display: grid; place-items: center; font-weight: 900; }
 
 /* --------------------------------------------------- notices, empty states */
@@ -476,6 +480,10 @@ dialog.sheet { width: min(620px, 100vw); max-height: min(88vh, 900px); margin: a
 @media (max-width: 480px) { .sheet__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .toast { position: fixed; left: 50%; bottom: calc(20px + var(--tabbar) + env(safe-area-inset-bottom)); z-index: 120; transform: translate(-50%, 16px); opacity: 0; pointer-events: none; padding: 11px 18px; border-radius: 999px; font-weight: 700; background: var(--s3); border: 1px solid var(--line2); box-shadow: var(--sh-3); transition: transform .25s var(--ease), opacity .2s linear; max-width: calc(100vw - 28px); }
 .toast.show { transform: translate(-50%, 0); opacity: 1; }
+/* "New results are in" bar: sits where a toast would, but stays until it is used */
+.fresh { position: fixed; left: 50%; bottom: calc(20px + var(--tabbar) + env(safe-area-inset-bottom)); z-index: 110; transform: translate(-50%, 16px); opacity: 0; pointer-events: none; display: flex; align-items: center; gap: 14px; padding: 7px 7px 7px 18px; border-radius: 999px; font-weight: 700; background: var(--s3); border: 1px solid rgba(255, 210, 63, .5); box-shadow: var(--sh-3); transition: transform .25s var(--ease), opacity .2s linear; max-width: calc(100vw - 28px); }
+.fresh.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+body.has-savedock .fresh { bottom: calc(96px + var(--tabbar) + env(safe-area-inset-bottom)); }
 .toast--ok { border-color: rgba(52, 210, 123, .5); }
 .toast--bad { border-color: rgba(240, 74, 55, .6); }
 
@@ -493,8 +501,9 @@ dialog.sheet { width: min(620px, 100vw); max-height: min(88vh, 900px); margin: a
 .kpi b { font-family: var(--display); font-weight: 800; font-stretch: 108%; color: var(--text); font-size: .98rem; }
 .kpi svg { width: 15px; height: 15px; align-self: center; color: var(--text3); }
 .kpi.bad b { color: var(--down); }
-.chips-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
-.chipbtn { position: relative; display: grid; gap: 4px; text-align: left; padding: 11px 12px; border-radius: var(--r-sm); border: 1px solid var(--line2); background: var(--s2); cursor: pointer; }
+.chips-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.chipbtn { position: relative; display: grid; grid-template-columns: 40px 1fr; column-gap: 10px; row-gap: 3px; align-content: center; text-align: left; padding: 11px 12px; border-radius: var(--r-sm); border: 1px solid var(--line2); background: var(--s2); cursor: pointer; }
+.chipbtn .chipimg { grid-row: 1 / span 2; align-self: center; }
 .chipbtn:hover { border-color: rgba(255, 255, 255, .28); }
 .chipbtn:active { transform: scale(.98); }
 .chipbtn b { font-family: var(--display); font-weight: 800; font-stretch: 110%; font-size: .96rem; line-height: 1.1; }
@@ -600,7 +609,8 @@ pre.file { margin: 0; padding: 14px; border-radius: var(--r-sm); background: #08
 .ticks li { position: relative; padding-left: 18px; }
 .ticks li::before { content: ''; position: absolute; left: 1px; top: .72em; width: 7px; height: 3px; background: var(--brand); }
 .chipgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
-.chipgrid div { background: var(--s1); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px; line-height: 1.45; }
+.chipgrid div { display: grid; grid-template-columns: 40px 1fr; column-gap: 12px; align-content: center; align-items: start; background: var(--s1); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px; line-height: 1.45; }
+.chipgrid .chipimg { grid-row: 1 / span 2; align-self: center; }
 .chipgrid b { display: block; font-family: var(--display); font-weight: 800; font-stretch: 108%; margin-bottom: 2px; }
 .chipgrid span { color: var(--text2); font-size: .92rem; }
 .steps { display: grid; gap: 12px; counter-reset: s; }

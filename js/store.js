@@ -30,8 +30,9 @@ function offlineStore(reason) {
   const down = () => { throw new Error('Cannot reach the league server right now. Try again in a minute.'); };
   return {
     kind: 'offline', user: null, reason: String(reason?.message || reason), onChange() {},
-    signIn: down, join: down, signOut: async () => {}, save: down, renameTeam: down,
-    players: async () => [], submissions: async () => ({}),
+    signIn: down, join: down, signOut: async () => {}, save: down, renameTeam: down, saveResult: down, resultHistory: down,
+    // these throw rather than return nothing, so pages can say "can't reach the server" instead of "no players yet"
+    players: down, submissions: down,
   };
 }
 
@@ -40,6 +41,8 @@ async function supabaseStore() {
   const { createClient } = await import(SUPABASE_JS);
   const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
+    // fail fast when the server can't be reached; the default silently retries for about 8 seconds first
+    db: { retry: false, timeout: 8000 },
   });
   const listeners = new Set();
   const store = { kind: 'supabase', user: null, onChange: cb => listeners.add(cb) };
@@ -103,13 +106,40 @@ async function supabaseStore() {
       if (error) throw new Error(error.message);
       await loadUser(); emit();
     },
+    /** Admin only (row-level security): saves a round's results text so the site shows it straight away. */
+    async saveResult(roundId, content) {
+      if (!store.user) throw new Error('Log in with the admin account first.');
+      const { data, error } = await sb.from('round_results')
+        .upsert({ round_id: roundId, content }, { onConflict: 'round_id' }).select('updated_at').single();
+      if (error) {
+        if (/row-level security|permission denied/i.test(error.message)) throw new Error('This account is not allowed to save results.');
+        throw new Error(error.message);
+      }
+      return { updatedAt: data.updated_at };
+    },
+    /** Admin only: earlier versions of a round's results, newest first. */
+    async resultHistory(roundId) {
+      const { data, error } = await sb.from('round_results_history')
+        .select('content,saved_at,replaced_at,profiles:saved_by(display_name)')
+        .eq('round_id', roundId).order('replaced_at', { ascending: false }).limit(20);
+      if (error) throw new Error(error.message);
+      return data.map(r => ({ content: r.content, savedAt: r.saved_at, replacedAt: r.replaced_at, by: r.profiles?.display_name || null }));
+    },
   });
   return store;
 }
 
 /* --------------------------------------------------------------------- Local */
+const LOCAL_KEY = 'staf.local.v1';
+
+/** Results saved in demo mode (?store=local), in the same shape the database rows have. */
+export function localResultRows() {
+  try { return new Map(Object.entries(JSON.parse(localStorage.getItem(LOCAL_KEY))?.results || {}).map(([id, r]) => [Number(id), { round_id: Number(id), ...r }])); }
+  catch { return new Map(); }
+}
+
 function localStore() {
-  const KEY = 'staf.local.v1';
+  const KEY = LOCAL_KEY;
   let mem = { players: [], subs: {}, me: null };
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || mem; } catch { return mem; } };
   const persist = d => { mem = d; try { localStorage.setItem(KEY, JSON.stringify(d)); } catch { /* storage blocked */ } };
@@ -146,7 +176,21 @@ function localStore() {
       persist(d);
     },
     async renameTeam(name) { const d = load(); const p = d.players.find(x => x.id === d.me); if (p) p.team = name; persist(d); sync(); emit(); },
-    _replace(d) { persist(d); sync(); },
+    async saveResult(roundId, content) {
+      const d = load();
+      const updatedAt = new Date().toISOString();
+      const prev = d.results?.[roundId];
+      if (prev && prev.content !== content) (d.resultHistory ||= []).push({ round_id: roundId, content: prev.content, saved_at: prev.updated_at, replaced_at: updatedAt });
+      (d.results ||= {})[roundId] = { content, updated_at: updatedAt };
+      persist(d);
+      return { updatedAt };
+    },
+    async resultHistory(roundId) {
+      return (load().resultHistory || []).filter(h => h.round_id === roundId)
+        .sort((a, b) => b.replaced_at.localeCompare(a.replaced_at))
+        .map(h => ({ content: h.content, savedAt: h.saved_at, replacedAt: h.replaced_at, by: 'you (demo)' }));
+    },
+    _replace(d) { const { results, resultHistory } = load(); persist({ results, resultHistory, ...d }); sync(); },
     _load: load,
   });
   return store;

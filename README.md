@@ -1,39 +1,53 @@
 # STA Fantasy
 
-Fantasy racing for the STA league, modelled on F1 Fantasy. Static site on GitHub Pages, with a small free Supabase
-project that stores players' teams and enforces the pick deadline.
+Fantasy racing for the STA league, modelled on F1 Fantasy. A static site, with a small free Supabase project that
+stores players' teams and the results you enter, and enforces the pick deadline. GitHub Pages hosts the site and is
+also the backup if the main host (Netlify) goes down; see "Hosting and the backup site".
 
 ## Every race weekend (about 5 minutes)
 
+Results are entered on `admin.html` and saved straight to the database. There is nothing to commit or deploy, so it
+works even when the host has no credits left for a new deploy. Log in with the admin account first (the footer shows
+**Enter results** only for admins). Anyone else can open the page and try it out, but **Save to site** stays off.
+
 **Friday, after the races**
-1. Open `admin.html` on the live site (or locally). Choose the round.
+1. Open `admin.html`. Choose the round.
 2. For each of Short Quali, Reverse Grid and Feature Race: paste the finishing order from SimGrid (one driver per line,
    P1 first, usernames work) or tap drivers in order. Mark DNF / DSQ / DNS, pick the fastest lap.
-3. Check the **Points preview**, press **Copy file**.
-4. On GitHub open `data/rounds/NN.txt` (NN = round number), click the pencil, select all, paste, **Commit changes**.
-   Leave `status: provisional`. The site updates in a minute or two and shows a yellow *Provisional* badge.
+3. Check the **Points preview**, press **Save to site**. Players see it as soon as they refresh, with a yellow
+   *Provisional* badge. Leave the status on Provisional.
 
 **Sunday, after the stewards**
-1. Reopen the round in `admin.html`. It loads the existing file. Fix any penalties (move drivers, add `:dsq`, etc.).
-2. Set the status to **Final**, copy, and paste it over `data/rounds/NN.txt` again.
+1. Reopen the round in `admin.html`. It loads what you saved. Fix any penalties (move drivers, add DSQ, etc.).
+2. Set the status to **Final** and press **Save to site** again.
 3. That's it. Prices update, transfers open for the next round, and the league table stops saying provisional.
 
 **Before the deadline, if you know a driver can't make it:** open `admin.html`, choose the round, tap them under
-**Not racing this round**, leave the status on **Upcoming**, copy the file and commit it as usual. Everyone sees them greyed
-out as *Not racing*, so players can swap them with a normal transfer in time. If they turn up after all, just put them in
-the results and they score as usual.
+**Not racing this round**, leave the status on **Upcoming** and press **Save to site**. Everyone sees them greyed out as
+*Not racing*, so players can swap them with a normal transfer in time. If they turn up after all, just put them in the
+results and they score as usual.
 
 **If a driver doesn't turn up:** just leave them out of the results. They score 0 for that round (no penalty), show
 greyed out in everyone's team, and keep their price. Reserves can still be typed into the results so the other finishing
 positions are right, but they don't score for anyone.
 
-You can also edit the `.txt` files by hand. The format is documented at the top of every file in `data/rounds/`.
+**Where saved results live.** In the `round_results` table in Supabase (one row per round, same text format as the
+files in `data/rounds/`). A saved round always wins over the file in the repo for that round; a round with no saved
+row uses its file, so the files in `data/rounds/` still work as a fallback, and **Copy file** / **Download** on the admin
+page give you a backup copy. If the database can't be reached, the site quietly falls back to the files.
+
+**Undoing a mistake.** Every time a saved round is replaced, the database keeps the old version in
+`round_results_history` (only admins can read it). On the admin page, **Earlier versions** lists them with who saved
+and when; **Load** puts one back in the editor, then **Save to site**. To go back to the repo file for a round instead,
+delete its row in Supabase (the last version is kept in the history too).
+The format is documented at the top of every file in `data/rounds/`.
 
 ## The rules in one screen
 
 - 5 drivers + 2 constructors, $100M budget, one DRS Boost driver (2x). First team is free; then 2 free transfers a round
   (1 banks), -10 points per extra transfer.
-- Chips (once each): Wildcard, Limitless, Extra DRS, No Negative, Autopilot.
+- Chips (once each): Wildcard, Limitless, Extra DRS, No Negative, Autopilot. Wildcard and Limitless change an existing
+  team, so they can't be played until you have one (not in round 1); the team page switches them off until then.
 - Deadline = start of Short Quali, Friday 8 pm UK time. Everyone's picks become visible then.
 - Points are provisional until you set the round to Final. Prices and the next transfer window only open on Final.
 - A driver who doesn't turn up scores 0 (like a DNF without the penalty), is greyed out, and keeps their price; the missed
@@ -46,13 +60,14 @@ You can also edit the `.txt` files by hand. The format is documented at the top 
 
 | What | Where |
 |---|---|
-| Race results (the only file you edit weekly) | `data/rounds/01.txt` ... `12.txt` |
+| Race results, entered on `admin.html` | Supabase table `round_results` (fallback: `data/rounds/01.txt` ... `12.txt`) |
 | Calendar and deadlines | `data/calendar.json` (also the `rounds` table in Supabase) |
 | Drivers, teams, colours | `data/roster.json`, `data/teams.json` |
 | Prices before round 1 | `data/drivers.json` (generated by `node tools/seed-prices.mjs`) |
 | Scoring, budget, chips, price rules | `data/season.json` |
 | Past seasons | `data/history/seasons.json` (parsed from the SimGrid tables) |
-| Players, picks | Supabase (project `STAFantasy`, London) |
+| Players, picks, saved results | Supabase (project `STAFantasy`, London) |
+| Database setup | `supabase/migrations/` (already applied; kept as a record) |
 
 ## Setting rookie prices properly
 
@@ -82,6 +97,9 @@ The tool prints every price so you can sanity-check it.
   sign-up box.
 - **Page shells:** the seven `.html` files are generated from one template. Edit `tools/dev/build-pages.mjs` and run it,
   rather than editing the HTML files by hand.
+- **Chips:** `images/chips/*.webp` are the five round badges. They were cut from a chip-guide screenshot: put the sheet
+  at `tools/source/chips-sheet.jpg` (git ignores that folder) and run `node tools/dev/make-chips.mjs`. The script finds
+  each badge by colour, so a different sheet only needs the rough badge positions at the top of the script.
 - Players can "install" the site from their phone browser (Add to Home Screen); it opens full screen like an app.
 
 ## Changing a lineup
@@ -105,21 +123,69 @@ Demo mode (no login, fake players, never touches Supabase):
 
 ## Dev tools
 
+- `node tools/dev/e2e-save-results.mjs`: drives the admin page in demo mode (nothing touches the real database): mark
+  a driver as not racing, save, reload, and check the rest of the site picks it up.
+- `node tools/dev/e2e-resilience.mjs`: chips switched off in round 1, the "can't reach the league server" notice, the
+  countdown following the server's clock (even with the device clock 10 minutes off), the automatic lock at the
+  deadline, the "new results are in" bar and the pinned standings row.
+- `node tools/dev/make-chips.mjs`: cuts the chip badges out of a chip-guide screenshot (see "Images and branding").
+- `node tools/dev/e2e-fallback.mjs`: proves the backup-site redirect in a real browser (see "Hosting and the backup site").
 - `node tools/dev/audit.mjs`: checks every page against the real backend for console errors, failed requests,
   missing alt text, unlabeled buttons and sideways scrolling on phones. Run it before you publish changes.
 - `node tools/dev/build-pages.mjs`: regenerates the HTML shells, `404.html` and the manifest from one template.
   Run it with `SITE_URL=https://<you>.github.io/<repo>` once the site is live so Discord shows the preview image.
 - `node tools/dev/make-og.mjs`: redraws the link-preview image (`images/app/og.png`).
 - `node tools/dev/make-icons.mjs`: redraws the home-screen icons from the league logo.
-- Developer URL switches (`?store=local`, `?demo=1`, `?now=`, `?rounds=`) only work on localhost.
+- Developer URL switches (`?store=local`, `?demo=1`, `?now=`, `?rounds=`, `?sw=1`) only work on localhost. In demo mode
+  (`?store=local`), saving results writes to the browser only.
 
 ## Live site
 
 **https://z0mb1xcat.github.io/STA-Fantasy/** (GitHub Pages, branch `main`, folder `/`).
 
-Anything committed to `main` is live within a minute or two, including round files edited on github.com.
+Anything committed to `main` is live within a minute or two. Race results no longer need a commit: see
+"Every race weekend".
 The keep-alive workflow in `.github/workflows` pings Supabase twice a week so the free project never pauses.
 If the race calendar changes, also run `node tools/make-ics.mjs` so the "Add deadlines to your calendar" file matches.
+
+## Hosting and the backup site
+
+GitHub Pages is the canonical address: the calendar file, the 404 page and the link preview all point there.
+
+The same files can be served from more than one host. GitHub Pages (above) is the backup; the main host (Netlify)
+can run out of credits, which pauses or switches off the site. Because results and players live in Supabase, both
+hosts show the same data at all times.
+
+`sw.js` is a small service worker that the main host installs in each browser the first time someone opens the site.
+If a later page load finds the host paused (503), unreachable, or answering "site not found", the browser is sent to
+the same page on GitHub Pages instead. It never touches images, scripts or data, and does nothing on the backup site.
+
+What that can and can't do:
+- It helps **people who have opened the site before**. A paused host can't run any code, so a first-time visitor to
+  the main address sees the host's own error page. Pin the GitHub Pages link in Discord as the backup.
+- Logins are per address, so someone redirected to GitHub Pages has to log in again there. Their team is safe: it is
+  saved in Supabase, not in the browser.
+- The backup address lives in two places that must match: `FALLBACK_SITE` in `js/config.js` and `BACKUP` in `sw.js`
+  (a test checks this). Change both if the GitHub Pages address ever changes.
+- A new deploy is no longer needed for results, so a host that has run out of credits (and blocks deploys) doesn't
+  stop you publishing them.
+
+Check it with `node tools/dev/e2e-fallback.mjs` (needs internet): it pauses and switches off a pretend host and
+confirms the browser lands on GitHub Pages.
+
+## How the site behaves when things go wrong
+
+- **Deadline and clocks.** The database enforces the deadline with its own clock, so the site works out the time from the
+  server's clock, not the visitor's. A phone that is minutes fast or slow still sees the right countdown. A page left open
+  turns into the locked view by itself when the deadline passes (a team page says so first), instead of letting someone edit
+  a team that can no longer be saved.
+- **League server unreachable.** Pages say "Can't reach the league server" with a Refresh button (within a second or so),
+  instead of showing "No players yet". Results and prices still show, because they come from the files if the database
+  can't be read. A logged-in player's team page shows the notice rather than an empty team builder, so it never looks
+  as if a saved team was lost.
+- **New results while a page is open.** About once a minute (and when you return to the tab) pages check for newer saved
+  results and show a "New results are in" bar with a Refresh button. Pages never reload by themselves, so nobody loses
+  a half-built team.
 
 ## Admin notes
 

@@ -1,4 +1,4 @@
-import { boot, problemsNotice } from '../shell.js';
+import { boot, problemsNotice, loadLeague } from '../shell.js';
 import { esc, $, money, delta, fmtNum, nameOf, teamLine, statusBadge } from '../ui.js';
 import { ownership } from '../league.js';
 import { notRacing } from './common.js';
@@ -10,8 +10,7 @@ const phase = S.phase(now);
 const R = phase.round;
 const out = notRacing(R);
 
-let players = [], subs = {};
-try { [players, subs] = await Promise.all([store.players(), store.submissions()]); } catch (e) { console.warn(e); }
+const { players, subs } = await loadLeague(store);       // if the league server is down, ownership figures are simply left out
 const ownRound = phase.state === 'open' ? R.id - 1 : R.id;           // picks stay hidden until the deadline
 const own = ownRound >= 1 && S.rounds.some(r => r.id === ownRound && r.lockAt <= now) ? ownership(S, players, subs, ownRound) : null;
 

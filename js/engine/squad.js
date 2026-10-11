@@ -45,6 +45,9 @@ export function evaluate(S, state, R, sub) {
   let chip = sub?.chip || null;
   if (chip && !S.cfg.chips[chip]) { issues.push(`Unknown chip "${chip}" ignored`); chip = null; }
   if (chip && state.chips.includes(chip)) { issues.push(`${S.cfg.chips[chip].name} was already used`); chip = null; }
+  // Wildcard and Limitless change an existing team; with no team yet they would be wasted (or worse, Limitless
+  // would leave an over-budget team behind), so they are not played and not used up
+  if (chip && S.cfg.chips[chip].needsTeam && !prev) { issues.push(`${S.cfg.chips[chip].name} needs a team from an earlier round, so it was not played`); chip = null; }
 
   const check = c => {
     const errs = [];
@@ -78,7 +81,7 @@ export function evaluate(S, state, R, sub) {
     }
   }
   if (cand && (!cand.drs || !cand.drivers.includes(cand.drs))) {
-    if (sub) issues.push('No DRS Boost driver chosen');
+    if (sub && chip !== 'autopilot') issues.push('No DRS Boost driver chosen');   // Autopilot picks the driver itself
     cand.drs = null;
   }
 
