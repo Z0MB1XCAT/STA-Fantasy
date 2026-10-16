@@ -5,13 +5,14 @@ import { esc, $, $$, money, fmtNum, signed, colorOf, nameOf, teamLine, statusBad
 import { bust, tchip, ident } from '../components.js';
 import { parseRound, serializeRound } from '../engine/parseRound.js';
 import { buildSeason } from '../engine/season.js';
+import { mergeReserves, suggestCode, checkReserve, roundsUsing } from '../engine/reserves.js';
 
 const ctx = await boot('admin');
 const { raw, store, now, sources } = ctx;
 let S = ctx.S;                       // rebuilt after a save so round chips and previews stay current
 const roundsMap = ctx.rounds;
 const app = $('#app');
-const codes = new Set(S.drivers.map(d => d.code));
+let codes = new Set(S.drivers.map(d => d.code));
 const regulars = S.drivers.filter(d => d.role === 'regular');
 const pad = n => String(n).padStart(2, '0');
 
@@ -24,6 +25,20 @@ let pasteMsg = '';
 let saving = false, saveError = '';
 let history = null, historyBusy = false, historyError = '';   // earlier versions of the open round, loaded on request
 const canSave = () => !!store.user?.isAdmin;
+
+// Reserves added here are rows in the database (the site reads them on every load); XMK and KIE are built into drivers.json.
+const blankReserve = () => ({ name: '', code: '', simgrid: '', discord: '', codeTouched: false });
+let reserveRows = [...ctx.reserves];
+let contacts = {};                   // Discord names, admin only: loaded once the page is up
+let rv = blankReserve();             // the add form, kept here so a re-render doesn't wipe what was typed
+let rvBusy = false, rvError = '';
+
+/** Rebuild the season after the reserves change so the pool, the codes and the previews know about them. */
+function refreshDrivers() {
+  raw.drivers = mergeReserves(raw.drivers, reserveRows, raw.season.prices.reservePrice ?? raw.season.prices.min);
+  S = buildSeason({ ...raw, rounds: roundsMap });
+  codes = new Set(S.drivers.map(d => d.code));
+}
 
 function openRound(id) {
   roundId = id;
@@ -203,6 +218,82 @@ function accessNotice() {
   return `<div class="notice notice--flag"><span class="glyph">!</span><div>${body}</div>${store.user ? '' : '<button class="btn btn--ghost btn--sm" type="button" data-act="login" style="margin-left:auto;flex:0 0 auto">Log in</button>'}</div>`;
 }
 
+/* --------------------------------------------------------------- reserves */
+const takenCodes = () => new Set(S.drivers.map(d => d.code));
+
+/** The line under the add form: why Add is off, or the last error. Quiet while the form is still empty. */
+function reserveMessage(check) {
+  if (!canSave()) return 'Log in with the admin account to add reserves.';
+  if (rvError) return `<span class="dn">${esc(rvError)}</span>`;
+  if (!rv.name && !rv.code) return '';
+  // while the name is still being typed there is no suggested code yet; don't nag about it
+  const errs = check.errors.filter(e => rv.codeTouched || rv.code || !/3-character/.test(e));
+  return errs.length ? esc(errs[0]) : '';
+}
+
+/** Updates the add form in place as the admin types (a full render would drop the cursor). */
+function syncReserveForm() {
+  if (!rv.codeTouched) {
+    rv.code = rv.name.trim() || rv.simgrid.trim() || rv.discord.trim() ? suggestCode(rv.name, takenCodes(), rv.simgrid, rv.discord) : '';
+    const el = $('#rv-code'); if (el) el.value = rv.code;
+  }
+  const check = checkReserve(rv, takenCodes());
+  const btn = $('#rv-add'); if (btn) btn.disabled = !(check.ok && canSave() && !rvBusy);
+  const msg = $('#rv-msg'); if (msg) msg.innerHTML = reserveMessage(check);
+}
+
+function reservesPanel() {
+  const list = S.drivers.filter(d => d.role === 'reserve');
+  const check = checkReserve(rv, takenCodes());
+  const row = d => {
+    const info = [d.simgrid ? `SimGrid ${d.simgrid}` : 'No SimGrid account', contacts[d.code] && `Discord ${contacts[d.code]}`].filter(Boolean).join(', ');
+    return `<div class="row">${bust(S, d.code)}<b class="num" style="font-size:1.1rem;min-width:44px">${d.code}</b>
+      <div class="who"><b>${esc(d.name)}</b><small>${esc(info)}</small></div>
+      ${d.added
+        ? `<button class="btn btn--ghost btn--sm" type="button" data-act="rv-remove" data-code="${d.code}" aria-label="Remove ${esc(d.name)}" ${canSave() ? '' : 'disabled'}>Remove</button>`
+        : '<span class="muted small">Built in</span>'}</div>`;
+  };
+  const field = (id, label, hint, extra = '') => `<div class="field"><label for="rv-${id}">${label}</label>
+    <input class="input" id="rv-${id}" value="${esc(rv[id])}" autocomplete="off" ${extra}>${hint ? `<small class="hint" id="rv-${id}-hint">${hint}</small>` : ''}</div>`;
+  return `<details class="panel dd" data-key="reserves"><summary class="panel__head"><h2 class="h2">Reserves</h2><span class="muted small">${list.length} available</span></summary>
+    <div class="panel__body--pad stack" style="--gap:16px">
+      <p class="hint">Reserves fill the grid when a regular can't race. Place them in a session below so everyone else's finishing positions are right. They can't be picked and don't score for anyone. A reserve you add here is on the site straight away, with nothing to deploy.</p>
+      <div class="tower rv-list">${list.map(row).join('')}</div>
+      <form id="reserve-form" class="stack" style="--gap:12px" novalidate>
+        <h3 class="h3">Add a reserve</h3>
+        <div class="rv-grid">
+          ${field('name', 'Name shown on the site', '', 'maxlength="40" required')}
+          ${field('code', 'Code', 'Used in the results. Suggested from the name.', 'maxlength="3" spellcheck="false" autocapitalize="characters" aria-describedby="rv-code-hint" required')}
+          ${field('simgrid', 'SimGrid username <span class="faint">(optional)</span>', 'Leave empty if they have no account.', 'maxlength="60" spellcheck="false"')}
+          ${field('discord', 'Discord name <span class="faint">(optional)</span>', 'Only you can see this.', 'maxlength="60" spellcheck="false"')}
+        </div>
+        <div class="row-flex"><button class="btn btn--red btn--sm" type="submit" id="rv-add" ${check.ok && canSave() && !rvBusy ? '' : 'disabled'}>Add reserve</button><span class="hint" id="rv-msg" role="status">${reserveMessage(check)}</span></div>
+      </form>
+    </div></details>`;
+}
+
+/** Remove a reserve you added. Refused while any round (saved, or open here unsaved) still has them in it. */
+async function removeReserve(code) {
+  const d = S.driverMap.get(code);
+  if (!d?.added || rvBusy) return;
+  const rounds = new Map(roundsMap); rounds.set(roundId, st);
+  const used = roundsUsing(code, rounds);
+  if (used.length) {
+    toast(`${d.name} is in the results for round${used.length > 1 ? 's' : ''} ${used.join(', ')}, so they can't be removed. Take them out of those results and save first.`, 'bad');
+    return;
+  }
+  if (!confirm(`Remove ${d.name} (${code}) from the reserves?`)) return;
+  rvBusy = true;
+  try {
+    await store.removeReserve(code);
+    reserveRows = reserveRows.filter(r => r.code !== code);
+    delete contacts[code];
+    refreshDrivers();
+    toast(`Removed ${d.name}.`);
+  } catch (ex) { toast(ex.message || 'Could not remove. Try again.', 'bad'); }
+  rvBusy = false;
+}
+
 function render() {
   const { text, parsed } = output();
   const adv = advisories();
@@ -228,6 +319,8 @@ function render() {
             <div class="pool" role="group" aria-label="Drivers not racing">${regulars.filter(d => !d.retired).map(d => `<button type="button" data-act="out" data-code="${d.code}" aria-pressed="${st.out.includes(d.code)}">${bust(S, d.code)}${esc(d.name)}</button>`).join('')}</div>
           </div></section>
 
+        ${reservesPanel()}
+
         <section class="panel"><div class="panel__head"><div class="seg" role="group" aria-label="Session">${[['quali', 'Short Quali'], ['reverse', 'Reverse Grid'], ['feature', 'Feature Race']].map(([k, l]) => `<button type="button" data-act="tab" data-k="${k}" aria-pressed="${tab === k}">${l} <span class="faint">${st.sessions[k].length}</span></button>`).join('')}</div></div>
           <div class="panel__body--pad stack" style="--gap:18px" id="builder">${sessionBuilder()}</div></section>
       </div>
@@ -242,8 +335,8 @@ function render() {
             <div class="row-flex"><button class="btn btn--ghost btn--sm" type="button" data-act="copy" ${parsed.ok ? '' : 'disabled'}>Copy file</button><button class="btn btn--ghost btn--sm" type="button" data-act="download" ${parsed.ok ? '' : 'disabled'}>Download ${fileName}</button><span class="hint">Backup copy of the file</span></div>
           </div></section>
         ${historyPanel()}
-        <details class="panel dd"><summary class="panel__head" style="cursor:pointer;list-style:none"><h2 class="h2">Driver codes</h2><span class="muted small">Tap to expand</span></summary>
-          <div class="panel__body"><div class="tower">${S.drivers.map(d => `<div class="row">${bust(S, d.code)}<b class="num" style="font-size:1.1rem;min-width:44px">${d.code}</b><div class="who"><b>${esc(d.name)}</b><small>${esc(teamLine(S, d.code))}, ${esc(d.simgrid)}</small></div></div>`).join('')}</div></div></details>
+        <details class="panel dd" data-key="codes"><summary class="panel__head" style="cursor:pointer;list-style:none"><h2 class="h2">Driver codes</h2><span class="muted small">Tap to expand</span></summary>
+          <div class="panel__body"><div class="tower">${S.drivers.map(d => `<div class="row">${bust(S, d.code)}<b class="num" style="font-size:1.1rem;min-width:44px">${d.code}</b><div class="who"><b>${esc(d.name)}</b><small>${esc(teamLine(S, d.code))}, ${esc(d.simgrid || 'no SimGrid account')}</small></div></div>`).join('')}</div></div></details>
       </div>
     </div>
 
@@ -253,6 +346,13 @@ function render() {
 
 /* ----------------------------------------------------------------- events */
 const move = (arr, i, d) => { const j = i + d; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; };
+
+/** Render again but keep the collapsible panels (reserves, driver codes) as they were. */
+function rerender() {
+  const open = $$('details[open]').map(d => d.dataset.key);
+  render();
+  $$('details').forEach(d => { if (open.includes(d.dataset.key)) d.open = true; });
+}
 
 app.addEventListener('click', async e => {
   const b = e.target.closest('[data-act]');
@@ -269,7 +369,7 @@ app.addEventListener('click', async e => {
     const { text, parsed } = output();
     if (saving || !parsed.ok || !canSave()) return;
     saving = true; saveError = '';
-    render();
+    rerender();
     try {
       const res = await store.saveResult(roundId, text);
       baseline = text;
@@ -286,7 +386,7 @@ app.addEventListener('click', async e => {
   }
   else if (a === 'history') {
     historyBusy = true; historyError = '';
-    render();
+    rerender();
     try { history = { roundId, items: await store.resultHistory(roundId) }; }
     catch (ex) { historyError = ex.message || 'Could not load earlier versions.'; }
     historyBusy = false;
@@ -301,6 +401,7 @@ app.addEventListener('click', async e => {
     saveError = '';
     toast('Loaded. Check it, then press Save to site.');
   }
+  else if (a === 'rv-remove') await removeReserve(b.dataset.code);
   else if (a === 'status') st.status = b.dataset.k;
   else if (a === 'out') { const c = b.dataset.code; st.out = st.out.includes(c) ? st.out.filter(x => x !== c) : regulars.map(d => d.code).filter(x => x === c || st.out.includes(x)); }
   else if (a === 'tab') { tab = b.dataset.k; pasteMsg = ''; }
@@ -322,14 +423,37 @@ app.addEventListener('click', async e => {
     return;
   }
   if (a !== 'save') saveError = '';
-  const open = $$('details[open]').map(d => d.querySelector('summary')?.textContent);
-  render();
-  $$('details').forEach(d => { if (open.includes(d.querySelector('summary')?.textContent)) d.open = true; });
+  rerender();
   if (a === 'save') $('#save-status')?.focus();
+});
+
+app.addEventListener('submit', async e => {
+  if (e.target.id !== 'reserve-form') return;
+  e.preventDefault();
+  if (rvBusy || !canSave()) return;
+  const { clean, errors, ok } = checkReserve(rv, takenCodes());
+  if (!ok) { rvError = errors[0]; syncReserveForm(); return; }
+  rvBusy = true; rvError = '';
+  syncReserveForm();
+  try {
+    const res = await store.addReserve(clean);
+    reserveRows.push({ code: clean.code, name: clean.name, simgrid: clean.simgrid });
+    if (clean.discord && res.contactSaved) contacts[clean.code] = clean.discord;
+    refreshDrivers();
+    rv = blankReserve();
+    if (res.contactSaved) toast(`Added ${clean.name}. They can be placed in results now.`);
+    else toast(`Added ${clean.name}, but their Discord name could not be saved.`, 'bad');
+  } catch (ex) {
+    rvError = ex.message || 'Could not add. Try again.';
+    toast(rvError, 'bad');
+  }
+  rvBusy = false;
+  rerender();
+  if (!rvError) $('#rv-name')?.focus();
 });
 window.addEventListener('beforeunload', e => { if (isDirty()) e.preventDefault(); });
 app.addEventListener('change', e => {
-  if (e.target.id === 'fl') { if (e.target.value) st.fastest[tab] = e.target.value; else delete st.fastest[tab]; render(); }
+  if (e.target.id === 'fl') { if (e.target.value) st.fastest[tab] = e.target.value; else delete st.fastest[tab]; rerender(); }
 });
 app.addEventListener('input', e => {
   if (e.target.id === 'notes') {
@@ -339,7 +463,29 @@ app.addEventListener('input', e => {
     const btn = $('[data-act="save"]'); if (btn) btn.disabled = !(parsed.ok && canSave() && !saving && dirty);
     const line = $('#save-status'); if (line) line.innerHTML = saveStatus(dirty);
   }
+  else if (/^rv-(name|code|simgrid|discord)$/.test(e.target.id)) {
+    const k = e.target.id.slice(3);
+    if (k === 'code') {
+      rv.code = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      e.target.value = rv.code;
+      rv.codeTouched = true;                    // from now on the code is theirs, not a suggestion
+    } else rv[k] = e.target.value;
+    rvError = '';
+    syncReserveForm();
+  }
+});
+// leaving the code field empty hands it back to the suggestion (not while typing, which would fight the cursor)
+app.addEventListener('focusout', e => {
+  if (e.target.id === 'rv-code' && rv.codeTouched && !rv.code) { rv.codeTouched = false; syncReserveForm(); }
 });
 
 openRound((S.currentRound() || S.rounds[0]).id);
 render();
+
+// the Discord names are for the admin only, so they are fetched once the page is up and filled in when they arrive
+if (canSave()) {
+  store.reserveContacts().then(c => {
+    contacts = c;
+    if (!document.activeElement?.matches?.('input, textarea, select')) rerender();   // never steal focus from a field being typed in
+  }).catch(() => { /* the panel simply shows no Discord names */ });
+}

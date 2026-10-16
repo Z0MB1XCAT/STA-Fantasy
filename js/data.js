@@ -4,7 +4,8 @@ import { parseRound } from './engine/parseRound.js';
 import { chooseRounds } from './engine/chooseRounds.js';
 import { buildSeason } from './engine/season.js';
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
-import { localResultRows } from './store.js';
+import { mergeReserves } from './engine/reserves.js';
+import { localResultRows, localReserveRows } from './store.js';
 
 import { params as qs } from './env.js';
 // ?data=tests/fixtures lets us point the whole site at a different folder while developing
@@ -58,10 +59,37 @@ async function getSavedResults() {
   } finally { clearTimeout(timer); }
 }
 
+const RESERVES_CACHE = 'staf.reserves.v1';
+
+/**
+ * Reserves added from the admin page, as [{code, name, simgrid}], on top of the ones in drivers.json.
+ * Never throws: if the database can't be reached the list from the last successful visit is used (a saved
+ * round may name one of these reserves, and without them that whole round would be ignored).
+ */
+async function getReserveRows() {
+  if (qs.get('store') === 'local') return localReserveRows();               // demo mode keeps its own
+  if (qs.get('rounds') || qs.get('data')) return [];                        // developer fixtures
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 6000);
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/reserves?select=code,name,simgrid&order=created_at.asc,code.asc`, {
+      headers: { apikey: SUPABASE_KEY }, cache: 'no-store', signal: ctl.signal,
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const rows = await r.json();
+    try { localStorage.setItem(RESERVES_CACHE, JSON.stringify(rows)); } catch { /* storage blocked */ }
+    return rows;
+  } catch (e) {
+    console.warn('Reserves unavailable, using the last known list', e);
+    try { return JSON.parse(localStorage.getItem(RESERVES_CACHE)) || []; } catch { return []; }
+  } finally { clearTimeout(timer); }
+}
+
 export async function loadSeason() {
-  const [season, calendar, teams, drivers, saved] = await Promise.all([
-    getJson('season.json'), getJson('calendar.json'), getJson('teams.json'), getJson('drivers.json'), getSavedResults(),
+  const [season, calendar, teams, baseDrivers, saved, reserves] = await Promise.all([
+    getJson('season.json'), getJson('calendar.json'), getJson('teams.json'), getJson('drivers.json'), getSavedResults(), getReserveRows(),
   ]);
+  const drivers = mergeReserves(baseDrivers, reserves, season.prices.reservePrice ?? season.prices.min);
   const codes = new Set(drivers.drivers.map(d => d.code));
   const ids = calendar.rounds.map(r => r.id);
   const fileTexts = await Promise.all(ids.map(id => getText(`${ROUNDS_BASE}/${pad(id)}.txt`)));
@@ -77,5 +105,5 @@ export async function loadSeason() {
     if (!p.ok) problems.push({ round: pick.id, errors: p.errors });
   });
   const S = buildSeason({ season, calendar, teams, drivers, rounds });
-  return { S, problems, rounds, sources, raw: { season, calendar, teams, drivers } };
+  return { S, problems, rounds, sources, reserves, raw: { season, calendar, teams, drivers } };
 }

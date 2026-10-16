@@ -455,6 +455,11 @@ main.wrap { padding-block: 20px 64px; }
 .search svg { position: absolute; left: 12px; top: 50%; width: 17px; height: 17px; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
 .search .input { padding-left: 37px; }
 .hint { font-size: .84rem; color: var(--text3); }
+/* admin: add a reserve */
+.rv-grid { display: grid; gap: 14px 12px; align-items: start; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+/* long names (Discord nicknames, other alphabets) wrap here instead of being cut off next to the Remove button */
+.rv-list .who b, .rv-list .who small { white-space: normal; overflow-wrap: anywhere; }
+#rv-code { text-transform: uppercase; letter-spacing: .12em; font-weight: 700; }
 .error { color: #ff8b7d; font-size: .9rem; min-height: 1.3em; }
 
 /* dialog, sheet, toast */

@@ -19,7 +19,7 @@ const fileText = () => page.$eval('#file', e => e.textContent);
 await page.type('#paste', 'KAM\n2. jengaaboi\nSantipopelka13\nIceman\nDon Lucio\nSWU\nz0mb1xcat DNF');
 await click('[data-act=paste]');
 console.log('after paste quali  ->', JSON.stringify((await fileText()).split('\n').filter(l => l.startsWith('quali'))));
-console.log('paste message      ->', await page.$eval('[role=status].hint', e => e.textContent));
+console.log('paste message      ->', await page.$eval('#builder [role=status].hint', e => e.textContent));
 
 // Feature tab: tap-to-place three drivers, then mark one DNF and set fastest lap
 await click('[data-act=tab][data-k=feature]');

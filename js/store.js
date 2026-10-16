@@ -31,6 +31,7 @@ function offlineStore(reason) {
   return {
     kind: 'offline', user: null, reason: String(reason?.message || reason), onChange() {},
     signIn: down, join: down, signOut: async () => {}, save: down, renameTeam: down, saveResult: down, resultHistory: down,
+    addReserve: down, removeReserve: down, reserveContacts: down,
     // these throw rather than return nothing, so pages can say "can't reach the server" instead of "no players yet"
     players: down, submissions: down,
   };
@@ -125,6 +126,40 @@ async function supabaseStore() {
       if (error) throw new Error(error.message);
       return data.map(r => ({ content: r.content, savedAt: r.saved_at, replacedAt: r.replaced_at, by: r.profiles?.display_name || null }));
     },
+    /**
+     * Admin only (row-level security): adds a reserve driver. The site reads the table on every load, so the new
+     * reserve is available straight away. Resolves with { contactSaved }: the Discord name is stored apart from
+     * the public row, so it can fail on its own without losing the reserve.
+     */
+    async addReserve({ code, name, simgrid, discord }) {
+      if (!store.user) throw new Error('Log in with the admin account first.');
+      const { error } = await sb.from('reserves').insert({ code, name, simgrid: simgrid || null });
+      if (error) {
+        if (error.code === '23505' || /duplicate key/i.test(error.message)) throw new Error(`The code ${code} is already used by another driver.`);
+        if (/row-level security|permission denied/i.test(error.message)) throw new Error('This account is not allowed to add reserves.');
+        throw new Error(error.message);
+      }
+      if (!discord) return { contactSaved: true };
+      const { error: e2 } = await sb.from('reserve_contacts').insert({ code, discord });
+      return { contactSaved: !e2 };
+    },
+    /** Admin only: removes a reserve. The database refuses if the reserve is in saved results. */
+    async removeReserve(code) {
+      if (!store.user) throw new Error('Log in with the admin account first.');
+      const { data, error } = await sb.from('reserves').delete().eq('code', code).select('code');
+      if (error) {
+        if (error.code === '23503') throw new Error(error.message);
+        if (/row-level security|permission denied/i.test(error.message)) throw new Error('This account is not allowed to remove reserves.');
+        throw new Error(error.message);
+      }
+      if (!data.length) throw new Error('This account is not allowed to remove reserves, or they were already removed.');
+    },
+    /** Admin only: { code: discordName } for the reserves that have one. */
+    async reserveContacts() {
+      const { data, error } = await sb.from('reserve_contacts').select('code,discord');
+      if (error) throw new Error(error.message);
+      return Object.fromEntries(data.map(r => [r.code, r.discord]));
+    },
   });
   return store;
 }
@@ -136,6 +171,12 @@ const LOCAL_KEY = 'staf.local.v1';
 export function localResultRows() {
   try { return new Map(Object.entries(JSON.parse(localStorage.getItem(LOCAL_KEY))?.results || {}).map(([id, r]) => [Number(id), { round_id: Number(id), ...r }])); }
   catch { return new Map(); }
+}
+
+/** Reserves added in demo mode (?store=local), in the same shape the database rows have. */
+export function localReserveRows() {
+  try { return JSON.parse(localStorage.getItem(LOCAL_KEY))?.reserves || []; }
+  catch { return []; }
 }
 
 function localStore() {
@@ -190,7 +231,22 @@ function localStore() {
         .sort((a, b) => b.replaced_at.localeCompare(a.replaced_at))
         .map(h => ({ content: h.content, savedAt: h.saved_at, replacedAt: h.replaced_at, by: 'you (demo)' }));
     },
-    _replace(d) { const { results, resultHistory } = load(); persist({ results, resultHistory, ...d }); sync(); },
+    async addReserve({ code, name, simgrid, discord }) {
+      const d = load();
+      if ((d.reserves || []).some(r => r.code === code)) throw new Error(`The code ${code} is already used by another driver.`);
+      (d.reserves ||= []).push({ code, name, simgrid: simgrid || null });
+      if (discord) (d.reserveContacts ||= {})[code] = discord;
+      persist(d);
+      return { contactSaved: true };
+    },
+    async removeReserve(code) {
+      const d = load();
+      d.reserves = (d.reserves || []).filter(r => r.code !== code);
+      if (d.reserveContacts) delete d.reserveContacts[code];
+      persist(d);
+    },
+    async reserveContacts() { return { ...(load().reserveContacts || {}) }; },
+    _replace(d) { const { results, resultHistory, reserves, reserveContacts } = load(); persist({ results, resultHistory, reserves, reserveContacts, ...d }); sync(); },
     _load: load,
   });
   return store;
